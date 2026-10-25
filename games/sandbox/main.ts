@@ -1,7 +1,7 @@
 import { config } from './config';
-import { Input } from './engine/input';
-import { startLoop } from './engine/loop';
-import { createWorld, render, update } from './game/world';
+import { Input } from '../../src/engine/input';
+import { startLoop } from '../../src/engine/loop';
+import { createWorld, render, update } from './world';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#game');
 if (!canvas) throw new Error('Missing #game canvas');

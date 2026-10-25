@@ -3,15 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mead Bros Game</title>
-    <style>
-      html, body { margin: 0; height: 100%; background: #111; }
-      body { display: grid; place-items: center; }
-      canvas { image-rendering: pixelated; max-width: 100vw; max-height: 100vh; }
-    </style>
+    <title>Mead Bros Games</title>
+    <meta name="description" content="Game experiments by the Mead Bros." />
   </head>
   <body>
-    <canvas id="game"></canvas>
-    <script type="module" src="/src/main.ts"></script>
+    <main class="page">
+      <header>
+        <h1>Mead Bros Games</h1>
+        <p class="tagline">Experiments, prototypes and the occasional finished thing.</p>
+      </header>
+      <ul id="games" class="games"></ul>
+    </main>
+    <script type="module" src="/src/landing/main.ts"></script>
   </body>
 </html>

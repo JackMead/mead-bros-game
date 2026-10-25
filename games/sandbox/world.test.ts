@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { config } from '../config';
+import { config } from './config';
 import { createWorld, update } from './world';
 
 const stick = (x: number, y: number) => ({ axis: () => ({ x, y }) });

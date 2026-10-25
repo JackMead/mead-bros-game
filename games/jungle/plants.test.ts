@@ -3,7 +3,10 @@ import { fruitColour, layoutChunk, PlantCache, trunkRadiusAt, type PlantSettings
 import { createTerrain } from './terrain';
 
 const WATER = -3;
-const settings: PlantSettings = { chunkSize: 48, waterLevel: WATER, treeAttempts: 70, undergrowthAttempts: 240, fruitTreeShare: 0.25 };
+const settings: PlantSettings = {
+  chunkSize: 48, waterLevel: WATER, treeAttempts: 70, undergrowthAttempts: 240, fruitTreeShare: 0.25,
+  waterfalls: { attempts: 12, minDrop: 8, minSteepness: 1, maxLength: 30, minPool: 8 },
+};
 const terrain = createTerrain(11, WATER);
 
 /** Every tree in a block of chunks, so rare kinds turn up. */
@@ -53,6 +56,21 @@ describe('plants', () => {
   it('puts every trunk and big rock in the obstacle list', () => {
     const layout = layoutChunk(0, 0, 11, terrain, settings);
     for (const t of layout.trees) expect(layout.obstacles.some((o) => o.x === t.x && o.z === t.z)).toBe(true);
+  });
+
+  it('keeps plants off waterfalls', () => {
+    let falls = 0;
+    for (let cx = -5; cx <= 5; cx++) {
+      for (let cz = -5; cz <= 5; cz++) {
+        const { waterfall, trees, small } = layoutChunk(cx, cz, 11, terrain, settings);
+        if (!waterfall) continue;
+        falls++;
+        for (const p of [...trees, ...small]) {
+          for (const q of waterfall.path) expect(Math.hypot(p.x - q.x, p.z - q.z)).toBeGreaterThan(waterfall.bottomWidth / 2);
+        }
+      }
+    }
+    expect(falls).toBeGreaterThan(0);
   });
 
   it('tapers trunks from base to top', () => {

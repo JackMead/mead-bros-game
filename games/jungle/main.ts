@@ -8,6 +8,7 @@ import { creatureInView, Population } from './creatures';
 import { Orchard } from './fruit';
 import { mulberry32 } from './noise';
 import { generateSpecies } from './species';
+import { animateWaterfalls } from './waterfallMeshes';
 import { isSwimming, stepPlayer, type PlayerState } from './movement';
 import { fruitColour, PlantCache } from './plants';
 import { createTerrain, findSpawn } from './terrain';
@@ -80,6 +81,7 @@ const moveSettings = { ...pc, waterLevel: world.waterLevel };
 
 const plants = new PlantCache(seed, terrain, {
   ...config.vegetation,
+  waterfalls: config.waterfalls,
   chunkSize: world.chunkSize,
   waterLevel: world.waterLevel,
 });
@@ -174,6 +176,7 @@ startLoop({
 
     animalMeshes.update(animals.all());
     fallenFruit.update(orchard.fallen);
+    animateWaterfalls(performance.now() / 1000, config.waterfalls.flowSpeed);
     camera.getWorldDirection(lookDir);
     const seen = creatureInView(animals.all(), species, camera.position, lookDir, cc.spotDistance);
     const label = seen ? species[seen.species]!.name : '';

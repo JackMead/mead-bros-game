@@ -7,6 +7,8 @@ import { hash2 } from './noise';
 import type { PlantCache, SmallKind, Tree } from './plants';
 import type { Hsl } from './species';
 import type { Terrain } from './terrain';
+import { buildWaterfallMesh, disposeWaterfall } from './waterfallMeshes';
+import type { Waterfall } from './waterfalls';
 
 const SIZE = config.world.chunkSize;
 const WATER = config.world.waterLevel;
@@ -101,6 +103,7 @@ interface Chunk {
   /** Where each fruit tree's fruit starts in `fruitMesh`, so fallen fruit can be hidden. */
   fruitSlots: Map<Tree, number>;
   fruitMesh: THREE.InstancedMesh | null;
+  waterfall: { fall: Waterfall; group: THREE.Group } | null;
 }
 
 const HIDDEN = new THREE.Matrix4().makeScale(0, 0, 0);
@@ -170,6 +173,7 @@ export class ChunkManager {
     this.scene.remove(chunk.group);
     chunk.ground.dispose();
     for (const mesh of chunk.instanced) mesh.dispose();
+    if (chunk.waterfall) disposeWaterfall(chunk.waterfall.group);
   }
 
   private build(cx: number, cz: number): Chunk {
@@ -185,7 +189,11 @@ export class ChunkManager {
     const { instanced, fruitMesh, fruitSlots } = this.buildVegetation(cx, cz);
     for (const mesh of instanced) group.add(mesh);
 
-    return { cx, cz, group, ground, instanced, fruitMesh, fruitSlots };
+    const fall = this.plants.get(cx, cz).waterfall;
+    const waterfall = fall ? { fall, group: buildWaterfallMesh(fall, this.terrain, WATER) } : null;
+    if (waterfall) group.add(waterfall.group);
+
+    return { cx, cz, group, ground, instanced, fruitMesh, fruitSlots, waterfall };
   }
 
   private buildGround(x0: number, z0: number): THREE.BufferGeometry {

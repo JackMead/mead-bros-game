@@ -20,6 +20,20 @@ export const config = {
     /** Share of ordinary broadleaf trees that bear fruit instead. */
     fruitTreeShare: 0.25,
   },
+  waterfalls: {
+    /** Spots tried per chunk; the steepest good one becomes the chunk's waterfall. */
+    attempts: 12,
+    /** Shortest drop worth calling a waterfall, in metres. */
+    minDrop: 8,
+    /** Gentlest average slope (drop over distance) that still counts. Higher means fewer, steeper falls. */
+    minSteepness: 1,
+    /** Longest a fall can be, measured along the ground. */
+    maxLength: 30,
+    /** Open water needed in front of a fall, so it isn't hidden in a narrow gorge. */
+    minPool: 8,
+    /** How fast the water streaks slide down, m/s. */
+    flowSpeed: 6,
+  },
   fruit: {
     /** Fruit trees within this distance of the player can drop fruit. */
     radius: 40,

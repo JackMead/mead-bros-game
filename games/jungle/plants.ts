@@ -6,6 +6,7 @@ import type { Obstacle } from './movement';
 import { hash2, mulberry32 } from './noise';
 import type { Hsl } from './species';
 import type { Terrain } from './terrain';
+import { findWaterfall, type Waterfall, type WaterfallSettings } from './waterfalls';
 
 export type TreeKind = 'broadleaf' | 'fruit' | 'emergent' | 'palm';
 
@@ -65,6 +66,8 @@ export interface PlantLayout {
   small: SmallPlant[];
   /** Trunks and big rocks the player can't walk through. */
   obstacles: Obstacle[];
+  /** This chunk's waterfall, if it has one. Plants are kept off it. */
+  waterfall: Waterfall | null;
 }
 
 export interface PlantSettings {
@@ -74,6 +77,7 @@ export interface PlantSettings {
   undergrowthAttempts: number;
   /** Share of ordinary broadleaf trees that bear fruit instead. */
   fruitTreeShare: number;
+  waterfalls: Omit<WaterfallSettings, 'chunkSize' | 'waterLevel'>;
 }
 
 const FLOWER_HUES = [0.0, 0.95, 0.08, 0.8, 0.13];
@@ -169,7 +173,12 @@ export function layoutChunk(cx: number, cz: number, seed: number, t: Terrain, s:
     }
   }
 
-  return { trees, small, obstacles };
+  const waterfall = findWaterfall(cx, cz, seed, t, { ...s.waterfalls, chunkSize: S, waterLevel: W });
+  if (!waterfall) return { trees, small, obstacles, waterfall };
+  // Keep the waterfall clear: nothing grows in the water or on the rocks either side.
+  const clear = (p: { x: number; z: number }) =>
+    waterfall.path.every((q) => Math.hypot(p.x - q.x, p.z - q.z) > waterfall.bottomWidth / 2 + 1.5);
+  return { trees: trees.filter(clear), small: small.filter(clear), obstacles: obstacles.filter(clear), waterfall };
 }
 
 function bark(rng: () => number, l = 0.22): Hsl {

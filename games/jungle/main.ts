@@ -7,6 +7,7 @@ import { CreatureRenderer } from './creatureMeshes';
 import { creatureInView, Population } from './creatures';
 import { generateSpecies } from './species';
 import { isSwimming, stepPlayer, type PlayerState } from './movement';
+import { fruitColour, PlantCache } from './plants';
 import { createTerrain, findSpawn } from './terrain';
 
 // --- World seed: from ?seed= so a world can be shared, otherwise random. ---
@@ -75,7 +76,12 @@ const player: PlayerState = {
 };
 const moveSettings = { ...pc, waterLevel: world.waterLevel };
 
-const chunks = new ChunkManager(scene, terrain, seed);
+const plants = new PlantCache(seed, terrain, {
+  ...config.vegetation,
+  chunkSize: world.chunkSize,
+  waterLevel: world.waterLevel,
+});
+const chunks = new ChunkManager(scene, terrain, plants, seed, fruitColour(seed));
 chunks.update(player.x, player.z); // build the whole view distance before the first frame
 
 // --- Animals: this world's own species ---
@@ -92,7 +98,7 @@ const lookDir = new THREE.Vector3();
 animals.sync(player.x, player.z);
 
 // Dev-only handle for poking at the world from the console (stripped from production builds).
-if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, chunks, animals, species } });
+if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, terrain, chunks, plants, animals, species } });
 
 // --- Controls: click to capture the mouse, Esc to release ---
 const input = new Input(window);

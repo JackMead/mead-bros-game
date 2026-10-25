@@ -17,6 +17,8 @@ export const config = {
     treeAttempts: 70,
     /** Random spots tried per chunk for ferns, bushes, flowers and rocks. */
     undergrowthAttempts: 240,
+    /** Share of ordinary broadleaf trees that bear fruit instead. */
+    fruitTreeShare: 0.25,
   },
   creatures: {
     /** Chunks around the player with animals in. Fewer than world.viewRadius: far ones are lost in the fog. */

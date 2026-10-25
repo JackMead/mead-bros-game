@@ -2,33 +2,37 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { config } from './config';
 import type { Obstacle } from './movement';
-import { hash2, mulberry32 } from './noise';
+import { hash2 } from './noise';
+import type { PlantCache, SmallKind } from './plants';
+import type { Hsl } from './species';
 import type { Terrain } from './terrain';
 
 const SIZE = config.world.chunkSize;
 const WATER = config.world.waterLevel;
-const UP = new THREE.Vector3(0, 1, 0);
 const SRGB = THREE.SRGBColorSpace;
 
 // Shared by every chunk and never disposed. Each is shaped so y=0 sits on the ground.
 const geometry = {
-  trunk: new THREE.CylinderGeometry(0.35, 0.6, 1, 6).translate(0, 0.5, 0),
+  // Trunks taper to 0.58 of their base radius at the top, matching plants.ts.
+  trunk: new THREE.CylinderGeometry(0.58, 1, 1, 6).translate(0, 0.5, 0),
   canopy: new THREE.IcosahedronGeometry(1, 0),
-  palmTrunk: new THREE.CylinderGeometry(0.16, 0.28, 1, 5).translate(0, 0.5, 0),
+  palmTrunk: new THREE.CylinderGeometry(0.58, 1, 1, 5).translate(0, 0.5, 0),
   frond: new THREE.ConeGeometry(1, 0.6, 7, 1, true).translate(0, -0.3, 0),
+  buttress: wedgeGeometry(),
+  fruit: new THREE.IcosahedronGeometry(0.26, 0),
   fern: fernGeometry(7),
   bush: new THREE.IcosahedronGeometry(1, 0),
   flower: new THREE.IcosahedronGeometry(0.15, 0),
   rock: new THREE.DodecahedronGeometry(1, 0),
+  bamboo: new THREE.CylinderGeometry(1, 1, 1, 5).translate(0, 0.5, 0),
 };
 
 const material = {
   ground: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1, metalness: 0 }),
   solid: new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.95, metalness: 0 }),
   foliage: new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.85, metalness: 0, side: THREE.DoubleSide }),
+  fruit: new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.5, metalness: 0 }),
 };
-
-const FLOWER_HUES = [0.0, 0.95, 0.08, 0.8, 0.13];
 
 /** A rosette of long leaves arching out from the centre, about 1 m across. */
 function fernGeometry(leaves: number): THREE.BufferGeometry {
@@ -46,6 +50,18 @@ function fernGeometry(leaves: number): THREE.BufferGeometry {
   const merged = mergeGeometries(parts)!;
   merged.computeVertexNormals();
   return merged;
+}
+
+/** A thin triangular fin, 1 long (+X), 1 tall and 1 thick: a buttress root. */
+function wedgeGeometry(): THREE.BufferGeometry {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute([
+    0, 0, -0.5, 1, 0, -0.5, 0, 1, -0.5,
+    0, 0, 0.5, 1, 0, 0.5, 0, 1, 0.5,
+  ], 3));
+  g.setIndex([0, 2, 1, 3, 4, 5, 1, 2, 5, 1, 5, 4, 0, 3, 5, 0, 5, 2, 0, 1, 4, 0, 4, 3]);
+  g.computeVertexNormals();
+  return g;
 }
 
 /** Collects many copies of one shape, then turns them into a single InstancedMesh (one draw call). */
@@ -79,19 +95,20 @@ interface Chunk {
   cx: number;
   cz: number;
   group: THREE.Group;
-  obstacles: Obstacle[];
   ground: THREE.BufferGeometry;
   instanced: THREE.InstancedMesh[];
 }
 
-/** Generates square chunks of jungle around the player and unloads ones that are far away. */
+/** Draws square chunks of jungle around the player and unloads ones that are far away. */
 export class ChunkManager {
   private readonly chunks = new Map<string, Chunk>();
 
   constructor(
     private readonly scene: THREE.Scene,
     private readonly terrain: Terrain,
+    private readonly plants: PlantCache,
     private readonly seed: number,
+    private readonly fruit: Hsl,
   ) {}
 
   update(x: number, z: number, maxBuilds = Infinity): void {
@@ -129,10 +146,7 @@ export class ChunkManager {
     const pcz = Math.floor(z / SIZE);
     const out: Obstacle[] = [];
     for (let dx = -1; dx <= 1; dx++) {
-      for (let dz = -1; dz <= 1; dz++) {
-        const chunk = this.chunks.get(chunkKey(pcx + dx, pcz + dz));
-        if (chunk) out.push(...chunk.obstacles);
-      }
+      for (let dz = -1; dz <= 1; dz++) out.push(...this.plants.get(pcx + dx, pcz + dz).obstacles);
     }
     return out;
   }
@@ -153,10 +167,10 @@ export class ChunkManager {
     groundMesh.position.set(x0 + SIZE / 2, 0, z0 + SIZE / 2);
     group.add(groundMesh);
 
-    const { instanced, obstacles } = this.buildVegetation(cx, cz, x0, z0);
+    const instanced = this.buildVegetation(cx, cz);
     for (const mesh of instanced) group.add(mesh);
 
-    return { cx, cz, group, obstacles, ground, instanced };
+    return { cx, cz, group, ground, instanced };
   }
 
   private buildGround(x0: number, z0: number): THREE.BufferGeometry {
@@ -184,110 +198,70 @@ export class ChunkManager {
     return g;
   }
 
-  private buildVegetation(cx: number, cz: number, x0: number, z0: number) {
-    const rng = mulberry32(hash2(cx, cz, this.seed));
-    const t = this.terrain;
-    const obstacles: Obstacle[] = [];
+  private buildVegetation(cx: number, cz: number): THREE.InstancedMesh[] {
+    const layout = this.plants.get(cx, cz);
 
     const trunks = new InstanceBatch(geometry.trunk, material.solid);
+    const buttresses = new InstanceBatch(geometry.buttress, material.solid);
     const canopy = new InstanceBatch(geometry.canopy, material.foliage);
+    const fruit = new InstanceBatch(geometry.fruit, material.fruit);
     const palmTrunks = new InstanceBatch(geometry.palmTrunk, material.solid);
     const fronds = new InstanceBatch(geometry.frond, material.foliage);
-    const ferns = new InstanceBatch(geometry.fern, material.foliage);
-    const bushes = new InstanceBatch(geometry.bush, material.foliage);
-    const flowers = new InstanceBatch(geometry.flower, material.solid);
-    const rocks = new InstanceBatch(geometry.rock, material.solid);
+    const small: Record<SmallKind, InstanceBatch> = {
+      fern: new InstanceBatch(geometry.fern, material.foliage),
+      bush: new InstanceBatch(geometry.bush, material.foliage),
+      flower: new InstanceBatch(geometry.flower, material.solid),
+      rock: new InstanceBatch(geometry.rock, material.solid),
+      bamboo: new InstanceBatch(geometry.bamboo, material.foliage),
+    };
 
     const p = new THREE.Vector3();
-    const top = new THREE.Vector3();
     const s = new THREE.Vector3();
     const q = new THREE.Quaternion();
     const e = new THREE.Euler();
     const col = new THREE.Color();
-    const spin = () => q.setFromAxisAngle(UP, rng() * Math.PI * 2);
+    const colour = (c: Hsl) => col.setHSL(c.h, c.s, c.l, SRGB);
+    const spin = (turn: number) => q.setFromEuler(e.set(0, turn, 0));
 
-    // Trees: broadleaf giants inland, palms along the water.
-    for (let i = 0; i < config.vegetation.treeAttempts; i++) {
-      const x = x0 + rng() * SIZE;
-      const z = z0 + rng() * SIZE;
-      const h = t.heightAt(x, z);
-      const d = t.densityAt(x, z);
-      const roll = rng();
-      if (h < WATER + 0.3) continue;
-      const nearWater = h < WATER + 3;
+    for (const tr of layout.trees) {
+      if (tr.kind === 'palm') {
+        const r = tr.baseRadius;
+        palmTrunks.add(p.set(tr.x, tr.y, tr.z), q.setFromEuler(e.set(tr.tiltX, 0, tr.tiltZ)), s.set(r, tr.height, r), colour(tr.bark));
+        const b = tr.crown[0]!;
+        fronds.add(p.set(b.x, b.y, b.z), spin(b.turn), s.set(b.r, b.r * b.squash, b.r), colour(b.colour));
+        continue;
+      }
+      const r = tr.baseRadius;
+      trunks.add(p.set(tr.x, tr.y - 0.3, tr.z), spin(tr.turn), s.set(r, tr.height, r), colour(tr.bark));
+      for (let k = 0; k < tr.buttresses; k++) {
+        const len = tr.baseRadius * (2.2 + (k % 2) * 0.8);
+        buttresses.add(p.set(tr.x, tr.y - 0.3, tr.z), spin(tr.turn + (k / tr.buttresses) * Math.PI * 2),
+          s.set(len, 2 + (k % 3) * 0.7, 0.25), colour(tr.bark));
+      }
+      for (const b of tr.crown) {
+        canopy.add(p.set(b.x, b.y, b.z), spin(b.turn), s.set(b.r, b.r * b.squash, b.r), colour(b.colour));
+      }
+      for (const f of tr.fruit) fruit.add(p.set(f.x, f.y, f.z), spin(0), s.setScalar(1), colour(this.fruit));
+    }
 
-      if (!nearWater && roll < 0.08 + 0.32 * d) {
-        const height = 8 + rng() * 12;
-        const girth = 0.7 + rng() * 0.7;
-        trunks.add(p.set(x, h - 0.3, z), spin(), s.set(girth, height, girth),
-          col.setHSL(0.07 + rng() * 0.03, 0.35, 0.22 + rng() * 0.08, SRGB));
-        // Canopy blobs pile up from about three quarters of the way up the trunk, so the crown
-        // reads as a full, lumpy mass rather than a flat cap on a pole.
-        const blobs = 4 + Math.floor(rng() * 4);
-        const spread = 2 + height * 0.15;
-        for (let b = 0; b < blobs; b++) {
-          const r = 2.2 + rng() * 2.6;
-          const lift = 0.72 + 0.28 * (b / (blobs - 1));
-          canopy.add(
-            p.set(x + (rng() - 0.5) * spread * 2, h + height * lift + (rng() - 0.5) * 1.5, z + (rng() - 0.5) * spread * 2),
-            spin(),
-            s.set(r, r * (0.6 + rng() * 0.3), r),
-            col.setHSL(0.22 + rng() * 0.1, 0.5 + rng() * 0.25, 0.2 + rng() * 0.14, SRGB),
-          );
-        }
-        obstacles.push({ x, z, r: 0.6 * girth });
-      } else if (roll > 1 - (nearWater ? 0.25 : 0.05)) {
-        const height = 5 + rng() * 5;
-        const tilt = q.setFromEuler(e.set((rng() - 0.5) * 0.5, 0, (rng() - 0.5) * 0.5));
-        p.set(x, h - 0.2, z);
-        top.set(0, height, 0).applyQuaternion(tilt).add(p);
-        palmTrunks.add(p, tilt, s.set(1, height, 1), col.setHSL(0.09, 0.3, 0.35 + rng() * 0.1, SRGB));
-        const size = 2.4 + rng();
-        fronds.add(top, spin(), s.set(size, 1 + rng() * 0.4, size),
-          col.setHSL(0.2 + rng() * 0.08, 0.6, 0.26 + rng() * 0.1, SRGB));
-        obstacles.push({ x, z, r: 0.35 });
+    for (const sp of layout.small) {
+      switch (sp.kind) {
+        case 'bamboo':
+          small.bamboo.add(p.set(sp.x, sp.y, sp.z), q.setFromEuler(e.set(sp.tiltX, sp.turn, sp.tiltZ)),
+            s.set(sp.scale, sp.tall, sp.scale), colour(sp.colour));
+          break;
+        case 'bush':
+        case 'rock':
+          small[sp.kind].add(p.set(sp.x, sp.y, sp.z), spin(sp.turn), s.set(sp.scale, sp.scale * sp.tall, sp.scale), colour(sp.colour));
+          break;
+        default:
+          small[sp.kind].add(p.set(sp.x, sp.y, sp.z), spin(sp.turn), s.setScalar(sp.scale), colour(sp.colour));
       }
     }
 
-    // Undergrowth: ferns and bushes where it's dense, the odd flower patch and rock.
-    for (let i = 0; i < config.vegetation.undergrowthAttempts; i++) {
-      const x = x0 + rng() * SIZE;
-      const z = z0 + rng() * SIZE;
-      const h = t.heightAt(x, z);
-      const d = t.densityAt(x, z);
-      const roll = rng();
-      if (h < WATER + 0.2) continue;
-
-      if (roll < 0.25 + 0.45 * d) {
-        if (rng() < 0.55) {
-          ferns.add(p.set(x, h - 0.1, z), spin(), s.setScalar(0.8 + rng() * 1.6),
-            col.setHSL(0.23 + rng() * 0.08, 0.6, 0.26 + rng() * 0.14, SRGB));
-        } else {
-          const r = 0.7 + rng() * 1.3;
-          bushes.add(p.set(x, h + 0.2, z), spin(), s.set(r, r * 0.7, r),
-            col.setHSL(0.24 + rng() * 0.1, 0.55, 0.18 + rng() * 0.12, SRGB));
-        }
-      } else if (roll > 0.97) {
-        const hue = FLOWER_HUES[Math.floor(rng() * FLOWER_HUES.length)]!;
-        const count = 3 + Math.floor(rng() * 4);
-        for (let k = 0; k < count; k++) {
-          const fx = x + (rng() - 0.5) * 2;
-          const fz = z + (rng() - 0.5) * 2;
-          flowers.add(p.set(fx, t.heightAt(fx, fz) + 0.3 + rng() * 0.5, fz), spin(), s.setScalar(0.8 + rng() * 0.6),
-            col.setHSL(hue, 0.85, 0.55, SRGB));
-        }
-      } else if (roll > 0.955) {
-        const r = 0.5 + rng() * 1.5;
-        rocks.add(p.set(x, h + r * 0.2, z), spin(), s.set(r, r * 0.7, r),
-          col.setHSL(0.2, 0.08, 0.3 + rng() * 0.12, SRGB));
-        if (r > 1) obstacles.push({ x, z, r: r * 0.8 });
-      }
-    }
-
-    const instanced = [trunks, canopy, palmTrunks, fronds, ferns, bushes, flowers, rocks]
+    return [trunks, buttresses, canopy, fruit, palmTrunks, fronds, ...Object.values(small)]
       .map((b) => b.toMesh())
       .filter((m): m is THREE.InstancedMesh => m !== null);
-    return { instanced, obstacles };
   }
 }
 

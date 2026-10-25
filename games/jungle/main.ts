@@ -30,8 +30,8 @@ scene.fog = fog;
 const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 400);
 camera.rotation.order = 'YXZ';
 
-scene.add(new THREE.HemisphereLight(0xdff2ff, 0x2a3a14, 1.4));
-const sun = new THREE.DirectionalLight(0xfff0d0, 1.8);
+scene.add(new THREE.HemisphereLight(atmosphere.ambientSky, atmosphere.ambientGround, atmosphere.ambientIntensity));
+const sun = new THREE.DirectionalLight(atmosphere.sun, atmosphere.sunIntensity);
 sun.position.set(60, 100, 30);
 scene.add(sun);
 
@@ -42,7 +42,7 @@ const water = new THREE.Mesh(
   new THREE.MeshStandardMaterial({
     color: atmosphere.water,
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.85,
     roughness: 0.15,
     metalness: 0.1,
     side: THREE.DoubleSide,
@@ -74,6 +74,9 @@ const moveSettings = { ...pc, waterLevel: world.waterLevel };
 
 const chunks = new ChunkManager(scene, terrain, seed);
 chunks.update(player.x, player.z); // build the whole view distance before the first frame
+
+// Dev-only handle for poking at the world from the console (stripped from production builds).
+if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, chunks } });
 
 // --- Controls: click to capture the mouse, Esc to release ---
 const input = new Input(window);

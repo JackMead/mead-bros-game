@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { config } from './config';
 import type { Obstacle } from './movement';
 import { hash2, mulberry32 } from './noise';
@@ -15,7 +16,7 @@ const geometry = {
   canopy: new THREE.IcosahedronGeometry(1, 0),
   palmTrunk: new THREE.CylinderGeometry(0.16, 0.28, 1, 5).translate(0, 0.5, 0),
   frond: new THREE.ConeGeometry(1, 0.6, 7, 1, true).translate(0, -0.3, 0),
-  fern: new THREE.ConeGeometry(0.8, 0.9, 6, 1, true).rotateX(Math.PI).translate(0, 0.45, 0),
+  fern: fernGeometry(7),
   bush: new THREE.IcosahedronGeometry(1, 0),
   flower: new THREE.IcosahedronGeometry(0.15, 0),
   rock: new THREE.DodecahedronGeometry(1, 0),
@@ -28,6 +29,24 @@ const material = {
 };
 
 const FLOWER_HUES = [0.0, 0.95, 0.08, 0.8, 0.13];
+
+/** A rosette of long leaves arching out from the centre, about 1 m across. */
+function fernGeometry(leaves: number): THREE.BufferGeometry {
+  const parts: THREE.BufferGeometry[] = [];
+  for (let i = 0; i < leaves; i++) {
+    // A diamond-shaped leaf lying along +Z, tipped up so it arches outwards.
+    const leaf = new THREE.BufferGeometry();
+    leaf.setAttribute('position', new THREE.Float32BufferAttribute(
+      [0, 0, 0, 0.14, 0.05, 0.45, 0, 0, 1, -0.14, 0.05, 0.45], 3));
+    leaf.setIndex([0, 1, 2, 0, 2, 3]);
+    leaf.rotateX(-0.55 - (i % 2) * 0.35);
+    leaf.rotateY((i / leaves) * Math.PI * 2);
+    parts.push(leaf);
+  }
+  const merged = mergeGeometries(parts)!;
+  merged.computeVertexNormals();
+  return merged;
+}
 
 /** Collects many copies of one shape, then turns them into a single InstancedMesh (one draw call). */
 class InstanceBatch {
@@ -152,7 +171,9 @@ export class ChunkManager {
       const wz = z0 + SIZE / 2 + pos.getZ(i);
       const h = this.terrain.heightAt(wx, wz);
       pos.setY(i, h);
-      groundColor(c, h, this.terrain.densityAt(wx, wz));
+      // Per-vertex jitter breaks up the flat colour. Hashed from world position so chunk edges match.
+      const jitter = hash2(Math.round(wx), Math.round(wz), this.seed) / 4294967296 - 0.5;
+      groundColor(c, h, this.terrain.densityAt(wx, wz), jitter);
       colors[i * 3] = c.r;
       colors[i * 3 + 1] = c.g;
       colors[i * 3 + 2] = c.b;
@@ -186,7 +207,7 @@ export class ChunkManager {
     const spin = () => q.setFromAxisAngle(UP, rng() * Math.PI * 2);
 
     // Trees: broadleaf giants inland, palms along the water.
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < config.vegetation.treeAttempts; i++) {
       const x = x0 + rng() * SIZE;
       const z = z0 + rng() * SIZE;
       const h = t.heightAt(x, z);
@@ -200,15 +221,18 @@ export class ChunkManager {
         const girth = 0.7 + rng() * 0.7;
         trunks.add(p.set(x, h - 0.3, z), spin(), s.set(girth, height, girth),
           col.setHSL(0.07 + rng() * 0.03, 0.35, 0.22 + rng() * 0.08, SRGB));
-        const blobs = 3 + Math.floor(rng() * 3);
+        // Canopy blobs pile up from about three quarters of the way up the trunk, so the crown
+        // reads as a full, lumpy mass rather than a flat cap on a pole.
+        const blobs = 4 + Math.floor(rng() * 4);
         const spread = 2 + height * 0.15;
         for (let b = 0; b < blobs; b++) {
-          const r = 2.5 + rng() * 2.5;
+          const r = 2.2 + rng() * 2.6;
+          const lift = 0.72 + 0.28 * (b / (blobs - 1));
           canopy.add(
-            p.set(x + (rng() - 0.5) * spread * 2, h + height - 0.5 + (rng() - 0.3) * 2.5, z + (rng() - 0.5) * spread * 2),
+            p.set(x + (rng() - 0.5) * spread * 2, h + height * lift + (rng() - 0.5) * 1.5, z + (rng() - 0.5) * spread * 2),
             spin(),
-            s.set(r, r * (0.45 + rng() * 0.25), r),
-            col.setHSL(0.24 + rng() * 0.1, 0.45 + rng() * 0.25, 0.16 + rng() * 0.12, SRGB),
+            s.set(r, r * (0.6 + rng() * 0.3), r),
+            col.setHSL(0.22 + rng() * 0.1, 0.5 + rng() * 0.25, 0.2 + rng() * 0.14, SRGB),
           );
         }
         obstacles.push({ x, z, r: 0.6 * girth });
@@ -220,13 +244,13 @@ export class ChunkManager {
         palmTrunks.add(p, tilt, s.set(1, height, 1), col.setHSL(0.09, 0.3, 0.35 + rng() * 0.1, SRGB));
         const size = 2.4 + rng();
         fronds.add(top, spin(), s.set(size, 1 + rng() * 0.4, size),
-          col.setHSL(0.22 + rng() * 0.08, 0.55, 0.22 + rng() * 0.1, SRGB));
+          col.setHSL(0.2 + rng() * 0.08, 0.6, 0.26 + rng() * 0.1, SRGB));
         obstacles.push({ x, z, r: 0.35 });
       }
     }
 
     // Undergrowth: ferns and bushes where it's dense, the odd flower patch and rock.
-    for (let i = 0; i < 140; i++) {
+    for (let i = 0; i < config.vegetation.undergrowthAttempts; i++) {
       const x = x0 + rng() * SIZE;
       const z = z0 + rng() * SIZE;
       const h = t.heightAt(x, z);
@@ -237,11 +261,11 @@ export class ChunkManager {
       if (roll < 0.25 + 0.45 * d) {
         if (rng() < 0.55) {
           ferns.add(p.set(x, h - 0.1, z), spin(), s.setScalar(0.8 + rng() * 1.6),
-            col.setHSL(0.27 + rng() * 0.08, 0.55, 0.2 + rng() * 0.12, SRGB));
+            col.setHSL(0.23 + rng() * 0.08, 0.6, 0.26 + rng() * 0.14, SRGB));
         } else {
           const r = 0.7 + rng() * 1.3;
           bushes.add(p.set(x, h + 0.2, z), spin(), s.set(r, r * 0.7, r),
-            col.setHSL(0.25 + rng() * 0.1, 0.5, 0.14 + rng() * 0.1, SRGB));
+            col.setHSL(0.24 + rng() * 0.1, 0.55, 0.18 + rng() * 0.12, SRGB));
         }
       } else if (roll > 0.97) {
         const hue = FLOWER_HUES[Math.floor(rng() * FLOWER_HUES.length)]!;
@@ -271,9 +295,16 @@ function chunkKey(cx: number, cz: number): string {
   return `${cx},${cz}`;
 }
 
-function groundColor(out: THREE.Color, height: number, density: number): THREE.Color {
-  if (height < WATER + 0.6) return out.setRGB(0.42, 0.35, 0.22, SRGB); // muddy banks
+/** `jitter` is a small random offset in [-0.5, 0.5) for variety. */
+function groundColor(out: THREE.Color, height: number, density: number, jitter: number): THREE.Color {
+  if (height < WATER + 0.6) return out.setRGB(0.45 + 0.06 * jitter, 0.36, 0.22, SRGB); // muddy banks
   const t = Math.min(1, (height - WATER) / 25);
-  // Darker, damper floor under thick jungle; lighter on high ground.
-  return out.setRGB(0.2 + 0.1 * t - 0.06 * density, 0.3 + 0.08 * t - 0.08 * density, 0.12 + 0.03 * t, SRGB);
+  // Darker, damper, browner floor under thick jungle; brighter green in clearings and on high ground.
+  const j = 0.08 * jitter;
+  return out.setRGB(
+    0.2 + 0.08 * t + 0.08 * density + j,
+    0.36 + 0.1 * t - 0.12 * density + j,
+    0.1 + 0.03 * t,
+    SRGB,
+  );
 }

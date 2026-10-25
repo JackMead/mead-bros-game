@@ -55,6 +55,8 @@ export interface CreatureSettings {
   birdAltitude: number;
   /** How fast flocks drift across the sky, m/s. */
   flockDrift: number;
+  /** How high solo birds fly over clearings; they fly higher over thick jungle. */
+  soloBirdAltitude: number;
   /** Chance per second that a fish leaps out of the water. */
   fishJumpChance: number;
   gravity: number;
@@ -94,6 +96,10 @@ export class Population {
     }
   }
 
+  private soloAltitude(x: number, z: number): number {
+    return soloBirdHeight(this.terrain, x, z, this.settings);
+  }
+
   *all(): IterableIterator<Creature> {
     for (const list of this.byChunk.values()) yield* list;
   }
@@ -120,7 +126,7 @@ export class Population {
 
         const [min, max] = sp.groupSize;
         const size = min + Math.floor(rng() * (max - min + 1));
-        const flock = sp.kind === 'bird'
+        const flock = sp.kind === 'bird' && !sp.solo
           ? { radius: 15 + rng() * 30, speed: (rng() < 0.5 ? -1 : 1) * (0.25 + rng() * 0.2), angle: rng() * Math.PI * 2, drift: rng() * Math.PI * 2 }
           : null;
         for (let k = 0; k < size; k++) {
@@ -136,6 +142,12 @@ export class Population {
             c.x = x + Math.cos(c.orbit) * c.orbitRadius + c.offsetX;
             c.z = z + Math.sin(c.orbit) * c.orbitRadius + c.offsetZ;
             c.y = Math.max(this.terrain.heightAt(c.x, c.z), W) + this.settings.birdAltitude + c.offsetY;
+            out.push(c);
+            continue;
+          }
+          if (sp.solo) {
+            c.y = this.soloAltitude(x, z);
+            c.timer = 0;
             out.push(c);
             continue;
           }
@@ -205,7 +217,8 @@ export function stepCreature(
   terrain: Terrain,
   s: CreatureSettings,
 ): void {
-  if (sp.kind === 'bird') stepBird(c, sp, dt, terrain, s);
+  if (sp.kind === 'bird' && sp.solo) stepSoloBird(c, sp, dt, terrain, s);
+  else if (sp.kind === 'bird') stepBird(c, sp, dt, terrain, s);
   else stepWalker(c, sp, dt, player, terrain, s);
 }
 
@@ -313,6 +326,35 @@ function stepBird(c: Creature, sp: Species, dt: number, terrain: Terrain, s: Cre
   const below = Math.max(terrain.heightAt(c.x, c.z), s.waterLevel);
   const targetY = below + s.birdAltitude + c.offsetY;
   c.y += (targetY - c.y) * Math.min(1, dt * 0.8);
+  c.phase += dt * (sp.runSpeed + 4);
+  c.mode = 'walk';
+}
+
+/** Where a solo bird likes to fly: low over clearings and water, higher over thick jungle to clear the trees. */
+export function soloBirdHeight(terrain: Terrain, x: number, z: number, s: CreatureSettings): number {
+  return Math.max(terrain.heightAt(x, z), s.waterLevel) + s.soloBirdAltitude * (1 + 1.4 * terrain.densityAt(x, z));
+}
+
+/**
+ * Solo birds wander, curving one way then the other, and turn back if they stray too far from home.
+ * `orbitSpeed` is the current turn rate in radians per second.
+ */
+function stepSoloBird(c: Creature, sp: Species, dt: number, terrain: Terrain, s: CreatureSettings): void {
+  c.timer -= dt;
+  if (c.timer <= 0) {
+    c.timer = 2 + c.rng() * 4;
+    const fromHomeX = c.x - c.homeX;
+    const fromHomeZ = c.z - c.homeZ;
+    const home = headingOf(-fromHomeX, -fromHomeZ);
+    const away = Math.hypot(fromHomeX, fromHomeZ) > s.leash * 3;
+    // Far from home: bank towards it. Otherwise pick a new gentle curve.
+    const wanted = away ? turnTowards(c.heading, home, 1) - c.heading : (c.rng() - 0.5) * 2;
+    c.orbitSpeed = Math.max(-0.6, Math.min(0.6, wanted));
+  }
+  c.heading += c.orbitSpeed * dt;
+  c.speed = sp.walkSpeed;
+  moveForward(c, dt);
+  c.y += (soloBirdHeight(terrain, c.x, c.z, s) - c.y) * Math.min(1, dt * 0.8);
   c.phase += dt * (sp.runSpeed + 4);
   c.mode = 'walk';
 }

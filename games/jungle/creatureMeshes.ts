@@ -115,7 +115,8 @@ function bodyTilt(c: Creature, sp: Species): [number, number, number] {
     case 'fish':
       return [Math.atan2(c.vy, Math.max(1, c.speed)), c.heading + Math.sin(c.phase) * 0.12, 0];
     case 'bird':
-      return [0, c.heading, -Math.sign(c.orbitSpeed) * 0.3];
+      // Bank into the turn: orbitSpeed is how fast it's turning.
+      return [0, c.heading, -Math.max(-0.5, Math.min(0.5, c.orbitSpeed * 0.9))];
     case 'grazer':
       return [0, c.heading, 0];
   }
@@ -165,14 +166,15 @@ function partsFor(sp: Species): PartSpec[] {
     }
     case 'bird': {
       const half = b.wingSpan / 2;
-      // Flap for a while, then glide with wings slightly raised.
-      const flap = (c: Creature) => (Math.sin(c.phase * 0.08) > -0.3 ? Math.sin(c.phase) * 0.7 : 0.15);
+      // Flap for a while, then glide with wings slightly raised. Solo birds glide much more.
+      const flapShare = sp.solo ? 0.6 : -0.3;
+      const flap = (c: Creature) => (Math.sin(c.phase * 0.08) > flapShare ? Math.sin(c.phase) * 0.7 : 0.15);
       return [
         { geometry: shape.blob, copies: 1, pose: (_c, _, out) => place(out, 0, 0, 0, 0, 0, 0, b.width, b.height, b.length) },
         { geometry: shape.head, copies: 1, pose: (_c, _, out) =>
           place(out, 0, b.height * 0.25, -b.length * 0.5, 0, 0, 0, b.headSize, b.headSize, b.headSize) },
         { geometry: shape.beak, copies: 1, accent: true, pose: (_c, _, out) =>
-          place(out, 0, b.height * 0.2, -b.length * 0.5 - b.headSize * 0.4, 0, 0, 0, b.headSize * 0.45, b.headSize * 0.45, b.headSize * 0.9) },
+          place(out, 0, b.height * 0.2, -b.length * 0.5 - b.headSize * 0.4, 0, 0, 0, b.headSize * 0.45, b.headSize * 0.5, b.beakLength) },
         { geometry: shape.wing, copies: 2, pose: (c, k, out) => {
           const a = flap(c);
           // Wing 1 is the mirror image of wing 0: turned to point along -X, flapping the other way.

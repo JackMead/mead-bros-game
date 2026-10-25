@@ -57,6 +57,8 @@ export const config = {
     birdAltitude: 28,
     /** How fast flocks drift across the sky, m/s. */
     flockDrift: 1.5,
+    /** How high solo birds fly over clearings; over thick jungle they go up to 2.4 times higher. */
+    soloBirdAltitude: 9,
     /** Chance per second that a fish leaps out of the water. */
     fishJumpChance: 0.04,
     /** How close an animal must be to show its name when you look at it. Birds count from twice as far. */

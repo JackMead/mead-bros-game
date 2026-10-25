@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  creatureInView, headingOf, Population, stepCreature, suits, turnTowards,
+  creatureInView, headingOf, Population, soloBirdHeight, stepCreature, suits, turnTowards,
   type Creature, type CreatureSettings,
 } from './creatures';
 import { generateSpecies, speciesName } from './species';
@@ -10,7 +10,7 @@ import { createTerrain, type Terrain } from './terrain';
 const WATER = -3;
 const settings: CreatureSettings = {
   chunkSize: 48, waterLevel: WATER, viewRadius: 2, abundance: 1, leash: 25,
-  birdAltitude: 28, flockDrift: 1.5, fishJumpChance: 0.04, gravity: 22,
+  birdAltitude: 28, flockDrift: 1.5, soloBirdAltitude: 9, fishJumpChance: 0.04, gravity: 22,
 };
 const species = generateSpecies(42);
 const index = (kind: string, nth = 0) => species.map((s, i) => [s, i] as const).filter(([s]) => s.kind === kind)[nth]![1];
@@ -36,12 +36,13 @@ describe('species', () => {
     expect(generateSpecies(43).map((s) => s.name)).not.toEqual(species.map((s) => s.name));
   });
 
-  it('has three grazers of increasing size, a bird and a fish, all named differently', () => {
-    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'fish']);
+  it('has three grazers of increasing size, a flock bird, a solo bird and a fish, all named differently', () => {
+    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'bird', 'fish']);
+    expect(species.map((s) => s.solo)).toEqual([false, false, false, false, true, false]);
     const [a, b, c] = species;
     expect(a!.body.length).toBeLessThan(b!.body.length);
     expect(b!.body.length).toBeLessThan(c!.body.length);
-    expect(new Set(species.map((s) => s.name)).size).toBe(5);
+    expect(new Set(species.map((s) => s.name)).size).toBe(species.length);
   });
 
   it('makes capitalised, pronounceable names', () => {
@@ -70,7 +71,8 @@ describe('spawning', () => {
           const ground = terrain.heightAt(c.x, c.z);
           expect(suits(sp, ground, WATER)).toBe(true);
           if (sp.kind === 'fish') expect(c.y).toBeLessThan(WATER);
-          if (sp.kind === 'bird') expect(c.y).toBeGreaterThan(ground + 20);
+          if (sp.kind === 'bird' && !sp.solo) expect(c.y).toBeGreaterThan(ground + 20);
+          if (sp.solo) expect(c.y).toBeCloseTo(soloBirdHeight(terrain, c.x, c.z, settings));
         }
       }
     }
@@ -138,6 +140,32 @@ describe('birds', () => {
       expect(r).toBeCloseTo(c.orbitRadius, 5);
     }
     expect(Math.hypot(c.homeX, c.homeZ)).toBeCloseTo(30 * settings.flockDrift, 0);
+  });
+});
+
+describe('solo birds', () => {
+  const solo = index('bird', 1);
+
+  it('fly alone, below the flocks but clear of the ground', () => {
+    const terrain = createTerrain(7, WATER);
+    const c = animal(solo, { y: soloBirdHeight(terrain, 0, 0, settings) });
+    for (let i = 0; i < 60 * 60; i++) {
+      run(c, 1 / 60, undefined, terrain);
+      const ground = Math.max(terrain.heightAt(c.x, c.z), WATER);
+      expect(c.y - ground).toBeGreaterThan(5);
+      expect(c.y - ground).toBeLessThan(settings.birdAltitude);
+    }
+  });
+
+  it('wander but come back towards home', () => {
+    const c = animal(solo, { y: 9 });
+    let farthest = 0;
+    for (let i = 0; i < 60 * 300; i++) {
+      run(c, 1 / 60);
+      farthest = Math.max(farthest, Math.hypot(c.x, c.z));
+    }
+    expect(farthest).toBeGreaterThan(20);
+    expect(farthest).toBeLessThan(settings.leash * 3 + 60);
   });
 });
 

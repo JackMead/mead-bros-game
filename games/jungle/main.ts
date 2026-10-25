@@ -98,7 +98,7 @@ chunks.update(player.x, player.z); // build the whole view distance before the f
 
 // --- Animals: this world's own species ---
 const species = generateSpecies(seed);
-const animals = new Population(seed, terrain, species, {
+const animals = new Population(seed, terrain, plants, species, {
   ...cc,
   chunkSize: world.chunkSize,
   waterLevel: world.waterLevel,

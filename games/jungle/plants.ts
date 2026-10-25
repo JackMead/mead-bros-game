@@ -284,6 +284,10 @@ export class PlantCache {
     return layout;
   }
 
+  treesIn(cx: number, cz: number): readonly Tree[] {
+    return this.get(cx, cz).trees;
+  }
+
   /** Every tree whose base is within `radius` of (x, z). */
   treesNear(x: number, z: number, radius: number): Tree[] {
     const S = this.settings.chunkSize;

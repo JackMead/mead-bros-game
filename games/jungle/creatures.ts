@@ -1,9 +1,15 @@
 /** Animals: where they spawn and how they move. Pure logic: no Three.js, no DOM. */
+import { spawnLizards, stepLizard, type TreeSource } from './climbers';
 import { hash2, mulberry32 } from './noise';
+import type { Tree } from './plants';
 import type { Species } from './species';
+import { headingOf, moveForward, turnTowards } from './steering';
 import type { Terrain } from './terrain';
 
-export type Mode = 'idle' | 'walk' | 'flee' | 'jump';
+export { headingOf, turnTowards };
+
+/** What an animal is doing. 'jump' is a leaping fish; 'leave' is a lizard heading down to change trees. */
+export type Mode = 'idle' | 'walk' | 'flee' | 'jump' | 'leave';
 
 export interface Creature {
   /** Index into the species list. */
@@ -39,6 +45,14 @@ export interface Creature {
   offsetX: number;
   offsetY: number;
   offsetZ: number;
+  /** Climbers: the tree it's on, or running to. */
+  tree: Tree | null;
+  /** Lizards: on the trunk, or running across the ground to `tree`. */
+  onTrunk: boolean;
+  /** Lizards: angle around the trunk (radians, from +X towards +Z), height up it, and the height it's heading for. */
+  around: number;
+  climb: number;
+  goal: number;
   rng: () => number;
 }
 
@@ -59,6 +73,8 @@ export interface CreatureSettings {
   soloBirdAltitude: number;
   /** Chance per second that a fish leaps out of the water. */
   fishJumpChance: number;
+  /** Furthest a climbing animal will go to reach another tree. */
+  treeHop: number;
   gravity: number;
 }
 
@@ -69,6 +85,7 @@ export class Population {
   constructor(
     private readonly seed: number,
     private readonly terrain: Terrain,
+    private readonly trees: TreeSource,
     readonly species: readonly Species[],
     private readonly settings: CreatureSettings,
   ) {}
@@ -92,7 +109,7 @@ export class Population {
 
   step(dt: number, player: { x: number; y: number; z: number }): void {
     for (const list of this.byChunk.values()) {
-      for (const c of list) stepCreature(c, this.species[c.species]!, dt, player, this.terrain, this.settings);
+      for (const c of list) stepCreature(c, this.species[c.species]!, dt, player, this.terrain, this.settings, this.trees);
     }
   }
 
@@ -113,6 +130,17 @@ export class Population {
     this.species.forEach((sp, index) => {
       const groups = Math.floor(sp.abundance * this.settings.abundance + rng());
       for (let g = 0; g < groups; g++) {
+        if (sp.kind === 'lizard') {
+          const [min, max] = sp.groupSize;
+          const lizards = Array.from({ length: min + Math.floor(rng() * (max - min + 1)) }, () => spawnOne(index, 0, 0, rng));
+          spawnLizards(lizards, this.trees.treesIn(cx, cz), rng);
+          for (const c of lizards) {
+            c.homeX = c.x;
+            c.homeZ = c.z;
+          }
+          out.push(...lizards);
+          continue;
+        }
         // Look for a spot this species can live in.
         let x = 0;
         let z = 0;
@@ -182,6 +210,8 @@ export function suits(sp: Species, ground: number, waterLevel: number): boolean 
       return ground < waterLevel - 1.5;
     case 'bird':
       return true;
+    case 'lizard':
+      return ground > waterLevel + 0.5;
   }
 }
 
@@ -205,6 +235,11 @@ function spawnOne(species: number, x: number, z: number, rng: () => number): Cre
     offsetX: 0,
     offsetY: 0,
     offsetZ: 0,
+    tree: null,
+    onTrunk: false,
+    around: 0,
+    climb: 0,
+    goal: 0,
     rng: mulberry32(Math.floor(rng() * 4294967296)),
   };
 }
@@ -216,8 +251,10 @@ export function stepCreature(
   player: { x: number; y: number; z: number },
   terrain: Terrain,
   s: CreatureSettings,
+  trees: TreeSource,
 ): void {
-  if (sp.kind === 'bird' && sp.solo) stepSoloBird(c, sp, dt, terrain, s);
+  if (sp.kind === 'lizard') stepLizard(c, sp, dt, player, terrain, trees, s);
+  else if (sp.kind === 'bird' && sp.solo) stepSoloBird(c, sp, dt, terrain, s);
   else if (sp.kind === 'bird') stepBird(c, sp, dt, terrain, s);
   else stepWalker(c, sp, dt, player, terrain, s);
 }
@@ -359,23 +396,6 @@ function stepSoloBird(c: Creature, sp: Species, dt: number, terrain: Terrain, s:
   c.mode = 'walk';
 }
 
-function moveForward(c: Creature, dt: number): void {
-  c.x -= Math.sin(c.heading) * c.speed * dt;
-  c.z -= Math.cos(c.heading) * c.speed * dt;
-}
-
-/** The heading that faces along (dx, dz). */
-export function headingOf(dx: number, dz: number): number {
-  return Math.atan2(-dx, -dz);
-}
-
-/** Turns from one heading towards another by at most `maxStep` radians, the short way round. */
-export function turnTowards(from: number, to: number, maxStep: number): number {
-  let diff = (to - from) % (Math.PI * 2);
-  if (diff > Math.PI) diff -= Math.PI * 2;
-  if (diff < -Math.PI) diff += Math.PI * 2;
-  return from + Math.max(-maxStep, Math.min(maxStep, diff));
-}
 
 /**
  * The nearest animal close to the middle of the view, if any: what the player is looking at.

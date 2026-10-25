@@ -1,7 +1,7 @@
 /** Procedurally invented animal species. Pure logic: no Three.js, no DOM. */
 import { hash2, mulberry32 } from './noise';
 
-export type Kind = 'grazer' | 'bird' | 'fish';
+export type Kind = 'grazer' | 'bird' | 'fish' | 'lizard';
 
 /** Body proportions in metres. Parts a kind doesn't have are 0. */
 export interface BodyPlan {
@@ -46,7 +46,7 @@ export interface Species {
 type Range = readonly [number, number];
 
 /** How a species is coloured. */
-type Look = 'earthy' | 'parrot' | 'hornbill' | 'fish';
+type Look = 'earthy' | 'parrot' | 'hornbill' | 'fish' | 'gecko';
 
 /** Body proportions are multiples of body length. */
 interface Archetype {
@@ -68,7 +68,7 @@ interface Archetype {
 }
 
 // Three grazers of clearly different sizes, so every world has something small and skittish,
-// something tall and quick, and something big and slow. Then a flock bird, a solo bird and a fish.
+// something tall and quick, and something big and slow. Then a flock bird, a solo bird, a fish and a lizard.
 const ARCHETYPES: readonly Archetype[] = [
   { kind: 'grazer', look: 'earthy', length: [0.35, 0.55], height: [0.45, 0.65], legs: [0.3, 0.5], neck: [0.05, 0.15],
     head: [0.35, 0.45], tail: [0.1, 0.5], wings: [0, 0], beak: [0, 0], runSpeed: [7, 9], fleeDistance: [12, 16],
@@ -89,9 +89,13 @@ const ARCHETYPES: readonly Archetype[] = [
   { kind: 'fish', look: 'fish', length: [0.4, 0.9], height: [0.3, 0.45], legs: [0, 0], neck: [0, 0],
     head: [0, 0], tail: [0.3, 0.45], wings: [0, 0], beak: [0, 0], runSpeed: [4, 6], fleeDistance: [6, 8],
     groupSize: [2, 5], abundance: 1.5 },
+  // A bright lizard, iguana-sized, that lives on tree trunks. Abundance is per chunk, not per suitable spot.
+  { kind: 'lizard', look: 'gecko', length: [0.25, 0.4], height: [0.25, 0.35], legs: [0.25, 0.35], neck: [0, 0],
+    head: [0.35, 0.45], tail: [1.2, 1.8], wings: [0, 0], beak: [0, 0], runSpeed: [3, 4.5], fleeDistance: [5, 8],
+    groupSize: [1, 2], abundance: 1.5 },
 ];
 
-/** Invents this world's animals: three grazers, two birds and a fish. Same seed, same species. */
+/** Invents this world's animals: three grazers, two birds, a fish and a lizard. Same seed, same species. */
 export function generateSpecies(seed: number): Species[] {
   const rng = mulberry32(hash2(seed, 0x5bec1e5, 0x1a7e));
   const pick = ([min, max]: Range) => min + rng() * (max - min);
@@ -149,6 +153,12 @@ function palette(look: Look, rng: () => number): { colour: Hsl; accent: Hsl } {
       // Nearly black, maybe tinged with a colour, and a vivid red, orange or yellow beak.
       const colour = { h: rng(), s: rng() * 0.3, l: 0.1 + rng() * 0.1 };
       return { colour, accent: { h: 0.01 + rng() * 0.13, s: 0.9, l: 0.5 } };
+    }
+    case 'gecko': {
+      // Bright green, turquoise, blue or orange, with darker bands.
+      const hues = [0.3, 0.36, 0.47, 0.58, 0.07];
+      const colour = { h: hues[Math.floor(rng() * hues.length)]!, s: 0.6 + rng() * 0.25, l: 0.4 + rng() * 0.1 };
+      return { colour, accent: { h: colour.h + (rng() - 0.5) * 0.1, s: colour.s, l: colour.l * 0.6 } };
     }
     case 'fish': {
       const hues = [0.06, 0.12, 0.55, 0.58];

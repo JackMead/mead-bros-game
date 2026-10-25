@@ -61,6 +61,8 @@ export const config = {
     soloBirdAltitude: 9,
     /** Chance per second that a fish leaps out of the water. */
     fishJumpChance: 0.04,
+    /** Furthest lizards will run, or monkeys swing, to reach another tree. */
+    treeHop: 10,
     /** How close an animal must be to show its name when you look at it. Birds count from twice as far. */
     spotDistance: 30,
   },

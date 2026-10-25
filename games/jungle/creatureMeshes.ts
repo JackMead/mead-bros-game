@@ -84,7 +84,7 @@ export class CreatureRenderer {
       if (n >= this.capacity) continue;
       counts[c.species] = n + 1;
       const sp = this.species[c.species]!;
-      this.base.compose(pos.set(c.x, c.y, c.z), rot.setFromEuler(euler.set(...bodyTilt(c, sp), 'YXZ')), scl.set(1, 1, 1));
+      this.base.compose(pos.set(c.x, c.y, c.z), orientation(c, sp, rot), scl.set(1, 1, 1));
 
       for (const part of this.parts[c.species]!) {
         for (let k = 0; k < part.copies; k++) {
@@ -109,6 +109,22 @@ function tinted(out: THREE.Color, c: Hsl, tint: number): THREE.Color {
   return out.setHSL(c.h, c.s, Math.min(0.9, Math.max(0.05, c.l + tint * 0.05)), SRGB);
 }
 
+const basis = new THREE.Matrix4();
+const ax = new THREE.Vector3();
+const ay = new THREE.Vector3();
+const az = new THREE.Vector3();
+
+/** How the whole animal is turned. Lizards on a trunk lie belly-to-bark, facing up or down it. */
+function orientation(c: Creature, sp: Species, out: THREE.Quaternion): THREE.Quaternion {
+  if (sp.kind === 'lizard' && c.onTrunk) {
+    ay.set(Math.cos(c.around), 0, Math.sin(c.around)); // back faces out from the trunk
+    az.set(0, c.heading === 0 ? -1 : 1, 0); // local -Z is forward: up or down the trunk
+    ax.crossVectors(ay, az);
+    return out.setFromRotationMatrix(basis.makeBasis(ax, ay, az));
+  }
+  return out.setFromEuler(euler.set(...bodyTilt(c, sp), 'YXZ'));
+}
+
 /** Pitch, yaw and roll for the whole animal: fish wiggle and arc through leaps, birds bank into the turn. */
 function bodyTilt(c: Creature, sp: Species): [number, number, number] {
   switch (sp.kind) {
@@ -118,6 +134,7 @@ function bodyTilt(c: Creature, sp: Species): [number, number, number] {
       // Bank into the turn: orbitSpeed is how fast it's turning.
       return [0, c.heading, -Math.max(-0.5, Math.min(0.5, c.orbitSpeed * 0.9))];
     case 'grazer':
+    case 'lizard':
       return [0, c.heading, 0];
   }
 }
@@ -182,6 +199,29 @@ function partsFor(sp: Species): PartSpec[] {
         } },
         { geometry: shape.wing, copies: 1, pose: (_c, _, out) =>
           place(out, 0, 0, b.length * 0.4, 0, -Math.PI / 2, 0, b.tailLength, 1, b.width * 0.8, 'ZYX') },
+      ];
+    }
+    case 'lizard': {
+      const legW = Math.max(0.025, b.height * 0.25);
+      const legAt = [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const;
+      return [
+        { geometry: shape.blob, copies: 1, pose: (_c, _, out) =>
+          place(out, 0, b.height * 0.5, 0, 0, 0, 0, b.width * 1.1, b.height, b.length) },
+        { geometry: shape.head, copies: 1, pose: (c, _, out) =>
+          // Glances from side to side while it sits still.
+          place(out, 0, b.height * 0.55, -b.length * 0.55, 0, c.speed > 0.05 ? 0 : Math.sin(c.phase + c.tint * 9) * 0.4, 0,
+            b.headSize * 0.8, b.headSize * 0.6, b.headSize * 1.2) },
+        { geometry: shape.limbUp, copies: 1, accent: true, pose: (c, _, out) =>
+          // Long tail trailing behind, swishing as it runs.
+          place(out, 0, b.height * 0.4, b.length * 0.4, Math.PI / 2, Math.sin(c.phase) * 0.35 * Math.min(1, c.speed), 0,
+            b.height * 0.45, b.tailLength, b.height * 0.3, 'YXZ') },
+        { geometry: shape.limbDown, copies: 4, accent: true, pose: (c, k, out) => {
+          const [side, end] = legAt[k]!;
+          // Legs splay out sideways; diagonal pairs scuttle forward and back together.
+          const stride = Math.sin(c.phase + (side === end ? 0 : Math.PI)) * 0.6 * Math.min(1, c.speed * 2);
+          place(out, side * b.width * 0.45, b.height * 0.45, end * b.length * 0.3, 0, stride, side * 1.15,
+            legW, b.legLength + b.height * 0.3, legW, 'YXZ');
+        } },
       ];
     }
     case 'fish':

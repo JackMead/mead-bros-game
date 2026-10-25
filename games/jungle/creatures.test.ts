@@ -4,13 +4,15 @@ import {
   type Creature, type CreatureSettings,
 } from './creatures';
 import { generateSpecies, speciesName } from './species';
+import type { TreeSource } from './climbers';
 import { mulberry32 } from './noise';
+import { PlantCache, trunkRadiusAt, type Tree } from './plants';
 import { createTerrain, type Terrain } from './terrain';
 
 const WATER = -3;
 const settings: CreatureSettings = {
   chunkSize: 48, waterLevel: WATER, viewRadius: 2, abundance: 1, leash: 25,
-  birdAltitude: 28, flockDrift: 1.5, soloBirdAltitude: 9, fishJumpChance: 0.04, gravity: 22,
+  birdAltitude: 28, flockDrift: 1.5, soloBirdAltitude: 9, fishJumpChance: 0.04, treeHop: 10, gravity: 22,
 };
 const species = generateSpecies(42);
 const index = (kind: string, nth = 0) => species.map((s, i) => [s, i] as const).filter(([s]) => s.kind === kind)[nth]![1];
@@ -22,12 +24,15 @@ function animal(speciesIndex: number, over: Partial<Creature> = {}): Creature {
   return {
     species: speciesIndex, x: 0, y: 0, z: 0, heading: 0, speed: 0, vy: 0, mode: 'idle', timer: 1, phase: 0,
     graze: 0, tint: 0, homeX: 0, homeZ: 0, orbit: 0, orbitRadius: 20, orbitSpeed: 0.3, drift: 0,
-    offsetX: 0, offsetY: 1, offsetZ: 0, rng: mulberry32(1), ...over,
+    offsetX: 0, offsetY: 1, offsetZ: 0, tree: null, onTrunk: false, around: 0, climb: 0, goal: 0,
+    rng: mulberry32(1), ...over,
   };
 }
 
-function run(c: Creature, seconds: number, player = { x: 1000, y: 0, z: 1000 }, terrain = shore): void {
-  for (let t = 0; t < seconds; t += 1 / 60) stepCreature(c, species[c.species]!, 1 / 60, player, terrain, settings);
+const noTrees: TreeSource = { treesIn: () => [], treesNear: () => [] };
+
+function run(c: Creature, seconds: number, player = { x: 1000, y: 0, z: 1000 }, terrain = shore, trees = noTrees): void {
+  for (let t = 0; t < seconds; t += 1 / 60) stepCreature(c, species[c.species]!, 1 / 60, player, terrain, settings, trees);
 }
 
 describe('species', () => {
@@ -36,9 +41,9 @@ describe('species', () => {
     expect(generateSpecies(43).map((s) => s.name)).not.toEqual(species.map((s) => s.name));
   });
 
-  it('has three grazers of increasing size, a flock bird, a solo bird and a fish, all named differently', () => {
-    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'bird', 'fish']);
-    expect(species.map((s) => s.solo)).toEqual([false, false, false, false, true, false]);
+  it('has three grazers of increasing size, two birds, a fish and a lizard, all named differently', () => {
+    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'bird', 'fish', 'lizard']);
+    expect(species.filter((s) => s.solo).map((s) => s.kind)).toEqual(['bird']);
     const [a, b, c] = species;
     expect(a!.body.length).toBeLessThan(b!.body.length);
     expect(b!.body.length).toBeLessThan(c!.body.length);
@@ -53,7 +58,11 @@ describe('species', () => {
 
 describe('spawning', () => {
   const terrain = createTerrain(7, WATER);
-  const population = () => new Population(7, terrain, species, settings);
+  const plants = new PlantCache(7, terrain, {
+    chunkSize: 48, waterLevel: WATER, treeAttempts: 70, undergrowthAttempts: 240, fruitTreeShare: 0.25,
+    waterfalls: { attempts: 12, minDrop: 8, minSteepness: 1, maxLength: 30, minPool: 8 },
+  });
+  const population = () => new Population(7, terrain, plants, species, settings);
 
   it('spawns the same animals in a chunk every time', () => {
     const strip = (cs: Creature[]) => cs.map(({ rng: _, ...rest }) => rest);
@@ -69,10 +78,17 @@ describe('spawning', () => {
           count++;
           const sp = species[c.species]!;
           const ground = terrain.heightAt(c.x, c.z);
-          expect(suits(sp, ground, WATER)).toBe(true);
+          if (sp.kind !== 'lizard') expect(suits(sp, ground, WATER)).toBe(true);
           if (sp.kind === 'fish') expect(c.y).toBeLessThan(WATER);
           if (sp.kind === 'bird' && !sp.solo) expect(c.y).toBeGreaterThan(ground + 20);
           if (sp.solo) expect(c.y).toBeCloseTo(soloBirdHeight(terrain, c.x, c.z, settings));
+          if (sp.kind === 'lizard') {
+            const t = c.tree!;
+            expect(t.kind).not.toBe('palm');
+            expect(Math.hypot(c.x - t.x, c.z - t.z)).toBeCloseTo(trunkRadiusAt(t, c.climb) + 0.05);
+            expect(c.y).toBeGreaterThan(t.y);
+            expect(c.y).toBeLessThan(t.y + t.height);
+          }
         }
       }
     }
@@ -166,6 +182,47 @@ describe('solo birds', () => {
     }
     expect(farthest).toBeGreaterThan(20);
     expect(farthest).toBeLessThan(settings.leash * 3 + 60);
+  });
+});
+
+describe('lizards', () => {
+  const lizard = index('lizard');
+  const trunk = (x: number, z = 0): Tree => ({
+    kind: 'broadleaf', x, y: 0, z, height: 15, baseRadius: 0.6, topRadius: 0.35, tiltX: 0, tiltZ: 0, turn: 0,
+    bark: { h: 0, s: 0, l: 0 }, crown: [], fruit: [], buttresses: 0,
+  });
+  const onTree = (tree: Tree, over: Partial<Creature> = {}) =>
+    animal(lizard, { tree, onTrunk: true, around: 0, climb: 3, goal: 3, x: tree.x + 0.6, ...over });
+
+  it('stay on the trunk surface as they climb about', () => {
+    const tree = trunk(0);
+    const c = onTree(tree, { rng: mulberry32(9) });
+    const trees: TreeSource = { treesIn: () => [tree], treesNear: () => [tree] };
+    for (let i = 0; i < 60 * 60; i++) {
+      run(c, 1 / 60, undefined, shore, trees);
+      expect(c.tree).toBe(tree);
+      expect(c.climb).toBeGreaterThanOrEqual(0);
+      expect(c.climb).toBeLessThanOrEqual(tree.height * 0.7 + 1e-9);
+      expect(Math.hypot(c.x, c.z)).toBeCloseTo(trunkRadiusAt(tree, c.climb) + 0.05);
+    }
+  });
+
+  it('dart up and round to the far side when the player comes close', () => {
+    const tree = trunk(0);
+    const c = onTree(tree, { around: Math.PI }); // on the -X side, facing the player
+    const player = { x: -3, y: 0, z: 0 };
+    run(c, 3, player, shore, { treesIn: () => [tree], treesNear: () => [tree] });
+    expect(c.mode).toBe('flee');
+    expect(c.climb).toBeGreaterThan(6);
+    expect(c.x).toBeGreaterThan(0); // now on the +X side, away from the player
+  });
+
+  it('climb down and run across to another tree', () => {
+    const a = trunk(0);
+    const b = trunk(6);
+    const c = onTree(a, { mode: 'leave', goal: 0 });
+    run(c, 20, undefined, shore, { treesIn: () => [a, b], treesNear: () => [a, b] });
+    expect(c.tree).toBe(b);
   });
 });
 

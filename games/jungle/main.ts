@@ -3,6 +3,9 @@ import { Input } from '../../src/engine/input';
 import { startLoop } from '../../src/engine/loop';
 import { ChunkManager } from './chunks';
 import { config } from './config';
+import { CreatureRenderer } from './creatureMeshes';
+import { creatureInView, Population } from './creatures';
+import { generateSpecies } from './species';
 import { isSwimming, stepPlayer, type PlayerState } from './movement';
 import { createTerrain, findSpawn } from './terrain';
 
@@ -11,7 +14,7 @@ const seed = parseSeed(new URLSearchParams(location.search).get('seed')) ?? rand
 history.replaceState(null, '', `?seed=${seed}`);
 document.querySelector('#seed')!.textContent = String(seed);
 
-const { world, player: pc, atmosphere } = config;
+const { world, player: pc, atmosphere, creatures: cc } = config;
 const terrain = createTerrain(seed, world.waterLevel);
 
 // --- Renderer, scene, camera ---
@@ -75,8 +78,21 @@ const moveSettings = { ...pc, waterLevel: world.waterLevel };
 const chunks = new ChunkManager(scene, terrain, seed);
 chunks.update(player.x, player.z); // build the whole view distance before the first frame
 
+// --- Animals: this world's own species ---
+const species = generateSpecies(seed);
+const animals = new Population(seed, terrain, species, {
+  ...cc,
+  chunkSize: world.chunkSize,
+  waterLevel: world.waterLevel,
+  gravity: pc.gravity,
+});
+const animalMeshes = new CreatureRenderer(scene, species, cc.maxPerSpecies);
+const spotted = document.querySelector<HTMLElement>('#spotted')!;
+const lookDir = new THREE.Vector3();
+animals.sync(player.x, player.z);
+
 // Dev-only handle for poking at the world from the console (stripped from production builds).
-if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, chunks } });
+if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, chunks, animals, species } });
 
 // --- Controls: click to capture the mouse, Esc to release ---
 const input = new Input(window);
@@ -123,6 +139,8 @@ startLoop({
       moveSettings,
     );
     chunks.update(player.x, player.z, world.chunksPerTick);
+    animals.sync(player.x, player.z);
+    animals.step(dt, player);
   },
   render() {
     camera.position.set(player.x, player.y + pc.eyeHeight, player.z);
@@ -136,6 +154,13 @@ startLoop({
     fog.far = underwater ? 14 : atmosphere.fogFar;
     (scene.background as THREE.Color).copy(fog.color);
     document.body.classList.toggle('swimming', isSwimming(player, world.waterLevel));
+
+    animalMeshes.update(animals.all());
+    camera.getWorldDirection(lookDir);
+    const seen = creatureInView(animals.all(), species, camera.position, lookDir, cc.spotDistance);
+    const label = seen ? species[seen.species]!.name : '';
+    if (spotted.textContent !== label) spotted.textContent = label;
+    spotted.hidden = !seen;
 
     renderer.render(scene, camera);
   },

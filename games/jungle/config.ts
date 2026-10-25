@@ -18,6 +18,24 @@ export const config = {
     /** Random spots tried per chunk for ferns, bushes, flowers and rocks. */
     undergrowthAttempts: 240,
   },
+  creatures: {
+    /** Chunks around the player with animals in. Fewer than world.viewRadius: far ones are lost in the fog. */
+    viewRadius: 2,
+    /** Multiplies every species' abundance. */
+    abundance: 1,
+    /** Most animals of one species drawn at once. */
+    maxPerSpecies: 300,
+    /** How far grazers and fish stray from where they spawned before heading back. */
+    leash: 25,
+    /** How high flocks fly above the ground or water. Trees reach about 20 m. */
+    birdAltitude: 28,
+    /** How fast flocks drift across the sky, m/s. */
+    flockDrift: 1.5,
+    /** Chance per second that a fish leaps out of the water. */
+    fishJumpChance: 0.04,
+    /** How close an animal must be to show its name when you look at it. Birds count from twice as far. */
+    spotDistance: 30,
+  },
   player: {
     eyeHeight: 1.7,
     radius: 0.4,

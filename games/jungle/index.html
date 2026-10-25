@@ -32,6 +32,12 @@
         display: inline-block; min-width: 1.4em; padding: 1px 6px; border-radius: 4px;
         background: rgba(255, 255, 255, 0.15); font-family: inherit; font-size: 0.85em;
       }
+      #spotted {
+        position: fixed; top: calc(50% + 18px); left: 50%; transform: translateX(-50%); z-index: 2;
+        color: #fff; font-size: 14px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+        background: rgba(0, 0, 0, 0.35); pointer-events: none;
+      }
+      #spotted[hidden] { display: none; }
       body.swimming #crosshair { background: rgba(160, 230, 255, 0.9); }
     </style>
   </head>
@@ -39,6 +45,7 @@
     <a class="back" href="../../">← All games</a>
     <div id="app"></div>
     <div id="crosshair"></div>
+    <div id="spotted" hidden></div>
     <div id="hud">World <span id="seed"></span> · <kbd>N</kbd> new world</div>
     <div id="overlay">
       <div>

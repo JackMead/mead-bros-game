@@ -1,6 +1,6 @@
 # Notes for AI collaborators
 
-This repo is a collection of small browser games written in TypeScript, bundled with Vite, each drawn on a `<canvas>` with the 2D API. The site root is a landing page linking to every game. Several people (and their AI assistants) work on it, so consistency matters more than cleverness.
+This repo is a collection of small browser games written in TypeScript, bundled with Vite, each drawn on a `<canvas>`: 2D games use the canvas 2D API, 3D games use Three.js. The site root is a landing page linking to every game. Several people (and their AI assistants) work on it, so consistency matters more than cleverness.
 
 ## Commands
 
@@ -24,12 +24,12 @@ Copy `games/sandbox/` to `games/<id>/` (lowercase, dash-separated), then update 
 
 ## Conventions
 
-- Keep **update** (pure logic, no DOM/canvas) separate from **render** (drawing only, no state changes), so logic is testable in Node.
+- Keep **update** (pure logic, no DOM/canvas/Three.js) separate from **render** (drawing only, no state changes), so logic is testable in Node.
 - Put tunable numbers in the game's `config.ts`, not inline.
 - The simulation uses a fixed timestep. Movement and timers multiply by `dt` (seconds).
-- Coordinates are in game pixels, origin top-left.
+- Coordinates: 2D games use game pixels with the origin top-left; 3D games use metres with Y up.
 - Use relative URLs (`./`, `../../`) for links and assets. The site is served from a custom domain root and from `/mead-bros-game/` on github.io, so absolute paths break one or the other.
-- No new runtime dependencies without discussing it in the PR first. Dev dependencies are fine if justified.
+- Three.js is the one shared runtime dependency. No other new runtime dependencies without discussing it in the PR first. Dev dependencies are fine if justified.
 - Add or update a `*.test.ts` next to the file when you change game logic.
 
 ## Workflow

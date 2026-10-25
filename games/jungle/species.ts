@@ -1,7 +1,7 @@
 /** Procedurally invented animal species. Pure logic: no Three.js, no DOM. */
 import { hash2, mulberry32 } from './noise';
 
-export type Kind = 'grazer' | 'bird' | 'fish' | 'lizard';
+export type Kind = 'grazer' | 'bird' | 'fish' | 'lizard' | 'monkey';
 
 /** Body proportions in metres. Parts a kind doesn't have are 0. */
 export interface BodyPlan {
@@ -46,7 +46,7 @@ export interface Species {
 type Range = readonly [number, number];
 
 /** How a species is coloured. */
-type Look = 'earthy' | 'parrot' | 'hornbill' | 'fish' | 'gecko';
+type Look = 'earthy' | 'parrot' | 'hornbill' | 'fish' | 'gecko' | 'monkey';
 
 /** Body proportions are multiples of body length. */
 interface Archetype {
@@ -68,7 +68,7 @@ interface Archetype {
 }
 
 // Three grazers of clearly different sizes, so every world has something small and skittish,
-// something tall and quick, and something big and slow. Then a flock bird, a solo bird, a fish and a lizard.
+// something tall and quick, and something big and slow. Then two birds, a fish, a lizard and a monkey.
 const ARCHETYPES: readonly Archetype[] = [
   { kind: 'grazer', look: 'earthy', length: [0.35, 0.55], height: [0.45, 0.65], legs: [0.3, 0.5], neck: [0.05, 0.15],
     head: [0.35, 0.45], tail: [0.1, 0.5], wings: [0, 0], beak: [0, 0], runSpeed: [7, 9], fleeDistance: [12, 16],
@@ -93,9 +93,13 @@ const ARCHETYPES: readonly Archetype[] = [
   { kind: 'lizard', look: 'gecko', length: [0.25, 0.4], height: [0.25, 0.35], legs: [0.25, 0.35], neck: [0, 0],
     head: [0.35, 0.45], tail: [1.2, 1.8], wings: [0, 0], beak: [0, 0], runSpeed: [3, 4.5], fleeDistance: [5, 8],
     groupSize: [1, 2], abundance: 1.5 },
+  // Monkeys swing through the canopy. For them `length` is torso height and `legs` is arm length.
+  { kind: 'monkey', look: 'monkey', length: [0.4, 0.55], height: [0.85, 1], legs: [0.9, 1.2], neck: [0, 0],
+    head: [0.45, 0.55], tail: [1.4, 2], wings: [0, 0], beak: [0, 0], runSpeed: [5, 7], fleeDistance: [10, 15],
+    groupSize: [3, 6], abundance: 0.5 },
 ];
 
-/** Invents this world's animals: three grazers, two birds, a fish and a lizard. Same seed, same species. */
+/** Invents this world's animals: three grazers, two birds, a fish, a lizard and a monkey. Same seed, same species. */
 export function generateSpecies(seed: number): Species[] {
   const rng = mulberry32(hash2(seed, 0x5bec1e5, 0x1a7e));
   const pick = ([min, max]: Range) => min + rng() * (max - min);
@@ -127,7 +131,7 @@ export function generateSpecies(seed: number): Species[] {
       body,
       colour,
       accent,
-      walkSpeed: a.kind === 'bird' ? pick(a.runSpeed) * 0.7 : 0.6 + length * 0.5,
+      walkSpeed: a.kind === 'bird' || a.kind === 'monkey' ? pick(a.runSpeed) * 0.6 : 0.6 + length * 0.5,
       runSpeed: pick(a.runSpeed),
       fleeDistance: pick(a.fleeDistance),
       groupSize: a.groupSize,
@@ -160,6 +164,13 @@ function palette(look: Look, rng: () => number): { colour: Hsl; accent: Hsl } {
       const colour = { h: hues[Math.floor(rng() * hues.length)]!, s: 0.6 + rng() * 0.25, l: 0.4 + rng() * 0.1 };
       return { colour, accent: { h: colour.h + (rng() - 0.5) * 0.1, s: colour.s, l: colour.l * 0.6 } };
     }
+    case 'monkey': {
+      // Brown, black or golden fur, with a pale face.
+      const furs = [{ h: 0.07, s: 0.45, l: 0.25 }, { h: 0.05, s: 0.15, l: 0.1 }, { h: 0.1, s: 0.65, l: 0.42 }];
+      const fur = furs[Math.floor(rng() * furs.length)]!;
+      const colour = { h: fur.h + (rng() - 0.5) * 0.02, s: fur.s, l: fur.l + (rng() - 0.5) * 0.06 };
+      return { colour, accent: { h: 0.07, s: 0.3, l: 0.6 + rng() * 0.1 } };
+    }
     case 'fish': {
       const hues = [0.06, 0.12, 0.55, 0.58];
       const colour = { h: hues[Math.floor(rng() * hues.length)]!, s: 0.45 + rng() * 0.4, l: 0.45 + rng() * 0.15 };
@@ -171,13 +182,18 @@ function palette(look: Look, rng: () => number): { colour: Hsl; accent: Hsl } {
 const ONSETS = ['b', 'd', 'g', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'z', 'ch', 'th'];
 const VOWELS = ['a', 'e', 'i', 'o', 'u', 'a', 'o'];
 const ENDINGS = ['', '', 'n', 'r', 'x', 'sh'];
+/** Made-up names must not contain these. */
+const UNFORTUNATE = ['puke', 'sex', 'nazi', 'rape', 'tit', 'bum', 'dik', 'kak', 'shit', 'pis', 'nob', 'vomit', 'dung', 'gob'];
 
 /** A made-up two- or three-syllable name, e.g. "Tamoru". */
 export function speciesName(rng: () => number): string {
   const choose = (list: readonly string[]) => list[Math.floor(rng() * list.length)]!;
-  const syllables = 2 + Math.floor(rng() * 2);
   let name = '';
-  for (let i = 0; i < syllables; i++) name += choose(ONSETS) + choose(VOWELS);
-  name += choose(ENDINGS);
+  do {
+    const syllables = 2 + Math.floor(rng() * 2);
+    name = '';
+    for (let i = 0; i < syllables; i++) name += choose(ONSETS) + choose(VOWELS);
+    name += choose(ENDINGS);
+  } while (UNFORTUNATE.some((word) => name.includes(word)));
   return name[0]!.toUpperCase() + name.slice(1);
 }

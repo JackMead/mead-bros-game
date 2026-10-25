@@ -1,5 +1,5 @@
 /** Animals: where they spawn and how they move. Pure logic: no Three.js, no DOM. */
-import { spawnLizards, stepLizard, type TreeSource } from './climbers';
+import { spawnLizards, spawnMonkeys, stepLizard, stepMonkey, type Point, type TreeSource } from './climbers';
 import { hash2, mulberry32 } from './noise';
 import type { Tree } from './plants';
 import type { Species } from './species';
@@ -53,6 +53,10 @@ export interface Creature {
   around: number;
   climb: number;
   goal: number;
+  /** Monkeys: the branch it's hanging from, the one it's swinging to, and how far through the swing (0 to 1). */
+  from: Point | null;
+  to: Point | null;
+  swing: number;
   rng: () => number;
 }
 
@@ -130,15 +134,19 @@ export class Population {
     this.species.forEach((sp, index) => {
       const groups = Math.floor(sp.abundance * this.settings.abundance + rng());
       for (let g = 0; g < groups; g++) {
-        if (sp.kind === 'lizard') {
+        if (sp.kind === 'lizard' || sp.kind === 'monkey') {
           const [min, max] = sp.groupSize;
-          const lizards = Array.from({ length: min + Math.floor(rng() * (max - min + 1)) }, () => spawnOne(index, 0, 0, rng));
-          spawnLizards(lizards, this.trees.treesIn(cx, cz), rng);
-          for (const c of lizards) {
-            c.homeX = c.x;
-            c.homeZ = c.z;
+          const group = Array.from({ length: min + Math.floor(rng() * (max - min + 1)) }, () => spawnOne(index, 0, 0, rng));
+          if (sp.kind === 'lizard') {
+            spawnLizards(group, this.trees.treesIn(cx, cz), rng);
+            for (const c of group) {
+              c.homeX = c.x;
+              c.homeZ = c.z;
+            }
+          } else {
+            spawnMonkeys(group, this.trees.treesIn(cx, cz), this.trees, this.settings, rng);
           }
-          out.push(...lizards);
+          out.push(...group);
           continue;
         }
         // Look for a spot this species can live in.
@@ -211,6 +219,7 @@ export function suits(sp: Species, ground: number, waterLevel: number): boolean 
     case 'bird':
       return true;
     case 'lizard':
+    case 'monkey':
       return ground > waterLevel + 0.5;
   }
 }
@@ -240,6 +249,9 @@ function spawnOne(species: number, x: number, z: number, rng: () => number): Cre
     around: 0,
     climb: 0,
     goal: 0,
+    from: null,
+    to: null,
+    swing: 0,
     rng: mulberry32(Math.floor(rng() * 4294967296)),
   };
 }
@@ -254,6 +266,7 @@ export function stepCreature(
   trees: TreeSource,
 ): void {
   if (sp.kind === 'lizard') stepLizard(c, sp, dt, player, terrain, trees, s);
+  else if (sp.kind === 'monkey') stepMonkey(c, sp, dt, player, trees, s);
   else if (sp.kind === 'bird' && sp.solo) stepSoloBird(c, sp, dt, terrain, s);
   else if (sp.kind === 'bird') stepBird(c, sp, dt, terrain, s);
   else stepWalker(c, sp, dt, player, terrain, s);
@@ -397,6 +410,13 @@ function stepSoloBird(c: Creature, sp: Species, dt: number, terrain: Terrain, s:
 }
 
 
+/** Height of an animal's middle above its (x, y, z). Monkeys hang below the hand they hold on by. */
+function centreHeight(sp: Species): number {
+  const b = sp.body;
+  if (sp.kind === 'monkey') return -(b.legLength + b.height * 0.45);
+  return b.legLength + b.height / 2;
+}
+
 /**
  * The nearest animal close to the middle of the view, if any: what the player is looking at.
  * `dir` must be a unit vector.
@@ -414,7 +434,7 @@ export function creatureInView(
     const sp = species[c.species]!;
     const reach = sp.kind === 'bird' ? maxDistance * 2 : maxDistance;
     const vx = c.x - eye.x;
-    const vy = c.y + sp.body.legLength + sp.body.height / 2 - eye.y;
+    const vy = c.y + centreHeight(sp) - eye.y;
     const vz = c.z - eye.z;
     const dist = Math.hypot(vx, vy, vz);
     if (dist > reach || dist >= bestDist || dist < 0.01) continue;

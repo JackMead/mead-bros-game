@@ -4,7 +4,7 @@ import {
   type Creature, type CreatureSettings,
 } from './creatures';
 import { generateSpecies, speciesName } from './species';
-import type { TreeSource } from './climbers';
+import { branchesOf, type TreeSource } from './climbers';
 import { mulberry32 } from './noise';
 import { PlantCache, trunkRadiusAt, type Tree } from './plants';
 import { createTerrain, type Terrain } from './terrain';
@@ -24,7 +24,7 @@ function animal(speciesIndex: number, over: Partial<Creature> = {}): Creature {
   return {
     species: speciesIndex, x: 0, y: 0, z: 0, heading: 0, speed: 0, vy: 0, mode: 'idle', timer: 1, phase: 0,
     graze: 0, tint: 0, homeX: 0, homeZ: 0, orbit: 0, orbitRadius: 20, orbitSpeed: 0.3, drift: 0,
-    offsetX: 0, offsetY: 1, offsetZ: 0, tree: null, onTrunk: false, around: 0, climb: 0, goal: 0,
+    offsetX: 0, offsetY: 1, offsetZ: 0, tree: null, onTrunk: false, around: 0, climb: 0, goal: 0, from: null, to: null, swing: 0,
     rng: mulberry32(1), ...over,
   };
 }
@@ -41,8 +41,8 @@ describe('species', () => {
     expect(generateSpecies(43).map((s) => s.name)).not.toEqual(species.map((s) => s.name));
   });
 
-  it('has three grazers of increasing size, two birds, a fish and a lizard, all named differently', () => {
-    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'bird', 'fish', 'lizard']);
+  it('has three grazers of increasing size, two birds, a fish, a lizard and a monkey, all named differently', () => {
+    expect(species.map((s) => s.kind)).toEqual(['grazer', 'grazer', 'grazer', 'bird', 'bird', 'fish', 'lizard', 'monkey']);
     expect(species.filter((s) => s.solo).map((s) => s.kind)).toEqual(['bird']);
     const [a, b, c] = species;
     expect(a!.body.length).toBeLessThan(b!.body.length);
@@ -53,6 +53,11 @@ describe('species', () => {
   it('makes capitalised, pronounceable names', () => {
     const rng = mulberry32(5);
     for (let i = 0; i < 20; i++) expect(speciesName(rng)).toMatch(/^[A-Z][a-z]{3,}$/);
+  });
+
+  it('never makes unfortunate names', () => {
+    const rng = mulberry32(6);
+    for (let i = 0; i < 5000; i++) expect(speciesName(rng).toLowerCase()).not.toMatch(/puke|sex|nazi|rape|tit|shit/);
   });
 });
 
@@ -78,7 +83,11 @@ describe('spawning', () => {
           count++;
           const sp = species[c.species]!;
           const ground = terrain.heightAt(c.x, c.z);
-          if (sp.kind !== 'lizard') expect(suits(sp, ground, WATER)).toBe(true);
+          if (sp.kind !== 'lizard' && sp.kind !== 'monkey') expect(suits(sp, ground, WATER)).toBe(true);
+          if (sp.kind === 'monkey') {
+            // Hanging by one hand from a branch of its tree.
+            expect(branchesOf(c.tree!)).toContainEqual({ x: c.x, y: c.y, z: c.z });
+          }
           if (sp.kind === 'fish') expect(c.y).toBeLessThan(WATER);
           if (sp.kind === 'bird' && !sp.solo) expect(c.y).toBeGreaterThan(ground + 20);
           if (sp.solo) expect(c.y).toBeCloseTo(soloBirdHeight(terrain, c.x, c.z, settings));
@@ -223,6 +232,53 @@ describe('lizards', () => {
     const c = onTree(a, { mode: 'leave', goal: 0 });
     run(c, 20, undefined, shore, { treesIn: () => [a, b], treesNear: () => [a, b] });
     expect(c.tree).toBe(b);
+  });
+});
+
+describe('monkeys', () => {
+  const monkey = index('monkey');
+  /** A row of trees 5 m apart, each with a crown at 10 m. */
+  const row: Tree[] = Array.from({ length: 8 }, (_, i) => ({
+    kind: 'broadleaf', x: i * 5, y: 0, z: 0, height: 10, baseRadius: 0.5, topRadius: 0.3, tiltX: 0, tiltZ: 0, turn: 0,
+    bark: { h: 0, s: 0, l: 0 }, fruit: [], buttresses: 0,
+    crown: [{ x: i * 5, y: 10, z: 0, r: 3, squash: 0.7, turn: 0, colour: { h: 0, s: 0, l: 0 } }],
+  }));
+  const trees: TreeSource = {
+    treesIn: () => row,
+    treesNear: (x, z, r) => row.filter((t) => Math.hypot(t.x - x, t.z - z) <= r),
+  };
+  const hangingAt = (i: number, over: Partial<Creature> = {}) => {
+    const branch = branchesOf(row[i]!)[0]!;
+    return animal(monkey, { tree: row[i]!, from: branch, ...branch, homeX: row[i]!.x, homeZ: 0, timer: 0, ...over });
+  };
+
+  it('swing from tree to tree along a dipping arc, never dropping far below the branches', () => {
+    const c = hangingAt(3);
+    const branchY = branchesOf(row[0]!)[0]!.y;
+    const visited = new Set<Tree>();
+    for (let i = 0; i < 60 * 60; i++) {
+      run(c, 1 / 60, undefined, shore, trees);
+      visited.add(c.tree!);
+      expect(c.y).toBeLessThanOrEqual(branchY + 1e-9);
+      expect(c.y).toBeGreaterThan(branchY - 2.01);
+      if (!c.to) expect({ x: c.x, y: c.y, z: c.z }).toEqual(c.from);
+    }
+    expect(visited.size).toBeGreaterThan(2);
+  });
+
+  it('swing away from the player', () => {
+    const c = hangingAt(3); // at x = 15
+    const player = { x: 18, y: 0, z: 0 };
+    run(c, 4, player, shore, trees);
+    expect(c.x).toBeLessThan(10);
+  });
+
+  it('stay put when there is nowhere to swing to', () => {
+    const lone = row[0]!;
+    const c = hangingAt(0);
+    run(c, 30, undefined, shore, { treesIn: () => [lone], treesNear: () => [lone] });
+    expect(c.from).toEqual(branchesOf(lone)[0]);
+    expect(c.to).toBeNull();
   });
 });
 

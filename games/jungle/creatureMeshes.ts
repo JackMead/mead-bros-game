@@ -133,6 +133,10 @@ function bodyTilt(c: Creature, sp: Species): [number, number, number] {
     case 'bird':
       // Bank into the turn: orbitSpeed is how fast it's turning.
       return [0, c.heading, -Math.max(-0.5, Math.min(0.5, c.orbitSpeed * 0.9))];
+    case 'monkey':
+      // Swinging like a pendulum below its hand: trailing behind at the start of a swing, ahead at the end.
+      // Hanging still, it sways gently.
+      return [c.to ? (c.swing - 0.5) * 1.6 : Math.sin(c.phase) * 0.12, c.heading, 0];
     case 'grazer':
     case 'lizard':
       return [0, c.heading, 0];
@@ -222,6 +226,35 @@ function partsFor(sp: Species): PartSpec[] {
           place(out, side * b.width * 0.45, b.height * 0.45, end * b.length * 0.3, 0, stride, side * 1.15,
             legW, b.legLength + b.height * 0.3, legW, 'YXZ');
         } },
+      ];
+    }
+    case 'monkey': {
+      // Everything hangs below (0, 0, 0), the hand gripping the branch. `legLength` is the arm length.
+      const arm = b.legLength;
+      const limbW = b.width * 0.18;
+      const top = -arm;
+      const headY = top - b.headSize * 0.1;
+      const headZ = -b.width * 0.3;
+      return [
+        { geometry: shape.limbDown, copies: 1, pose: (_c, _, out) => place(out, 0, 0, 0, 0, 0, 0, limbW, arm, limbW) },
+        { geometry: shape.blob, copies: 1, pose: (_c, _, out) =>
+          place(out, 0, top - b.height * 0.45, 0, 0, 0, 0, b.width, b.height, b.width * 0.85) },
+        { geometry: shape.head, copies: 1, pose: (_c, _, out) =>
+          place(out, 0, headY, headZ, 0, 0, 0, b.headSize, b.headSize * 0.9, b.headSize) },
+        { geometry: shape.blob, copies: 1, accent: true, pose: (_c, _, out) =>
+          place(out, 0, headY - b.headSize * 0.05, headZ - b.headSize * 0.4, 0, 0, 0, b.headSize * 0.6, b.headSize * 0.55, b.headSize * 0.3) },
+        { geometry: shape.limbDown, copies: 1, pose: (c, _, out) => {
+          // The free arm reaches forward for the next branch as it swings, and dangles otherwise.
+          const reach = c.to ? -1.2 - c.swing * 1.4 : Math.sin(c.phase * 1.3) * 0.2;
+          place(out, b.width * 0.45, top - b.height * 0.05, 0, reach, 0, 0, limbW, arm, limbW);
+        } },
+        { geometry: shape.limbDown, copies: 2, pose: (c, k, out) =>
+          place(out, (k ? 1 : -1) * b.width * 0.25, top - b.height * 0.85, 0, Math.sin(c.phase + k * 2) * 0.3, 0, 0,
+            limbW, arm * 0.8, limbW) },
+        { geometry: shape.limbDown, copies: 1, pose: (c, _, out) =>
+          // Long tail curving out behind.
+          place(out, 0, top - b.height * 0.8, b.width * 0.35, -0.9 + Math.sin(c.phase * 0.7) * 0.25, 0, 0,
+            limbW * 0.6, b.tailLength, limbW * 0.6) },
       ];
     }
     case 'fish':

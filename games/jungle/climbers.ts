@@ -1,4 +1,4 @@
-/** Animals that live in the trees: lizards on the trunks. Pure logic: no Three.js, no DOM. */
+/** Animals that live in the trees: lizards on the trunks and monkeys in the canopy. Pure logic: no Three.js, no DOM. */
 import type { Creature, CreatureSettings } from './creatures';
 import { trunkRadiusAt, type Tree } from './plants';
 import type { Species } from './species';
@@ -145,5 +145,128 @@ export function spawnLizards(c: Creature[], trees: readonly Tree[], rng: () => n
     lizard.goal = lizard.climb;
     lizard.heading = rng() < 0.5 ? 0 : Math.PI;
     placeOnTrunk(lizard);
+  }
+}
+
+export interface Point {
+  x: number;
+  y: number;
+  z: number;
+}
+
+/** Lowest a branch can be above the tree's base for a monkey to hang from it without its feet touching the ground. */
+const MIN_BRANCH_HEIGHT = 3.5;
+
+/** Places a monkey can hang from: just under each lump of a tree's crown, if it's high enough. */
+export function branchesOf(tree: Tree): Point[] {
+  return tree.crown
+    .map((b) => ({ x: b.x, y: b.y - b.r * b.squash * 0.7, z: b.z }))
+    .filter((p) => p.y - tree.y >= MIN_BRANCH_HEIGHT);
+}
+
+/** Branches a monkey hanging at `hand` could swing to next. */
+function reachable(hand: Point, trees: TreeSource, s: CreatureSettings): { tree: Tree; branch: Point }[] {
+  const out: { tree: Tree; branch: Point }[] = [];
+  for (const tree of trees.treesNear(hand.x, hand.z, s.treeHop + 5)) {
+    if (!climbable(tree)) continue;
+    for (const branch of branchesOf(tree)) {
+      const across = Math.hypot(branch.x - hand.x, branch.z - hand.z);
+      if (across > 1.5 && across < s.treeHop && Math.abs(branch.y - hand.y) < 5) out.push({ tree, branch });
+    }
+  }
+  return out;
+}
+
+/** Where a monkey's hand is partway through a swing: along a dipping arc from one branch to the next. */
+export function swingPoint(from: Point, to: Point, p: number): Point {
+  const across = Math.hypot(to.x - from.x, to.z - from.z);
+  const sag = Math.min(2, across * 0.3) * Math.sin(Math.PI * p);
+  return {
+    x: from.x + (to.x - from.x) * p,
+    y: from.y + (to.y - from.y) * p - sag,
+    z: from.z + (to.z - from.z) * p,
+  };
+}
+
+/**
+ * Monkeys hang from branches under the canopy and swing from branch to branch, tree to tree.
+ * When the player comes close they swing away, fast. (x, y, z) is the hand they're hanging by.
+ */
+export function stepMonkey(
+  c: Creature,
+  sp: Species,
+  dt: number,
+  player: { x: number; z: number },
+  trees: TreeSource,
+  s: CreatureSettings,
+): void {
+  if (!c.from) return;
+  const near = Math.hypot(player.x - c.x, player.z - c.z) < sp.fleeDistance;
+
+  if (c.to) {
+    const across = Math.max(1, Math.hypot(c.to.x - c.from.x, c.to.z - c.from.z));
+    const speed = c.mode === 'flee' ? sp.runSpeed : sp.walkSpeed;
+    c.swing = Math.min(1, c.swing + (speed * dt) / across);
+    Object.assign(c, swingPoint(c.from, c.to, c.swing));
+    c.speed = speed;
+    if (c.swing >= 1) {
+      c.from = c.to;
+      c.to = null;
+      c.swing = 0;
+      c.mode = 'idle';
+      c.timer = near ? 0 : 2 + c.rng() * 6;
+    }
+  } else {
+    c.speed = 0;
+    c.timer -= dt;
+    if (near || c.timer <= 0) startSwing(c, near, player, trees, s);
+  }
+  c.phase += dt * (c.to ? 6 : 1.5);
+}
+
+function startSwing(c: Creature, fleeing: boolean, player: { x: number; z: number }, trees: TreeSource, s: CreatureSettings): void {
+  const options = reachable(c.from!, trees, s);
+  if (options.length === 0) {
+    c.timer = 3;
+    return;
+  }
+  // Fleeing: the branch furthest from the player. Strayed too far: the one nearest home. Otherwise any.
+  const farFromHome = Math.hypot(c.x - c.homeX, c.z - c.homeZ) > s.leash;
+  let next = options[Math.floor(c.rng() * options.length)]!;
+  if (fleeing || farFromHome) {
+    const cost = (o: { branch: Point }) => fleeing
+      ? -Math.hypot(o.branch.x - player.x, o.branch.z - player.z)
+      : Math.hypot(o.branch.x - c.homeX, o.branch.z - c.homeZ);
+    for (const o of options) if (cost(o) < cost(next)) next = o;
+  }
+  c.to = next.branch;
+  c.tree = next.tree;
+  c.swing = 0;
+  c.mode = fleeing ? 'flee' : 'walk';
+  c.heading = headingOf(c.to.x - c.from!.x, c.to.z - c.from!.z);
+}
+
+/** Hangs a troop of monkeys from branches around a random tree in a chunk. */
+export function spawnMonkeys(troop: Creature[], chunkTrees: readonly Tree[], trees: TreeSource, s: CreatureSettings, rng: () => number): void {
+  const hangable = (t: Tree) => climbable(t) && branchesOf(t).length > 0;
+  const options = chunkTrees.filter(hangable);
+  if (options.length === 0) {
+    troop.length = 0;
+    return;
+  }
+  const home = options[Math.floor(rng() * options.length)]!;
+  const nearby = trees.treesNear(home.x, home.z, s.treeHop).filter(hangable);
+  for (const m of troop) {
+    const tree = nearby[Math.floor(rng() * nearby.length)] ?? home;
+    const branches = branchesOf(tree);
+    const branch = branches[Math.floor(rng() * branches.length)]!;
+    m.tree = tree;
+    m.from = branch;
+    m.to = null;
+    m.swing = 0;
+    m.timer = rng() * 4;
+    Object.assign(m, branch);
+    m.homeX = home.x;
+    m.homeZ = home.z;
   }
 }

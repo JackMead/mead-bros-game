@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import { Input } from '../../src/engine/input';
 import { startLoop } from '../../src/engine/loop';
-import { ChunkManager } from './chunks';
+import { ChunkManager, FallenFruitRenderer } from './chunks';
 import { config } from './config';
 import { CreatureRenderer } from './creatureMeshes';
 import { creatureInView, Population } from './creatures';
+import { Orchard } from './fruit';
+import { mulberry32 } from './noise';
 import { generateSpecies } from './species';
 import { isSwimming, stepPlayer, type PlayerState } from './movement';
 import { fruitColour, PlantCache } from './plants';
@@ -82,6 +84,14 @@ const plants = new PlantCache(seed, terrain, {
   waterLevel: world.waterLevel,
 });
 const chunks = new ChunkManager(scene, terrain, plants, seed, fruitColour(seed));
+
+// --- Fruit falling from the fruit trees ---
+const orchard = new Orchard((x, z, r) => plants.treesNear(x, z, r), terrain, {
+  ...config.fruit,
+  waterLevel: world.waterLevel,
+  gravity: pc.gravity,
+}, mulberry32(seed));
+const fallenFruit = new FallenFruitRenderer(scene, fruitColour(seed), config.fruit.maxFallen, config.fruit.lifetime);
 chunks.update(player.x, player.z); // build the whole view distance before the first frame
 
 // --- Animals: this world's own species ---
@@ -98,7 +108,7 @@ const lookDir = new THREE.Vector3();
 animals.sync(player.x, player.z);
 
 // Dev-only handle for poking at the world from the console (stripped from production builds).
-if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, terrain, chunks, plants, animals, species } });
+if (import.meta.env.DEV) Object.assign(window, { jungle: { player, renderer, scene, camera, terrain, chunks, plants, orchard, animals, species } });
 
 // --- Controls: click to capture the mouse, Esc to release ---
 const input = new Input(window);
@@ -147,6 +157,7 @@ startLoop({
     chunks.update(player.x, player.z, world.chunksPerTick);
     animals.sync(player.x, player.z);
     animals.step(dt, player);
+    for (const f of orchard.step(dt, player)) chunks.hideFruit(f.tree, f.index);
   },
   render() {
     camera.position.set(player.x, player.y + pc.eyeHeight, player.z);
@@ -162,6 +173,7 @@ startLoop({
     document.body.classList.toggle('swimming', isSwimming(player, world.waterLevel));
 
     animalMeshes.update(animals.all());
+    fallenFruit.update(orchard.fallen);
     camera.getWorldDirection(lookDir);
     const seen = creatureInView(animals.all(), species, camera.position, lookDir, cc.spotDistance);
     const label = seen ? species[seen.species]!.name : '';

@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { config } from './config';
+import type { FallingFruit } from './fruit';
 import type { Obstacle } from './movement';
 import { hash2 } from './noise';
-import type { PlantCache, SmallKind } from './plants';
+import type { PlantCache, SmallKind, Tree } from './plants';
 import type { Hsl } from './species';
 import type { Terrain } from './terrain';
 
@@ -97,7 +98,12 @@ interface Chunk {
   group: THREE.Group;
   ground: THREE.BufferGeometry;
   instanced: THREE.InstancedMesh[];
+  /** Where each fruit tree's fruit starts in `fruitMesh`, so fallen fruit can be hidden. */
+  fruitSlots: Map<Tree, number>;
+  fruitMesh: THREE.InstancedMesh | null;
 }
+
+const HIDDEN = new THREE.Matrix4().makeScale(0, 0, 0);
 
 /** Draws square chunks of jungle around the player and unloads ones that are far away. */
 export class ChunkManager {
@@ -151,6 +157,15 @@ export class ChunkManager {
     return out;
   }
 
+  /** Takes a fruit off its tree once it has fallen. It grows back when the chunk is next built. */
+  hideFruit(tree: Tree, index: number): void {
+    const chunk = this.chunks.get(chunkKey(Math.floor(tree.x / SIZE), Math.floor(tree.z / SIZE)));
+    const start = chunk?.fruitSlots.get(tree);
+    if (!chunk?.fruitMesh || start === undefined) return;
+    chunk.fruitMesh.setMatrixAt(start + index, HIDDEN);
+    chunk.fruitMesh.instanceMatrix.needsUpdate = true;
+  }
+
   private unload(chunk: Chunk): void {
     this.scene.remove(chunk.group);
     chunk.ground.dispose();
@@ -167,10 +182,10 @@ export class ChunkManager {
     groundMesh.position.set(x0 + SIZE / 2, 0, z0 + SIZE / 2);
     group.add(groundMesh);
 
-    const instanced = this.buildVegetation(cx, cz);
+    const { instanced, fruitMesh, fruitSlots } = this.buildVegetation(cx, cz);
     for (const mesh of instanced) group.add(mesh);
 
-    return { cx, cz, group, ground, instanced };
+    return { cx, cz, group, ground, instanced, fruitMesh, fruitSlots };
   }
 
   private buildGround(x0: number, z0: number): THREE.BufferGeometry {
@@ -198,13 +213,15 @@ export class ChunkManager {
     return g;
   }
 
-  private buildVegetation(cx: number, cz: number): THREE.InstancedMesh[] {
+  private buildVegetation(cx: number, cz: number) {
     const layout = this.plants.get(cx, cz);
 
     const trunks = new InstanceBatch(geometry.trunk, material.solid);
     const buttresses = new InstanceBatch(geometry.buttress, material.solid);
     const canopy = new InstanceBatch(geometry.canopy, material.foliage);
     const fruit = new InstanceBatch(geometry.fruit, material.fruit);
+    const fruitSlots = new Map<Tree, number>();
+    let fruitCount = 0;
     const palmTrunks = new InstanceBatch(geometry.palmTrunk, material.solid);
     const fronds = new InstanceBatch(geometry.frond, material.foliage);
     const small: Record<SmallKind, InstanceBatch> = {
@@ -241,6 +258,8 @@ export class ChunkManager {
       for (const b of tr.crown) {
         canopy.add(p.set(b.x, b.y, b.z), spin(b.turn), s.set(b.r, b.r * b.squash, b.r), colour(b.colour));
       }
+      if (tr.fruit.length > 0) fruitSlots.set(tr, fruitCount);
+      fruitCount += tr.fruit.length;
       for (const f of tr.fruit) fruit.add(p.set(f.x, f.y, f.z), spin(0), s.setScalar(1), colour(this.fruit));
     }
 
@@ -259,9 +278,12 @@ export class ChunkManager {
       }
     }
 
-    return [trunks, buttresses, canopy, fruit, palmTrunks, fronds, ...Object.values(small)]
+    const fruitMesh = fruit.toMesh();
+    const instanced = [trunks, buttresses, canopy, palmTrunks, fronds, ...Object.values(small)]
       .map((b) => b.toMesh())
+      .concat(fruitMesh)
       .filter((m): m is THREE.InstancedMesh => m !== null);
+    return { instanced, fruitMesh, fruitSlots };
   }
 }
 
@@ -281,4 +303,37 @@ function groundColor(out: THREE.Color, height: number, density: number, jitter: 
     0.1 + 0.03 * t,
     SRGB,
   );
+}
+
+/** Fruit that has fallen from the trees, all drawn as one InstancedMesh. */
+export class FallenFruitRenderer {
+  private readonly mesh: THREE.InstancedMesh;
+  private readonly m = new THREE.Matrix4();
+  private readonly p = new THREE.Vector3();
+  private readonly q = new THREE.Quaternion();
+  private readonly e = new THREE.Euler();
+  private readonly s = new THREE.Vector3();
+
+  constructor(scene: THREE.Scene, colour: Hsl, capacity: number, private readonly lifetime: number) {
+    this.mesh = new THREE.InstancedMesh(geometry.fruit, material.fruit, capacity);
+    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.mesh.frustumCulled = false; // fruit moves, so the bounds would go stale
+    const c = new THREE.Color().setHSL(colour.h, colour.s, colour.l, SRGB);
+    for (let i = 0; i < capacity; i++) this.mesh.setColorAt(i, c);
+    this.mesh.count = 0;
+    scene.add(this.mesh);
+  }
+
+  update(fruit: readonly FallingFruit[]): void {
+    const n = Math.min(fruit.length, this.mesh.instanceMatrix.count);
+    for (let i = 0; i < n; i++) {
+      const f = fruit[i]!;
+      // Shrink away over the last second before it's gone.
+      const size = Math.max(0, Math.min(1, this.lifetime - f.age));
+      this.m.compose(this.p.set(f.x, f.y, f.z), this.q.setFromEuler(this.e.set(f.spin, f.spin * 0.7, 0)), this.s.setScalar(size));
+      this.mesh.setMatrixAt(i, this.m);
+    }
+    this.mesh.count = n;
+    this.mesh.instanceMatrix.needsUpdate = true;
+  }
 }

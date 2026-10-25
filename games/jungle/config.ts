@@ -20,6 +20,16 @@ export const config = {
     /** Share of ordinary broadleaf trees that bear fruit instead. */
     fruitTreeShare: 0.25,
   },
+  fruit: {
+    /** Fruit trees within this distance of the player can drop fruit. */
+    radius: 40,
+    /** Chance per second that a given fruit tree drops a fruit. */
+    dropChance: 0.04,
+    /** Seconds fallen fruit lies on the ground before it's gone. */
+    lifetime: 40,
+    /** Most fruit on the ground at once. */
+    maxFallen: 60,
+  },
   creatures: {
     /** Chunks around the player with animals in. Fewer than world.viewRadius: far ones are lost in the fog. */
     viewRadius: 2,

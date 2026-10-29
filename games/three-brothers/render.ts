@@ -1,5 +1,5 @@
 import { cast } from './cast';
-import { drawBrother, drawHead, drawSprite, shade, type Pose } from './characters';
+import { drawBrother, drawHead, drawSprite, mouthOpen, shade, type Pose } from './characters';
 import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } from './cinema';
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
@@ -134,7 +134,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     if (sprite) ctx.drawImage(sprite, h.rect.x, h.rect.y, h.rect.w, h.rect.h);
     else if (prop) {
       if (!bg && h.prop === 'water') drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
-      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg);
+      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg, art);
     } else if (!bg) drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
   }
 
@@ -154,7 +154,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
       ctx.translate(pull.x, pull.y);
       ctx.rotate(pull.rotation);
       ctx.scale(pull.scale, pull.scale);
-      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false });
+      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false, pose: 'flail' });
       ctx.restore();
       continue;
     }
@@ -199,7 +199,9 @@ function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
 function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
   const sprite = cast[b].sprite;
   const img = art(sprite?.file);
-  if (sprite && img) drawSprite(ctx, b, img, sprite.neck, x, y, h, pose);
+  const frames = pose.pose ? sprite?.poses?.[pose.pose]?.map((f) => ({ img: art(f.file), feetX: f.feetX })) : undefined;
+  const ready = frames?.every((f) => f.img) ? (frames as { img: HTMLImageElement; feetX: number }[]) : undefined;
+  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose, ready, art(sprite.talk));
   else drawBrother(ctx, b, x, y, h, pose);
 }
 
@@ -248,7 +250,8 @@ function drawBar(ui: Ui, ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.roundRect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
     ctx.clip();
-    const face = art(`${b}-portrait.png`);
+    const talking = talker === b && mouthOpen(b, ui.time);
+    const face = (talking && art(`${b}-portrait-talk.png`)) || art(`${b}-portrait.png`);
     // A painted face bobs while its brother talks.
     const bob = talker === b ? -Math.abs(Math.sin(ui.time * 10)) * 3 : 0;
     if (face) ctx.drawImage(face, r.x + 2, r.y + 2 + bob, r.w - 4, r.w - 4);

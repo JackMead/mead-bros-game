@@ -171,7 +171,7 @@ export const prologue: Chapter = {
         {
           id: 'dog',
           name: 'Labrador',
-          rect: { x: 500, y: 262, w: 100, h: 88 },
+          rect: { x: 480, y: 254, w: 98, h: 96 },
           colour: '#c99a4b',
           prop: 'dog',
           if: '!dog_gone',

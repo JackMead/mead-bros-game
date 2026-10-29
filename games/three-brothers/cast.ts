@@ -16,6 +16,20 @@ export interface Appearance {
   backpack?: string;
 }
 
+/** An arm cut out of a painted figure so it can swing: outline and shoulder, in picture pixels. */
+export interface Arm {
+  outline: number[];
+  pivot: [number, number];
+}
+
+export interface Sprite {
+  file: string;
+  /** How far down the picture (0 to 1) the head ends, so the head can move on its own. */
+  neck: number;
+  /** Arms as they appear on screen: left and right of the picture. */
+  arms?: { left: Arm; right: Arm };
+}
+
 export interface Brother {
   name: string;
   colour: string;
@@ -26,7 +40,7 @@ export interface Brother {
    * `neck` is how far down the picture (0 to 1) the head ends, so the head can
    * move separately when he talks.
    */
-  sprite?: { file: string; neck: number };
+  sprite?: Sprite;
   /** Drawn height relative to an average brother. */
   height: number;
   look: string;
@@ -52,7 +66,14 @@ export const cast: Record<BrotherId, Brother> = {
       shoes: '#2b3554',
       build: 1.05,
     },
-    sprite: { file: 'rob.png', neck: 0.2 },
+    sprite: {
+      file: 'rob.png',
+      neck: 0.2,
+      arms: {
+        left: { pivot: [19, 104], outline: [3, 105, 15, 92, 30, 92, 32, 110, 31, 140, 31, 175, 31, 215, 30, 262, 4, 262, 0, 215, 1, 140, 1, 120] },
+        right: { pivot: [125, 104], outline: [141, 105, 129, 92, 114, 92, 112, 110, 113, 140, 113, 175, 113, 215, 114, 262, 140, 262, 144, 215, 143, 140, 143, 120] },
+      },
+    },
     height: 1.18,
     look: 'Rob. The eldest and the tallest. He has brought his soapbox. He always brings his soapbox.',
     fallback: [
@@ -74,7 +95,14 @@ export const cast: Record<BrotherId, Brother> = {
       build: 0.85,
       stubble: true,
     },
-    sprite: { file: 'jack.png', neck: 0.226 },
+    sprite: {
+      file: 'jack.png',
+      neck: 0.226,
+      arms: {
+        left: { pivot: [22, 104], outline: [8, 105, 18, 90, 28, 90, 30, 110, 31, 135, 32, 180, 32, 215, 30, 250, 5, 250, 4, 215, 8, 170, 9, 135] },
+        right: { pivot: [106, 104], outline: [113, 105, 104, 90, 96, 90, 98, 110, 99, 135, 99, 180, 99, 215, 101, 250, 118, 250, 120, 215, 117, 170, 116, 135] },
+      },
+    },
     height: 1.09,
     look: 'Jack. Does sums for fun. Vegetarian, and will mention it.',
     fallback: [
@@ -98,7 +126,14 @@ export const cast: Record<BrotherId, Brother> = {
       glasses: true,
       backpack: '#f2cc2f',
     },
-    sprite: { file: 'phil.png', neck: 0.222 },
+    sprite: {
+      file: 'phil.png',
+      neck: 0.222,
+      arms: {
+        left: { pivot: [17, 102], outline: [5, 105, 14, 88, 26, 88, 28, 110, 29, 135, 30, 180, 31, 215, 30, 245, 3, 245, 2, 215, 5, 170, 5, 135] },
+        right: { pivot: [113, 102], outline: [125, 105, 116, 88, 104, 88, 101, 110, 100, 135, 99, 180, 99, 215, 100, 245, 127, 245, 128, 215, 124, 170, 124, 135] },
+      },
+    },
     height: 1.07,
     look: 'Phil. The youngest. Table tennis ace. Hands and feet permanently freezing.',
     fallback: [

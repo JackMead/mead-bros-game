@@ -154,7 +154,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
       ctx.translate(pull.x, pull.y);
       ctx.rotate(pull.rotation);
       ctx.scale(pull.scale, pull.scale);
-      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false });
+      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false, pose: 'flail' });
       ctx.restore();
       continue;
     }
@@ -199,7 +199,7 @@ function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
 function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
   const sprite = cast[b].sprite;
   const img = art(sprite?.file);
-  if (sprite && img) drawSprite(ctx, b, img, sprite.neck, x, y, h, pose);
+  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose);
   else drawBrother(ctx, b, x, y, h, pose);
 }
 

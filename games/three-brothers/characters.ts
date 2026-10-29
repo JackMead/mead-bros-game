@@ -1,4 +1,4 @@
-import { cast, type Appearance } from './cast';
+import { cast, type Appearance, type Arm, type Sprite } from './cast';
 import type { BrotherId } from './types';
 
 /**
@@ -334,15 +334,16 @@ export function withAlpha(hex: string, alpha: number): string {
 }
 
 /**
- * A painted figure (art/<brother>.png), brought to life: it breathes, the head
- * nods and tilts while he talks, and "rant" sets the head going and the body
- * bouncing. Feet centred on (fx, fy).
+ * A painted figure (art/<brother>.png), brought to life like a paper puppet: the
+ * arms are cut out and swing at the shoulder, the head nods and tilts at the neck,
+ * and the body breathes. Poses: "rant" (arm up, jabbing, bouncing) and "flail".
+ * Feet centred on (fx, fy).
  */
 export function drawSprite(
   ctx: CanvasRenderingContext2D,
   id: BrotherId,
   img: HTMLImageElement,
-  neck: number,
+  sprite: Sprite,
   fx: number,
   fy: number,
   height: number,
@@ -350,15 +351,22 @@ export function drawSprite(
 ): void {
   const t = p.time + phase[id];
   const rant = p.pose === 'rant';
-  const w = (height * img.naturalWidth) / img.naturalHeight;
+  const flail = p.pose === 'flail';
+  const rig = rigFor(img, sprite);
   const iw = img.naturalWidth;
   const ih = img.naturalHeight;
-  const neckY = ih * neck;
+  const s = height / ih;
+  const w = iw * s;
+  const neckY = ih * sprite.neck;
   const bounce = rant ? -Math.abs(Math.sin(t * 5)) * 3 : 0;
   const breathe = 1 + Math.sin(t * 2.2) * 0.012;
-  const bodyH = height * (1 - neck) * breathe;
-  const headH = height * neck;
+  const bodyH = (ih - neckY) * s * breathe;
+  const headH = neckY * s;
   const overlap = ih * 0.04;
+  const left = fx - w / 2;
+  const top = fy - bodyH + bounce; // screen y of the neck
+  /** Where a point on the body (below the neck) ends up on screen. */
+  const at = (x: number, y: number) => ({ x: left + x * s, y: top + (y - neckY) * s * breathe });
 
   ctx.save();
   ctx.fillStyle = 'rgba(0,0,0,0.28)';
@@ -366,8 +374,25 @@ export function drawSprite(
   ctx.ellipse(fx, fy, w * 0.42, 5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Body, stretching a touch as he breathes.
-  ctx.drawImage(img, 0, neckY, iw, ih - neckY, fx - w / 2, fy - bodyH + bounce, w, bodyH);
+  // Body (arms cut away if rigged), stretching a touch as he breathes.
+  ctx.drawImage(rig?.body ?? img, 0, neckY, iw, ih - neckY, left, top, w, bodyH);
+
+  // Arms, swinging at the shoulder. Positive angles swing the left arm outwards.
+  if (rig && sprite.arms) {
+    const [l, r] = armAngles(t, p, rant, flail);
+    for (const [arm, canvas, angle] of [
+      [sprite.arms.left, rig.left, l],
+      [sprite.arms.right, rig.right, -r],
+    ] as const) {
+      const pv = at(arm.pivot[0], arm.pivot[1]);
+      ctx.save();
+      ctx.translate(pv.x, pv.y);
+      ctx.rotate(angle);
+      ctx.scale(s, s * breathe);
+      ctx.drawImage(canvas, -arm.pivot[0], -arm.pivot[1]);
+      ctx.restore();
+    }
+  }
 
   // Head, pivoting at the neck.
   let tilt = Math.sin(t * 0.7) * 0.015;
@@ -377,12 +402,80 @@ export function drawSprite(
     tilt += Math.sin(t * speed) * (rant ? 0.09 : 0.05);
     nod = -Math.abs(Math.sin(t * speed)) * (rant ? 3 : 2);
   }
-  ctx.translate(fx, fy - bodyH + bounce + nod);
+  if (flail) tilt += Math.sin(t * 13) * 0.12;
+  ctx.translate(fx, top + nod);
   ctx.rotate(tilt);
-  ctx.drawImage(img, 0, 0, iw, neckY + overlap, -w / 2, -headH, w, headH + (overlap * height) / ih);
+  ctx.drawImage(rig?.body ?? img, 0, 0, iw, neckY + overlap, -w / 2, -headH, w, headH + overlap * s);
   ctx.restore();
 
   if (rant) drawRantLines(ctx, fx + w * 0.22, fy - height + 8, t);
+}
+
+/** How far each arm swings out from hanging, in radians. */
+function armAngles(t: number, p: Pose, rant: boolean, flail: boolean): [number, number] {
+  if (flail) return [1.3 + Math.sin(t * 15) * 0.7, 1.3 + Math.sin(t * 13 + 1) * 0.7];
+  if (rant) {
+    // One arm up, jabbing the air; the other out, making a point.
+    const jab = 2.65 + Math.sin(t * 8) * 0.22 + (p.talking ? Math.sin(t * 13) * 0.1 : 0);
+    return [jab, 0.45 + Math.sin(t * 3.5) * 0.3];
+  }
+  if (p.talking) return [0.12 + Math.sin(t * 3) * 0.12, 0.3 + Math.max(0, Math.sin(t * 4.2 + 1)) * 0.45];
+  return [0.03 + Math.sin(t * 1.1) * 0.025, 0.03 + Math.sin(t * 1.1 + 1) * 0.025];
+}
+
+interface Rig {
+  body: HTMLCanvasElement;
+  left: HTMLCanvasElement;
+  right: HTMLCanvasElement;
+}
+const rigs = new Map<string, Rig | null>();
+
+/** The figure split into a body (arms removed) and two arm pieces. Built once per picture. */
+function rigFor(img: HTMLImageElement, sprite: Sprite): Rig | null {
+  if (rigs.has(img.src)) return rigs.get(img.src)!;
+  let rig: Rig | null = null;
+  if (sprite.arms) {
+    const make = (draw: (c: CanvasRenderingContext2D) => void) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      draw(canvas.getContext('2d')!);
+      return canvas;
+    };
+    const trace = (c: CanvasRenderingContext2D, pts: number[]) => {
+      c.beginPath();
+      for (let i = 0; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]);
+      c.closePath();
+    };
+    // Cuts are widened a few pixels so no painted arm edge is left on the body.
+    const widen = 6;
+    const shape = (c: CanvasRenderingContext2D, arm: Arm) => {
+      c.lineWidth = widen;
+      c.lineJoin = 'round';
+      trace(c, arm.outline);
+      c.fill();
+      c.stroke();
+    };
+    const piece = (arm: Arm) => {
+      const mask = make((c) => shape(c, arm));
+      return make((c) => {
+        c.drawImage(img, 0, 0);
+        c.globalCompositeOperation = 'destination-in';
+        c.drawImage(mask, 0, 0);
+      });
+    };
+    rig = {
+      body: make((c) => {
+        c.drawImage(img, 0, 0);
+        c.globalCompositeOperation = 'destination-out';
+        for (const arm of [sprite.arms!.left, sprite.arms!.right]) shape(c, arm);
+      }),
+      left: piece(sprite.arms.left),
+      right: piece(sprite.arms.right),
+    };
+  }
+  rigs.set(img.src, rig);
+  return rig;
 }
 
 /** Little lines of hot air: he's off on one. */

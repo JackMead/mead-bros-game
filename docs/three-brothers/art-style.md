@@ -12,19 +12,32 @@ Paste this first, then describe the scene:
 
 Don't name other games or studios in the prompt; describe the style instead.
 
+## Scene prompts
+
+Add the scene description under the master prompt. Spell out the layout (what goes left, centre, right), keep the bottom third as open floor for the brothers, and say "no people, no animals, no text, all signs blank". Expect a few attempts.
+
+- **Prologue, `prologue-well`:** the Petrifying Well. Rock face with petrifying objects on the left; Mother Shipton statue centre-left; blank selfie sign with painted footprints centre; tea kiosk with striped awning and blank chalkboard on the right; open gravel path along the bottom third; trees framing the top.
+
 ## Palette
 
 Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for water; amber light; dusky purples for shadow and anything magical (Mother Shipton).
 
+## Who draws what (v1)
+
+- **Backgrounds: painted**, one per scene, by the chapter's author using the prompt below. This is what gives the game its look.
+- **The brothers: drawn in code** (`games/three-brothers/characters.ts`) from their `appearance` in `cast.ts`, with blinking, breathing and talking. This keeps all three consistent in every chapter. Change your own look in `cast.ts`.
+- **Props and item icons: drawn in code** (`props.ts`): things that move or come and go (the Labrador, the soapbox), lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
+- Painted versions can replace any of these later by dropping a file into `art/` (see Files).
+
 ## The brothers
 
-Draw each brother **once**, as a reference sheet, and reuse it. Never redraw a brother from scratch in another tool.
+| | Looks |
+| --- | --- |
+| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans |
+| **Jack** | Slight build. Mid-length dark brown hair, stubble, t-shirt and shorts |
+| **Phil** | Glasses and a beard, mid-length blonde-brown hair, joggers, a yellow backpack with ears |
 
-> Cartoon character, full body, standing, plain background, same style as above. [Description.]
-
-- **Rob:** the tallest, eldest. *(Rob to add: hair, clothes, a soapbox under his arm.)*
-- **Jack:** middle brother. *(Jack to add.)*
-- **Phil:** youngest. *(Phil to add: probably wearing gloves.)*
+If we ever paint them, draw each brother **once** as a reference sheet in one tool and reuse it. Never redraw a brother from scratch in another tool.
 
 ## Files
 

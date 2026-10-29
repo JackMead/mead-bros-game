@@ -58,9 +58,9 @@ export const prologue: Chapter = {
     inventory: { rob: ['soapbox'], jack: ['wallet'], phil: ['phone'] },
   },
   extras: {
-    maureen: { name: 'Maureen', colour: '#e07a9a' },
-    dog: { name: 'Labrador', colour: '#d9b26a' },
-    shipton: { name: 'Mother Shipton', colour: '#b48ce0' },
+    maureen: { name: 'Maureen', colour: '#f08fb0', at: { x: 815, y: 110 } },
+    dog: { name: 'Labrador', colour: '#e8c27a', at: { x: 540, y: 280 } },
+    shipton: { name: 'Mother Shipton', colour: '#c9a2f0', at: { x: 390, y: 70 } },
   },
   intro: [
     "Knaresborough, North Yorkshire. Mother Shipton's Cave: England's oldest visitor attraction, open since 1630.",
@@ -72,6 +72,7 @@ export const prologue: Chapter = {
   items: {
     soapbox: {
       name: 'Soapbox',
+      icon: 'soapbox',
       look: {
         rob: 'My soapbox. For when the world needs to hear what I think, which is always.',
         any: "Rob's soapbox. Nobody else touches the soapbox.",
@@ -79,6 +80,7 @@ export const prologue: Chapter = {
     },
     phone: {
       name: "Phil's phone",
+      icon: 'phone',
       look: {
         phil: "My phone. The only one of ours with any battery. Rob's died arguing with strangers online in the car.",
         any: "Phil's phone. Locked. Only Phil knows the PIN.",
@@ -86,6 +88,7 @@ export const prologue: Chapter = {
     },
     wallet: {
       name: "Jack's wallet",
+      icon: 'wallet',
       look: {
         jack: 'My wallet. Two pound twenty in coins. Cash is still king.',
         any: "Jack's wallet. Two pound twenty in coins. Jack's always the one with cash.",
@@ -93,10 +96,12 @@ export const prologue: Chapter = {
     },
     tea: {
       name: 'Cup of tea',
+      icon: 'tea',
       look: 'A proper Yorkshire tea. Too hot to drink yet. Lovely for warming your hands on.',
     },
     pork_pie: {
       name: 'Pork pie',
+      icon: 'pie',
       look: {
         jack: "A pork pie. I'm holding it at arm's length.",
         any: 'A pork pie. Glistening.',
@@ -116,6 +121,7 @@ export const prologue: Chapter = {
           name: 'Petrifying Well',
           rect: { x: 30, y: 30, w: 290, h: 330 },
           colour: '#4f7a8a',
+          prop: 'water',
           look: "The Petrifying Well. Water pours over the rock and turns anything left in it to stone. Teddy bears, a top hat and Agatha Christie's handbag hang in the flow, halfway to being statues.",
         },
         {
@@ -135,8 +141,10 @@ export const prologue: Chapter = {
         {
           id: 'board',
           name: 'Price board',
-          rect: { x: 725, y: 125, w: 180, h: 70 },
+          rect: { x: 725, y: 125, w: 180, h: 90 },
           colour: '#2b2b2b',
+          prop: 'chalkboard',
+          text: ['TEA  £2.50', 'PORK PIE  £1.80', 'MEAL DEAL  £2.00', '(tea + pork pie)', 'CASH ONLY'],
           look: {
             any: 'A chalk board. TEA £2.50. PORK PIE £1.80. MEAL DEAL, TEA AND A PORK PIE: £2.00. CASH ONLY. Lots of numbers. Jack would enjoy this.',
             jack: 'TEA £2.50. PORK PIE £1.80. MEAL DEAL, TEA AND A PORK PIE: £2.00. So tea on its own costs more than tea with a pie. The pork pie is worth minus fifty pence. I love Yorkshire.',
@@ -145,16 +153,18 @@ export const prologue: Chapter = {
         {
           id: 'sign',
           name: 'Selfie spot',
-          rect: { x: 465, y: 240, w: 120, h: 70 },
+          rect: { x: 465, y: 225, w: 120, h: 80 },
           colour: '#b5834a',
+          prop: 'sign',
+          text: ['BEST SELFIE SPOT!', 'Get the well in!'],
           look: 'A painted sign: BEST SELFIE SPOT! GET THE WELL IN THE BACKGROUND! Painted footprints on the ground in front of it.',
         },
         {
           id: 'dog',
           name: 'Labrador',
-          rect: { x: 475, y: 320, w: 100, h: 60 },
+          rect: { x: 478, y: 300, w: 96, h: 84 },
           colour: '#c99a4b',
-          shape: 'ellipse',
+          prop: 'dog',
           if: '!dog_gone',
           look: {
             any: "A Labrador, sat exactly on the selfie spot's footprints. Its eyes keep drifting to the tea kiosk.",
@@ -166,12 +176,13 @@ export const prologue: Chapter = {
           name: "Rob's soapbox",
           rect: { x: 495, y: 360, w: 60, h: 36 },
           colour: '#8a6a3f',
+          prop: 'soapbox',
           if: 'soapbox_placed',
           look: 'The soapbox, on the selfie spot, with Rob on it.',
         },
       ],
       stand: {
-        rob: [{ x: 525, y: 360, if: 'soapbox_placed' }, { x: 380, y: 440 }],
+        rob: [{ x: 525, y: 360, if: 'soapbox_placed', pose: 'rant' }, { x: 380, y: 440 }],
         jack: [{ x: 610, y: 440 }],
         phil: [{ x: 660, y: 440 }],
       },

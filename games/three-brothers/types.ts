@@ -38,6 +38,8 @@ export type ByBrother = string | ({ any?: string } & Partial<Record<BrotherId, s
 export interface ItemDef {
   name: string;
   look: ByBrother;
+  /** A built-in icon from `props.ts` (e.g. "tea"), until there's an `item-<id>.png` in art/. */
+  icon?: string;
 }
 
 export interface Hotspot {
@@ -54,6 +56,14 @@ export interface Hotspot {
    * part of the background painting.
    */
   sprite?: string;
+  /**
+   * A built-in drawing from `props.ts` (e.g. "dog", "chalkboard"), drawn over the
+   * background. Used for things that move or come and go, and for lettering on signs
+   * (painted backgrounds leave signs blank).
+   */
+  prop?: string;
+  /** Lines of lettering for sign and board props. */
+  text?: string[];
   /** Placeholder drawing until there's art. */
   colour?: string;
   shape?: 'rect' | 'ellipse';
@@ -64,6 +74,8 @@ export interface Stand {
   x: number;
   y: number;
   if?: string;
+  /** A pose from `characters.ts`, e.g. "rant". */
+  pose?: string;
 }
 
 export interface Scene {
@@ -106,6 +118,8 @@ export interface Rule {
 export interface Character {
   name: string;
   colour: string;
+  /** Where their speech appears on screen (above their head), in game pixels. */
+  at?: { x: number; y: number };
 }
 
 /** A puzzle, as tracked by the solvability check and playtest scorecards. */

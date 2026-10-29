@@ -199,7 +199,9 @@ function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
 function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
   const sprite = cast[b].sprite;
   const img = art(sprite?.file);
-  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose);
+  const frames = pose.pose ? sprite?.poses?.[pose.pose]?.map((f) => ({ img: art(f.file), feetX: f.feetX })) : undefined;
+  const ready = frames?.every((f) => f.img) ? (frames as { img: HTMLImageElement; feetX: number }[]) : undefined;
+  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose, ready);
   else drawBrother(ctx, b, x, y, h, pose);
 }
 

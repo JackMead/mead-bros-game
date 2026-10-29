@@ -28,6 +28,12 @@ export interface Sprite {
   neck: number;
   /** Arms as they appear on screen: left and right of the picture. */
   arms?: { left: Arm; right: Arm };
+  /**
+   * Painted poses, cycled while a stand's `pose` is set (e.g. "rant"). Each picture is
+   * cut at the same scale as `file` (head to feet the same height), and `feetX` is
+   * where his feet are, across the picture.
+   */
+  poses?: Record<string, { file: string; feetX: number }[]>;
 }
 
 export interface Brother {
@@ -69,6 +75,13 @@ export const cast: Record<BrotherId, Brother> = {
     sprite: {
       file: 'rob.png',
       neck: 0.2,
+      poses: {
+        rant: [
+          { file: 'rob-rant-up.png', feetX: 102 },
+          { file: 'rob-rant-wide.png', feetX: 183 },
+          { file: 'rob-rant-jab.png', feetX: 124 },
+        ],
+      },
       arms: {
         left: { pivot: [19, 104], outline: [3, 105, 15, 92, 30, 92, 32, 110, 31, 140, 31, 175, 31, 215, 30, 262, 4, 262, 0, 215, 1, 140, 1, 120] },
         right: { pivot: [125, 104], outline: [141, 105, 129, 92, 114, 92, 112, 110, 113, 140, 113, 175, 113, 215, 114, 262, 140, 262, 144, 215, 143, 140, 143, 120] },

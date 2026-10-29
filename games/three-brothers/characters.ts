@@ -348,8 +348,10 @@ export function drawSprite(
   fy: number,
   height: number,
   p: Pose,
+  frames?: { img: HTMLImageElement; feetX: number }[],
 ): void {
   const t = p.time + phase[id];
+  if (frames?.length) return drawPoseFrames(ctx, img, frames, fx, fy, height, t, p.talking);
   const rant = p.pose === 'rant';
   const flail = p.pose === 'flail';
   const rig = rigFor(img, sprite);
@@ -409,6 +411,43 @@ export function drawSprite(
   ctx.restore();
 
   if (rant) drawRantLines(ctx, fx + w * 0.22, fy - height + 8, t);
+}
+
+/**
+ * Painted poses, flicked between like a flip-book: up, wide, up, jab. Each new pose
+ * pops in with a little stretch, and he bounces and rocks on his heels throughout.
+ */
+function drawPoseFrames(
+  ctx: CanvasRenderingContext2D,
+  base: HTMLImageElement,
+  frames: { img: HTMLImageElement; feetX: number }[],
+  fx: number,
+  fy: number,
+  height: number,
+  t: number,
+  talking: boolean,
+): void {
+  const hold = talking ? 0.38 : 0.55;
+  const order = frames.length >= 3 ? [0, 1, 0, 2] : frames.map((_, i) => i);
+  const beat = t / hold;
+  const frame = frames[order[Math.floor(beat) % order.length]];
+  const pop = 1 + 0.05 * Math.max(0, 1 - (beat % 1) * 7);
+  const s = height / base.naturalHeight;
+  const bounce = -Math.abs(Math.sin(t * 5)) * 3;
+  const w = frame.img.naturalWidth * s;
+  const h = frame.img.naturalHeight * s;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.28)';
+  ctx.beginPath();
+  ctx.ellipse(fx, fy, base.naturalWidth * s * 0.42, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.translate(fx, fy + bounce);
+  ctx.rotate(Math.sin(t * 2.5) * 0.025);
+  ctx.scale(1 / Math.sqrt(pop), pop);
+  ctx.drawImage(frame.img, -frame.feetX * s, -h, w, h);
+  ctx.restore();
+  drawRantLines(ctx, fx + base.naturalWidth * s * 0.22, fy - height + 8, t);
 }
 
 /** How far each arm swings out from hanging, in radians. */

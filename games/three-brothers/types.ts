@@ -17,7 +17,8 @@
  *     `take:item`        remove it from whoever holds it
  *     `goto:scene`
  * - Lines (`say`, `intro`, `ending`): `"Speaker: text"`. `Me:` is the brother
- *   being played; a line with no known speaker is narration.
+ *   being played; a line with no known speaker is narration. A line in square
+ *   brackets, like `"[shake 1]"`, is a cinematic cue (see cues.ts).
  */
 
 export type BrotherId = 'rob' | 'jack' | 'phil';
@@ -64,6 +65,11 @@ export interface Hotspot {
   prop?: string;
   /** Lines of lettering for sign and board props. */
   text?: string[];
+  /**
+   * Outline of the painted thing, as x, y pairs in game pixels, for cinematic
+   * cues that lift it out of the painting (e.g. "[awaken statue 50 40]").
+   */
+  outline?: number[];
   /** Placeholder drawing until there's art. */
   colour?: string;
   shape?: 'rect' | 'ellipse';

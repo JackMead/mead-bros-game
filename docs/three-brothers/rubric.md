@@ -73,4 +73,5 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **Teach controls in the world, not just the intro.** Testers missed that you could switch brother until they typed "help". The first puzzle that needs another brother should say so in a line of dialogue.
   - **Fallback lines go stale.** A brother's generic line about his weakness reads wrong once a puzzle fixes it. Keep fallback lines about personality, not current state.
   - **Red herrings with good refusals are fine.** The Overthinker spent 8 commands on the statue and well and didn't mind, because each refusal was funny and the statue paid off in the story.
+  - **Text testers can't see the screen.** A brother's figure once covered something that had to be tapped, which no text playtest could catch. Before shipping, Claude also plays the chapter through in a headless browser and checks every needed thing can be tapped (privately: those frames are spoilers). Taps now pass through the brother you're playing.
   - **Gentle hit the target** (1.5 to 2 out of 5). Later chapters asking for Medium need clues split across places, not sat in one description.

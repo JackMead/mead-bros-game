@@ -48,3 +48,5 @@ Everyone plays every chapter blind, its author included, so **every message, ima
 - `text.ts` + `tools/play.ts`: a text-adventure version for AI playtesters: `npm run play -- --session <file> --new`.
 - `ui.ts`, `render.ts`, `main.ts`: the touch/click screen. Placeholder shapes until art arrives in `games/three-brothers/art/`.
 - `cast.ts`: the three brothers. Each brother owns his own entry.
+- `characters.ts`, `props.ts`: the brothers, props and item icons, drawn in code.
+- `cues.ts`, `cinema.ts`: cinematic cues. Any intro, ending or `say` line written in square brackets, like `[shake 1]` or `[vortex 165 190]`, is a cue rather than speech. `cues.ts` lists them all. Chapters can use them for arrival scenes and endings without touching the engine.

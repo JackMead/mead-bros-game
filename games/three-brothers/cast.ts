@@ -21,6 +21,12 @@ export interface Brother {
   colour: string;
   /** How he's drawn until there's art (see characters.ts). He describes himself. */
   appearance: Appearance;
+  /**
+   * Painted figure in art/ (cut from docs/three-brothers/reference/brothers.webp).
+   * `neck` is how far down the picture (0 to 1) the head ends, so the head can
+   * move separately when he talks.
+   */
+  sprite?: { file: string; neck: number };
   /** Drawn height relative to an average brother. */
   height: number;
   look: string;
@@ -38,14 +44,15 @@ export const cast: Record<BrotherId, Brother> = {
     name: 'Rob',
     colour: '#e8a33d',
     appearance: {
-      skin: '#f2c9a5',
-      hair: '#9a6b42',
+      skin: '#efc39c',
+      hair: '#8a5c36',
       hairStyle: 'short',
-      top: '#26262b',
-      legs: { colour: '#3d5f92', style: 'jeans' },
-      shoes: '#3a2b22',
+      top: '#24201e',
+      legs: { colour: '#36578a', style: 'jeans' },
+      shoes: '#2b3554',
       build: 1.05,
     },
+    sprite: { file: 'rob.png', neck: 0.2 },
     height: 1.18,
     look: 'Rob. The eldest and the tallest. He has brought his soapbox. He always brings his soapbox.',
     fallback: [
@@ -58,16 +65,17 @@ export const cast: Record<BrotherId, Brother> = {
     name: 'Jack',
     colour: '#5fb3d9',
     appearance: {
-      skin: '#eec29d',
-      hair: '#4a2f1f',
+      skin: '#ebbf98',
+      hair: '#3f2a1c',
       hairStyle: 'mid',
-      top: '#3c97b4',
-      legs: { colour: '#b39a6c', style: 'shorts' },
-      shoes: '#e9e4da',
+      top: '#6e4256',
+      legs: { colour: '#5e5a38', style: 'shorts' },
+      shoes: '#38373a',
       build: 0.85,
       stubble: true,
     },
-    height: 1,
+    sprite: { file: 'jack.png', neck: 0.226 },
+    height: 1.09,
     look: 'Jack. Does sums for fun. Vegetarian, and will mention it.',
     fallback: [
       "Me: The odds of that working are roughly zero. I've checked.",
@@ -79,18 +87,19 @@ export const cast: Record<BrotherId, Brother> = {
     name: 'Phil',
     colour: '#8bc46a',
     appearance: {
-      skin: '#f0c6a2',
-      hair: '#ad8752',
+      skin: '#eebf98',
+      hair: '#a87a3c',
       hairStyle: 'shaggy',
-      top: '#5f9e4c',
-      legs: { colour: '#7c7f88', style: 'joggers' },
-      shoes: '#2f3a52',
+      top: '#4b6d63',
+      legs: { colour: '#77736f', style: 'joggers' },
+      shoes: '#ebe6d8',
       build: 1,
-      beard: '#9a7546',
+      beard: '#8c5f30',
       glasses: true,
       backpack: '#f2cc2f',
     },
-    height: 1,
+    sprite: { file: 'phil.png', neck: 0.222 },
+    height: 1.07,
     look: 'Phil. The youngest. Table tennis ace. Hands and feet permanently freezing.',
     fallback: [
       "Me: Nah. I'll stick to table tennis.",

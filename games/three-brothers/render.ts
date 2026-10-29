@@ -1,10 +1,11 @@
 import { cast } from './cast';
-import { drawBrother, drawHead, shade } from './characters';
+import { drawBrother, drawHead, drawSprite, shade, type Pose } from './characters';
+import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } from './cinema';
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
 import { ICONS, PROPS } from './props';
 import { BROTHERS, type BrotherId, type Rect } from './types';
-import { layout, standFor, status, type Ui } from './ui';
+import { inCinematic, layout, standFor, status, type Ui } from './ui';
 
 /** Drawing only: reads the UI and game state, never changes them. */
 
@@ -37,10 +38,15 @@ export function render(ui: Ui, ctx: CanvasRenderingContext2D): void {
   if (ui.screen === 'title') {
     drawTitle(ui, ctx);
   } else if (ui.chapter && ui.game) {
+    const shake = shakeOffset(ui);
+    ctx.save();
+    ctx.translate(shake.x, shake.y);
     drawScene(ui, ctx);
+    ctx.restore();
     drawBar(ui, ctx);
+    drawButtons(ui, ctx);
     if (ui.screen === 'end') drawEnd(ui, ctx);
-    else if (ui.queue.length) drawLine(ui, ui.queue[0], ctx);
+    else if (ui.queue.length && !ui.queue[0].cue) drawLine(ui, ui.queue[0], ctx);
     else if (ui.choices.length) drawChoices(ui, ctx);
     if (ui.screen === 'play') drawStatus(ui, ctx);
   }
@@ -91,9 +97,10 @@ function drawTitle(ui: Ui, ctx: CanvasRenderingContext2D): void {
 
   // The three of them, posing.
   const feet = 500;
-  drawBrother(ctx, 'jack', 690, feet, config.figure.height * cast.jack.height * 1.7, { time: ui.time, talking: false });
-  drawBrother(ctx, 'phil', 890, feet, config.figure.height * cast.phil.height * 1.7, { time: ui.time, talking: false });
-  drawBrother(ctx, 'rob', 790, feet + 6, config.figure.height * cast.rob.height * 1.7, { time: ui.time, talking: false });
+  const pose = { time: ui.time, talking: false };
+  figure(ctx, 'jack', 690, feet, config.figure.height * cast.jack.height * 1.7, pose);
+  figure(ctx, 'phil', 890, feet, config.figure.height * cast.phil.height * 1.7, pose);
+  figure(ctx, 'rob', 790, feet + 6, config.figure.height * cast.rob.height * 1.7, pose);
 }
 
 function hill(ctx: CanvasRenderingContext2D, y: number, colour: string, freq: number, amp: number): void {
@@ -127,9 +134,11 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     if (sprite) ctx.drawImage(sprite, h.rect.x, h.rect.y, h.rect.w, h.rect.h);
     else if (prop) {
       if (!bg && h.prop === 'water') drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
-      prop(ctx, h.rect, ui.time, h.text ?? [], !!bg);
+      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg);
     } else if (!bg) drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
   }
+
+  drawCinemaBack(ctx, ui, bg);
 
   // Brothers, back to front.
   const talker = speaking(ui);
@@ -138,9 +147,18 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     .sort((p, q) => p.s!.y - q.s!.y);
   for (const { b, s } of placed) {
     const h = config.figure.height * cast[b].height;
-    const sprite = art(`${b}.png`);
-    if (sprite) ctx.drawImage(sprite, s!.x - h * 0.3, s!.y - h, h * 0.6, h);
-    else drawBrother(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
+    const pull = pulled(ui, b, s!, h);
+    if (pull === 'gone') continue;
+    if (pull) {
+      ctx.save();
+      ctx.translate(pull.x, pull.y);
+      ctx.rotate(pull.rotation);
+      ctx.scale(pull.scale, pull.scale);
+      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false });
+      ctx.restore();
+      continue;
+    }
+    figure(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
     if (b === game.active && !ui.queue.length) {
       const bob = Math.sin(ui.time * 4) * 2;
       ctx.fillStyle = colours.highlight;
@@ -156,17 +174,33 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     }
   }
 
-  // Menu button.
-  const m = layout.menuButton();
-  roundRect(ctx, m, 8, 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
-  ctx.fillStyle = colours.text;
-  for (let i = 0; i < 3; i++) ctx.fillRect(m.x + 11, m.y + 13 + i * 7, m.w - 22, 3);
+  drawCinemaFront(ctx, ui);
 
   if (ui.label) {
     ctx.globalAlpha = Math.min(1, ui.label.t * 2);
     outlined(ctx, ui.label.text, ui.label.x, Math.max(28, ui.label.y - 16), { size: 17, colour: colours.text, align: 'center' });
     ctx.globalAlpha = 1;
   }
+}
+
+function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  const m = layout.menuButton();
+  roundRect(ctx, m, 8, 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
+  ctx.fillStyle = colours.text;
+  for (let i = 0; i < 3; i++) ctx.fillRect(m.x + 11, m.y + 13 + i * 7, m.w - 22, 3);
+  if (inCinematic(ui)) {
+    const k = layout.skipButton();
+    roundRect(ctx, k, 8, 'rgba(0,0,0,0.45)', 'rgba(255,255,255,0.3)');
+    text(ctx, 'Skip ▸▸', k.x + k.w / 2, k.y + 27, { size: 15, colour: colours.text, align: 'center', bold: true });
+  }
+}
+
+/** A brother, painted if his picture is in art/, otherwise drawn in code. Feet at (x, y). */
+function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
+  const sprite = cast[b].sprite;
+  const img = art(sprite?.file);
+  if (sprite && img) drawSprite(ctx, b, img, sprite.neck, x, y, h, pose);
+  else drawBrother(ctx, b, x, y, h, pose);
 }
 
 function drawPlaceholder(ctx: CanvasRenderingContext2D, r: Rect, name: string, colour: string, shape?: 'rect' | 'ellipse'): void {
@@ -215,7 +249,9 @@ function drawBar(ui: Ui, ctx: CanvasRenderingContext2D): void {
     ctx.roundRect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
     ctx.clip();
     const face = art(`${b}-portrait.png`);
-    if (face) ctx.drawImage(face, r.x + 4, r.y + 4, r.w - 8, r.h - 8);
+    // A painted face bobs while its brother talks.
+    const bob = talker === b ? -Math.abs(Math.sin(ui.time * 10)) * 3 : 0;
+    if (face) ctx.drawImage(face, r.x + 2, r.y + 2 + bob, r.w - 4, r.w - 4);
     else drawHead(ctx, b, r.x + r.w / 2, r.y + r.h * 0.46, r.w * 0.3, { time: ui.time, talking: talker === b });
     ctx.restore();
     outlined(ctx, cast[b].name, r.x + r.w / 2, r.y + r.h - 6, { size: 13, colour: active ? colours.highlight : '#fff', align: 'center' });

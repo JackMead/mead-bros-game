@@ -12,7 +12,7 @@ export const config = {
   /** How long a tapped thing's name stays on screen. */
   labelSeconds: 1.6,
   /** Brother figures, in game pixels. Rob is taller (see cast.ts). */
-  figure: { width: 40, height: 112 },
+  figure: { width: 46, height: 128 },
   /** Fade from black when a chapter opens. */
   fadeSeconds: 0.6,
   /** Speech over a character's head wraps at this width. */

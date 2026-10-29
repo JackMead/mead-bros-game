@@ -302,27 +302,9 @@ function drawArm(ctx: CanvasRenderingContext2D, a: Appearance, sx: number, sy: n
   }
 }
 
-/** A yellow backpack with two pointy ears peeking over the shoulders. */
+/** A plain backpack, showing either side of him. */
 function drawBackpack(ctx: CanvasRenderingContext2D, colour: string, fx: number, shoulderY: number, hipY: number, sw: number): void {
   ctx.fillStyle = colour;
-  for (const s of [-1, 1]) {
-    // Ears, black-tipped.
-    ctx.beginPath();
-    ctx.moveTo(fx + s * 4, shoulderY + 2);
-    ctx.lineTo(fx + s * 14, shoulderY - 20);
-    ctx.lineTo(fx + s * 12, shoulderY + 2);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = INK;
-    ctx.beginPath();
-    ctx.moveTo(fx + s * 12.6, shoulderY - 14);
-    ctx.lineTo(fx + s * 14, shoulderY - 20);
-    ctx.lineTo(fx + s * 13.3, shoulderY - 13);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = colour;
-  }
   ctx.beginPath();
   ctx.roundRect(fx - sw - 4, shoulderY + 2, (sw + 4) * 2, hipY - shoulderY - 2, 8);
   ctx.fill();
@@ -349,4 +331,75 @@ export function shade(hex: string, amount: number): string {
 export function withAlpha(hex: string, alpha: number): string {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
+/**
+ * A painted figure (art/<brother>.png), brought to life: it breathes, the head
+ * nods and tilts while he talks, and "rant" sets the head going and the body
+ * bouncing. Feet centred on (fx, fy).
+ */
+export function drawSprite(
+  ctx: CanvasRenderingContext2D,
+  id: BrotherId,
+  img: HTMLImageElement,
+  neck: number,
+  fx: number,
+  fy: number,
+  height: number,
+  p: Pose,
+): void {
+  const t = p.time + phase[id];
+  const rant = p.pose === 'rant';
+  const w = (height * img.naturalWidth) / img.naturalHeight;
+  const iw = img.naturalWidth;
+  const ih = img.naturalHeight;
+  const neckY = ih * neck;
+  const bounce = rant ? -Math.abs(Math.sin(t * 5)) * 3 : 0;
+  const breathe = 1 + Math.sin(t * 2.2) * 0.012;
+  const bodyH = height * (1 - neck) * breathe;
+  const headH = height * neck;
+  const overlap = ih * 0.04;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.28)';
+  ctx.beginPath();
+  ctx.ellipse(fx, fy, w * 0.42, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Body, stretching a touch as he breathes.
+  ctx.drawImage(img, 0, neckY, iw, ih - neckY, fx - w / 2, fy - bodyH + bounce, w, bodyH);
+
+  // Head, pivoting at the neck.
+  let tilt = Math.sin(t * 0.7) * 0.015;
+  let nod = 0;
+  if (p.talking || rant) {
+    const speed = rant ? 11 : 8;
+    tilt += Math.sin(t * speed) * (rant ? 0.09 : 0.05);
+    nod = -Math.abs(Math.sin(t * speed)) * (rant ? 3 : 2);
+  }
+  ctx.translate(fx, fy - bodyH + bounce + nod);
+  ctx.rotate(tilt);
+  ctx.drawImage(img, 0, 0, iw, neckY + overlap, -w / 2, -headH, w, headH + (overlap * height) / ih);
+  ctx.restore();
+
+  if (rant) drawRantLines(ctx, fx + w * 0.22, fy - height + 8, t);
+}
+
+/** Little lines of hot air: he's off on one. */
+function drawRantLines(ctx: CanvasRenderingContext2D, x: number, y: number, t: number): void {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 3; i++) {
+    const a = -0.7 + i * 0.45;
+    const pulse = 3 * Math.abs(Math.sin(t * 6 + i));
+    const r1 = 10 + pulse;
+    const r2 = 18 + pulse;
+    ctx.beginPath();
+    ctx.moveTo(x + Math.cos(a) * r1, y + Math.sin(a) * r1);
+    ctx.lineTo(x + Math.cos(a) * r2, y + Math.sin(a) * r2);
+    ctx.stroke();
+  }
+  ctx.restore();
 }

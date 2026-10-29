@@ -1,5 +1,6 @@
 import { cast } from './cast';
 import { config } from './config';
+import { CUES, parseCue } from './cues';
 import { ICONS, PROPS } from './props';
 import { BROTHERS, type BrotherId, type Chapter } from './types';
 
@@ -82,6 +83,10 @@ export function validate(chapter: Chapter): string[] {
 
   for (const { where, list } of lines) {
     for (const line of list) {
+      if (line.trim().startsWith('[')) {
+        problems.push(...checkCue(chapter, `${chapter.id}: ${where}`, line));
+        continue;
+      }
       const m = /^([A-Za-z]+(?: [A-Za-z]+)?): /.exec(line);
       if (m && !speakers.has(m[1].toLowerCase())) say(where, `unknown speaker "${m[1]}" (add it to extras?)`);
     }
@@ -97,4 +102,19 @@ export function validate(chapter: Chapter): string[] {
     for (const item of list ?? []) if (!items.has(item)) say('start', `unknown item "${item}"`);
   }
   return problems;
+}
+
+function checkCue(chapter: Chapter, where: string, line: string): string[] {
+  const cue = parseCue(line);
+  if (!cue) return [`${where}: can't read cue ${line}`];
+  const def = CUES[cue.name];
+  if (!def) return [`${where}: unknown cue "${cue.name}" (see cues.ts)`];
+  if (cue.args.length !== def.arity) return [`${where}: "${cue.name}" needs ${def.arity} argument(s): ${def.usage}`];
+  const hotspots = Object.values(chapter.scenes).flatMap((s) => s.hotspots);
+  if (cue.name === 'awaken' && !hotspots.find((h) => h.id === cue.args[0])?.outline) {
+    return [`${where}: awaken needs a hotspot with an outline, got "${cue.args[0]}"`];
+  }
+  if (cue.name === 'pull' && !chapter.brothers.includes(cue.args[0] as BrotherId)) return [`${where}: can't pull "${cue.args[0]}"`];
+  if (cue.name === 'place' && !ICONS[cue.args[0]]) return [`${where}: unknown icon "${cue.args[0]}"`];
+  return [];
 }

@@ -25,19 +25,21 @@ Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for 
 ## Who draws what (v1)
 
 - **Backgrounds: painted**, one per scene, by the chapter's author using the prompt below. This is what gives the game its look.
-- **The brothers: drawn in code** (`games/three-brothers/characters.ts`) from their `appearance` in `cast.ts`, with blinking, breathing and talking. This keeps all three consistent in every chapter. Change your own look in `cast.ts`.
+- **The brothers: painted**, cut from the reference sheet into `art/rob.png`, `art/jack.png` and `art/phil.png`, with faces for the bottom bar in `art/<brother>-portrait.png`. Code brings them to life (`drawSprite` in `characters.ts`): they breathe, their heads nod and tilt while they talk, Rob bounces mid-rant, and they spin through cinematic effects. The code-drawn versions (from `appearance` in `cast.ts`) are the fallback if a picture is missing.
 - **Props and item icons: drawn in code** (`props.ts`): things that move or can come and go during play, lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
 - Painted versions can replace any of these later by dropping a file into `art/` (see Files).
 
 ## The brothers
 
+The reference sheet is [`reference/brothers.webp`](reference/brothers.webp) (ChatGPT, matched to the Prologue background). Match it; never redraw a brother from scratch in another tool. New poses (sitting, pointing, a proper mid-rant pose) should be generated from it in the same chat, full body on a plain light grey background, so they can be cut out the same way.
+
 | | Looks |
 | --- | --- |
-| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans |
-| **Jack** | Slight build. Mid-length dark brown hair, stubble, t-shirt and shorts |
-| **Phil** | Glasses and a beard, mid-length blonde-brown hair, joggers, a yellow backpack with ears |
+| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans, navy trainers |
+| **Jack** | Slight build. Messy dark brown hair, stubble, plum t-shirt, olive cargo shorts, dark trainers |
+| **Phil** | Glasses and a beard, scruffy blonde-brown hair, green-grey t-shirt, grey joggers, white trainers, a plain yellow backpack |
 
-If we ever paint them, draw each brother **once** as a reference sheet in one tool and reuse it. Never redraw a brother from scratch in another tool.
+**No one else's characters, logos or brands anywhere in the game or the repo.** The first sheet gave Phil a famous cartoon character as a backpack; it was edited out, leaving plain yellow straps. Say "plain" or "generic" in prompts and check results before using them.
 
 ## Files
 

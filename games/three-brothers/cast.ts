@@ -44,7 +44,7 @@ export const cast: Record<BrotherId, Brother> = {
     height: 1,
     look: 'Phil. The youngest. Table tennis ace. Hands and feet permanently freezing.',
     fallback: [
-      "Me: I'd rather not. My hands are like ice.",
+      "Me: Nah. I'll stick to table tennis.",
       "Me: Nope. Can we go somewhere with a radiator?",
       "Me: If it was a ping-pong ball, maybe.",
     ],

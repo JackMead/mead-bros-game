@@ -37,6 +37,10 @@ export function intro(chapter: Chapter, state: State): string {
     '',
     ...chapter.intro.filter((l) => !l.startsWith('Tap ')),
     '',
+    chapter.brothers.length > 1
+      ? 'You can play as any brother here ("play as jack"), and talk to the others ("talk to phil"). Type "help" for all commands.'
+      : 'Type "help" for commands.',
+    '',
     lookAround(chapter, state),
   ].join('\n');
 }
@@ -115,6 +119,9 @@ function parse(chapter: Chapter, state: State, input: string): Action | string {
 
   m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with) (.+)$/.exec(s);
   if (m) {
+    if (resolveItem(chapter, state, m[1]) && !m[1].includes(' on ')) {
+      return `Use the ${chapter.items[resolveItem(chapter, state, m[1])!].name} on what? Try "use <item> on <thing>".`;
+    }
     const t = resolve(chapter, state, m[1]);
     return t ? { type: 'use', target: t } : notHere(m[1]);
   }

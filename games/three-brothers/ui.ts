@@ -41,7 +41,8 @@ export interface Ui {
 
 export type Target =
   | { kind: 'hotspot'; id: string; name: string }
-  | { kind: 'brother'; id: BrotherId }
+  /** A brother's portrait in the bar (play as him) or his figure in the scene (talk to him). */
+  | { kind: 'brother'; id: BrotherId; where: 'portrait' | 'scene' }
   | { kind: 'item'; id: string }
   | { kind: 'look' }
   | { kind: 'menu' }
@@ -114,7 +115,9 @@ export function hitTest(ui: Ui, x: number, y: number): Target | null {
   if (inside(layout.menuButton(), x, y)) return { kind: 'menu' };
   if (inside(layout.lookButton(), x, y)) return { kind: 'look' };
   for (const [i, b] of BROTHERS.entries()) {
-    if (chapter.brothers.includes(b) && inside(layout.portrait(i), x, y)) return { kind: 'brother', id: b };
+    if (chapter.brothers.includes(b) && inside(layout.portrait(i), x, y)) {
+      return { kind: 'brother', id: b, where: 'portrait' };
+    }
   }
   for (const [i, item] of game.inventory[game.active].entries()) {
     if (inside(layout.slot(i), x, y)) return { kind: 'item', id: item };
@@ -122,7 +125,7 @@ export function hitTest(ui: Ui, x: number, y: number): Target | null {
   if (y >= sceneHeight) return null;
   for (const b of BROTHERS) {
     const r = figureRect(chapter, game, b);
-    if (r && inside(r, x, y)) return { kind: 'brother', id: b };
+    if (r && inside(r, x, y)) return { kind: 'brother', id: b, where: 'scene' };
   }
   const hotspots = visibleHotspots(chapter, game);
   for (let i = hotspots.length - 1; i >= 0; i--) {
@@ -222,6 +225,7 @@ export function tap(ui: Ui, x: number, y: number, store: Store): void {
     ui.selected = t.id;
   } else if (t.kind === 'brother') {
     if (t.id === game.active) perform(ui, { type: 'look', target: t.id }, store);
+    else if (t.where === 'scene') perform(ui, { type: 'use', target: t.id }, store);
     else perform(ui, { type: 'switch', brother: t.id }, store);
   } else if (t.kind === 'hotspot') {
     perform(ui, { type: 'use', target: t.id }, store);

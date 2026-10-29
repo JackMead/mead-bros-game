@@ -133,3 +133,11 @@ describe('parseLines', () => {
     ]);
   });
 });
+
+describe('talking to brothers', () => {
+  it('gets an in-character answer from the other brother when no rule says otherwise', () => {
+    const r = act(chapter, newGame(chapter), { type: 'use', target: 'jack' });
+    expect(r.lines[0].speaker).toBe('jack');
+    expect(r.state.active).toBe('rob');
+  });
+});

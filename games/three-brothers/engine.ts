@@ -133,6 +133,16 @@ export function act(chapter: Chapter, prev: State, action: Action): Result {
     const to = action.target as BrotherId;
     move(state, action.item, to);
     out([`Me: Here, ${cast[to].name}, hang on to this.`]);
+  } else if (
+    action.type === 'use' &&
+    action.target !== state.active &&
+    chapter.brothers.includes(action.target as BrotherId)
+  ) {
+    // Talking to a brother who has nothing in particular to say: he answers in character.
+    const other = action.target as BrotherId;
+    const fallback = cast[other].fallback;
+    lines.push(...parseLines(chapter, [fallback[state.fallbackTurn % fallback.length]], other));
+    state.fallbackTurn++;
   } else {
     const fallback = cast[state.active].fallback;
     out([fallback[state.fallbackTurn % fallback.length]]);

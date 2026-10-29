@@ -1,9 +1,49 @@
-import type { Chapter } from '../types';
+import type { Chapter, Choice } from '../types';
 
 /**
  * SPOILERS: this file is the puzzle solutions.
  * If you haven't played the Prologue yet, play it first.
  */
+
+/** What Maureen sells. */
+const kioskMenu: Choice[] = [
+  {
+    label: 'One tea, please.',
+    if: 'has:wallet',
+    say: ['Maureen: Two pound fifty, love.', "Me: I've only got two pound twenty.", "Maureen: Then you've only got no tea."],
+  },
+  {
+    label: 'One tea, please.',
+    if: '!has:wallet',
+    say: ['Maureen: Two pound fifty, love. Cash only.', "Me: I've only got a card. Who's got the cash?"],
+  },
+  {
+    label: 'The meal deal, please.',
+    if: 'has:wallet',
+    say: [
+      "Maureen: Tea and a pork pie, two pound. Don't ask me how, love, I just work here.",
+      'Maureen hands over a steaming tea and a pork pie.',
+    ],
+    do: ['give:tea', 'give:pork_pie', 'set:bought_deal'],
+  },
+  {
+    label: 'The meal deal, please.',
+    if: '!has:wallet',
+    say: ['Maureen: Two pound. Cash only, love.', "Me: I've only got a card. Who's got the cash?"],
+  },
+  {
+    label: 'Just a pork pie, please.',
+    if: 'has:wallet',
+    say: ['Maureen: One pound eighty.', "Me: A pork pie on its own? With what's on that board? Never mind."],
+  },
+  {
+    label: 'Just a pork pie, please.',
+    if: '!has:wallet',
+    say: ['Maureen: One pound eighty. Cash only.', "Me: I've only got a card. Who's got the cash?"],
+  },
+  { label: 'Nothing, thanks.', say: ['Maureen: Suit yourself, love.'] },
+];
+
 export const prologue: Chapter = {
   id: 'prologue',
   number: 0,
@@ -27,7 +67,7 @@ export const prologue: Chapter = {
     'The three Mead brothers are having a day out.',
     'Mum has asked for one thing: a photo of all three of them in front of the Petrifying Well.',
     'How hard can it be?',
-    'Tap a thing to use it. Hold it (or right-click) to look at it. Tap a brother below to play as him. Tap an item, then a thing, to use them together.',
+    'Tap a thing to use it, or a brother to talk to him. Hold (or right-click) to look. Tap a portrait at the bottom to play as that brother. Tap an item, then a thing, to use them together.',
   ],
   items: {
     soapbox: {
@@ -143,38 +183,9 @@ export const prologue: Chapter = {
     {
       on: 'kiosk',
       say: ['Maureen: What can I get you, love?'],
-      choices: [
-        {
-          label: 'One tea, please.',
-          if: 'has:wallet',
-          say: ['Maureen: Two pound fifty, love.', "Me: I've only got two pound twenty.", "Maureen: Then you've only got no tea."],
-        },
-        {
-          label: 'One tea, please.',
-          if: '!has:wallet',
-          say: ['Maureen: Two pound fifty, love. Cash only.', "Me: I've only got a card. Who's got the cash?"],
-        },
-        {
-          label: 'The meal deal, please.',
-          if: 'has:wallet',
-          say: [
-            "Maureen: Tea and a pork pie, two pound. Don't ask me how, love, I just work here.",
-            'Maureen hands over a steaming tea and a pork pie.',
-          ],
-          do: ['give:tea', 'give:pork_pie', 'set:bought_deal'],
-        },
-        {
-          label: 'The meal deal, please.',
-          if: '!has:wallet',
-          say: ['Maureen: Two pound. Cash only, love.', "Me: I've only got a card. Who's got the cash?"],
-        },
-        {
-          label: 'Just a pork pie, please.',
-          say: ['Maureen: One pound eighty.', 'Me: Actually, on its own that seems poor value. Never mind.'],
-        },
-        { label: 'Nothing, thanks.', say: ['Maureen: Suit yourself, love.'] },
-      ],
+      choices: kioskMenu,
     },
+    { on: 'kiosk', item: 'wallet', if: '!bought_deal', say: ["Maureen: Put your money away, love. What are you having?"], choices: kioskMenu },
     { look: 'wallet', if: 'bought_deal', say: ['Me: Twenty pence left. Worth it.'] },
 
     // Phil's freezing hands, and his locked phone.
@@ -266,12 +277,24 @@ export const prologue: Chapter = {
     },
     { on: 'jack', item: 'soapbox', say: ["Jack: I'm not touching that. Nobody touches the soapbox."] },
     { on: 'phil', item: 'soapbox', say: ["Phil: I'm not touching that. Nobody touches the soapbox."] },
+    { on: 'dog', item: 'soapbox', say: ["Me: I'm not standing on a dog. I have principles. Several."] },
+    { on: 'statue', item: 'soapbox', say: ["Me: She's had her turn on a pedestal."] },
     { on: '*', item: 'soapbox', say: ['Me: Not here. The acoustics are all wrong.'] },
     { on: 'soapbox_spot', by: 'rob', say: ["Me: And ANOTHER thing about this country's attitude to queueing..."] },
     { on: 'soapbox_spot', say: ["Me: Please don't encourage him."] },
 
+    // Talking to each other.
+    { on: 'jack', if: '!bought_deal', say: ["Jack: If anything needs paying for, I've got cash. Somebody in this family has to."] },
+    { on: 'jack', say: ["Jack: I'm still doing the maths on that pie."] },
+    { on: 'phil', if: '!phil_warm', say: ["Phil: I can't feel my fingers. I'd do anything for something hot."] },
+    { on: 'phil', if: 'phone_unlocked', say: ["Phil: Phone's unlocked. Just don't look at my photos."] },
+    { on: 'phil', say: ['Phil: Fingers: working. Phone: still locked, until I do something about it.'] },
+    { on: 'rob', if: 'soapbox_placed', say: ["Rob: I'm not getting down. The view's lovely and so are my opinions."] },
+    { on: 'rob', say: ["Rob: Have I told you my views on car parks? I'm the tallest, so they carry further."] },
+
     // Scenery.
     { on: 'sign', if: '!dog_gone', say: ["Me: The perfect spot. Except there's a Labrador sat on it."] },
+    { on: 'sign', if: 'phone_unlocked', say: ["Me: The perfect spot. Whoever's got the phone should try it here."] },
     { on: 'sign', say: ['Me: The perfect spot. Now we just need a camera, and someone to hold it.'] },
     { on: 'well', say: ["Me: Better not touch it. Things that touch the well turn to stone. That's sort of the point of it."] },
     { on: 'statue', say: ["Me: The plaque says she predicted the future. Bet she didn't predict us."] },

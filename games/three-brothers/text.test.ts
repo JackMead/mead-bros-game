@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newGame } from './engine';
 import { prologue } from './chapters/00-prologue';
-import { run } from './text';
+import { intro, run } from './text';
 
 // Only checks the parser, using actions that solve nothing.
 describe('text commands', () => {
@@ -26,5 +26,17 @@ describe('text commands', () => {
     expect(talking.output).toMatch(/1\) /);
     const answered = run(prologue, talking.state, 'choose 4');
     expect(answered.state.choosing).toBeNull();
+  });
+});
+
+describe('text commands, after playtest round 1', () => {
+  const start = newGame(prologue);
+
+  it('asks what to use an item on', () => {
+    expect(run(prologue, start, 'use soapbox').output).toContain('on what?');
+  });
+
+  it('mentions switching and talking in the intro', () => {
+    expect(intro(prologue, start)).toContain('play as');
   });
 });

@@ -26,7 +26,7 @@ Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for 
 
 - **Backgrounds: painted**, one per scene, by the chapter's author using the prompt below. This is what gives the game its look.
 - **The brothers: drawn in code** (`games/three-brothers/characters.ts`) from their `appearance` in `cast.ts`, with blinking, breathing and talking. This keeps all three consistent in every chapter. Change your own look in `cast.ts`.
-- **Props and item icons: drawn in code** (`props.ts`): things that move or come and go (the Labrador, the soapbox), lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
+- **Props and item icons: drawn in code** (`props.ts`): things that move or can come and go during play, lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
 - Painted versions can replace any of these later by dropping a file into `art/` (see Files).
 
 ## The brothers

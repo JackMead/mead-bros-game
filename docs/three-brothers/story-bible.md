@@ -32,7 +32,7 @@ Each brother owns his entry here and in `games/three-brothers/cast.ts`. Catchphr
 | Age | Eldest | Middle | Youngest |
 | Good at | Being tall; reaching things | Maths, spotting a pattern | Table tennis; reflexes, aim |
 | Weakness | Gets on his soapbox and won't get off | Vegetarian: won't touch meat | Permanently cold hands and feet |
-| Visual gag | Carries an actual soapbox; climbs on it to rant | | Blowing on his fingers |
+| Visual gag | Carries an actual soapbox, for ranting | | Blowing on his fingers |
 | Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "That doesn't add up." | *(placeholder)* "Is there a radiator?" |
 
 Not used in a puzzle yet: Phil's table tennis.

@@ -243,7 +243,9 @@ function drawBar(ui: Ui, ctx: CanvasRenderingContext2D): void {
     ctx.roundRect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
     ctx.clip();
     const face = art(`${b}-portrait.png`);
-    if (face) ctx.drawImage(face, r.x + 4, r.y + 4, r.w - 8, r.h - 8);
+    // A painted face bobs while its brother talks.
+    const bob = talker === b ? -Math.abs(Math.sin(ui.time * 10)) * 3 : 0;
+    if (face) ctx.drawImage(face, r.x + 2, r.y + 2 + bob, r.w - 4, r.w - 4);
     else drawHead(ctx, b, r.x + r.w / 2, r.y + r.h * 0.46, r.w * 0.3, { time: ui.time, talking: talker === b });
     ctx.restore();
     outlined(ctx, cast[b].name, r.x + r.w / 2, r.y + r.h - 6, { size: 13, colour: active ? colours.highlight : '#fff', align: 'center' });

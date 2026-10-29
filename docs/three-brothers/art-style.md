@@ -31,13 +31,15 @@ Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for 
 
 ## The brothers
 
+The reference sheet is [`reference/brothers.webp`](reference/brothers.webp) (ChatGPT, matched to the Prologue background). Match it; never redraw a brother from scratch in another tool. The bottom-bar portraits (`art/<brother>-portrait.png`) are cut from it, and the code-drawn figures use its colours.
+
 | | Looks |
 | --- | --- |
-| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans |
-| **Jack** | Slight build. Mid-length dark brown hair, stubble, t-shirt and shorts |
-| **Phil** | Glasses and a beard, mid-length blonde-brown hair, joggers, a yellow backpack with ears |
+| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans, navy trainers |
+| **Jack** | Slight build. Messy dark brown hair, stubble, plum t-shirt, olive cargo shorts, dark trainers |
+| **Phil** | Glasses and a beard, scruffy blonde-brown hair, green-grey t-shirt, grey joggers, white trainers, a yellow creature backpack |
 
-If we ever paint them, draw each brother **once** as a reference sheet in one tool and reuse it. Never redraw a brother from scratch in another tool.
+The sheet's backpack is a recognisable Pikachu. Keep anything shipped in the game generic (yellow, pointy ears, no named character) since the site is public.
 
 ## Files
 

@@ -70,3 +70,12 @@ Fixes made after round 1:
 - The selfie spot's line changes once the phone is unlocked; more varied soapbox refusals.
 - Phil's fallback lines no longer assume cold hands.
 - Text mode: "use <item>" on its own asks "on what?".
+
+## Round 2: The Button-Masher, after the fixes
+
+Finished in 31 commands (was 33). Difficulty 2/5. Never stuck; no longer lost time finding brother switching ("Who's got the cash?" sent it to Jack).
+
+- Dog: "push labrador" pointed to the kiosk. Picked the meal deal by elimination without reading the board. Acceptable for Gentle with a short menu; a Medium version should make the menu longer or the maths matter more.
+- Cold fingers: understanding. ~4 commands.
+- Height: the taller/higher chain guided it. ~8 commands.
+- Dead air left: soapbox on the statue, kiosk or dog are jokes with no direction; "use tea on selfie spot" gets a generic refusal; "buy X" isn't understood by the text parser.

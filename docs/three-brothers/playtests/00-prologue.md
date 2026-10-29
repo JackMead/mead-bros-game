@@ -21,6 +21,14 @@ Brief asked for: 3 puzzles, Gentle. Fewest possible moves: 8.
 
 Main complaints (fixed after round 1): talking to another brother got a stock reply instead of help; nothing in the game said you can switch brother; a few refusals read as nonsense.
 
+## AI scorecard, round 2 (after fixes)
+
+| Tester | Finished | Commands | Brute-forced? | Difficulty (1-5) |
+| --- | --- | --- | --- | --- |
+| The Button-Masher | Yes | 31 | One choice by elimination | 2 |
+
+No puzzle flagged. Ready for humans.
+
 ## Human playtests
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.

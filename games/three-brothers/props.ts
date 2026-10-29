@@ -11,8 +11,14 @@ const INK = '#2b1e16';
 const CHALK = '"Chalkboard SE", "Comic Sans MS", "Marker Felt", cursive';
 const PAINT = '"Trebuchet MS", "Arial Black", sans-serif';
 
-/** `painted` is true over a painted background, where signs only need their lettering. */
-type Draw = (ctx: CanvasRenderingContext2D, r: Rect, time: number, text: string[], painted: boolean) => void;
+/** Looks up a picture in art/ by file name (null until it has loaded, or if there isn't one). */
+export type ArtLookup = (file: string) => HTMLImageElement | null;
+
+/**
+ * `painted` is true over a painted background, where signs only need their lettering.
+ * `art` lets a prop use a painted picture when there is one.
+ */
+type Draw = (ctx: CanvasRenderingContext2D, r: Rect, time: number, text: string[], painted: boolean, art: ArtLookup) => void;
 
 export const PROPS: Record<string, Draw> = {
   dog: drawDog,
@@ -38,7 +44,9 @@ function begin(ctx: CanvasRenderingContext2D, width = 2): void {
 }
 
 /** A sitting Labrador, looking right, tail going. Fills its rect, feet on the bottom edge. */
-function drawDog(ctx: CanvasRenderingContext2D, r: Rect, time: number): void {
+function drawDog(ctx: CanvasRenderingContext2D, r: Rect, time: number, _t: string[], _p: boolean, art: ArtLookup): void {
+  const img = art('dog.png');
+  if (img) return drawPuppet(ctx, img, DOG, r, time);
   const fur = '#d8a65a';
   const s = r.h / 90;
   const x = r.x + r.w * 0.42;
@@ -305,5 +313,113 @@ function drawPie(ctx: CanvasRenderingContext2D, r: Rect): void {
   ctx.ellipse(p.x + p.w / 2, p.y + 3, p.w / 2 - 1, 5, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
+  ctx.restore();
+}
+
+// ---- Painted puppets ----
+
+/** A painted picture with pieces that move: each cut out along an outline and turned about a pivot (picture pixels). */
+interface PuppetPart {
+  outline: number[];
+  pivot: [number, number];
+  /** Angle in radians at a given time. */
+  angle: (t: number) => number;
+}
+
+interface Puppet {
+  parts: PuppetPart[];
+  /** Extra drawing on top, in picture pixels (e.g. a drip of drool). */
+  extra?: (ctx: CanvasRenderingContext2D, t: number) => void;
+}
+
+/** art/dog.png: tail wags, head pants and looks about, a drop of drool now and then. */
+const DOG: Puppet = {
+  parts: [
+    {
+      outline: [0, 222, 44, 216, 84, 227, 95, 246, 86, 264, 44, 269, 0, 247],
+      pivot: [89, 246],
+      angle: (t) => Math.sin(t * 9) * 0.32,
+    },
+    {
+      outline: [166, 7, 209, 0, 247, 17, 276, 27, 275, 43, 266, 72, 243, 78, 207, 72, 183, 67, 167, 49],
+      pivot: [204, 80],
+      angle: (t) => Math.sin(t * 1.3) * 0.04 + Math.sin(t * 7) * 0.015,
+    },
+  ],
+  extra: (ctx, t) => {
+    const phase = (t * 0.6) % 1;
+    if (phase > 0.55) return;
+    ctx.fillStyle = 'rgba(210,235,255,0.9)';
+    ctx.beginPath();
+    ctx.ellipse(258, 78 + phase * 30, 2.5, 4 + phase * 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+  },
+};
+
+const puppetCuts = new Map<string, { body: HTMLCanvasElement; parts: HTMLCanvasElement[] }>();
+
+function cutPuppet(img: HTMLImageElement, puppet: Puppet) {
+  const cached = puppetCuts.get(img.src);
+  if (cached) return cached;
+  const make = (draw: (c: CanvasRenderingContext2D) => void) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    draw(canvas.getContext('2d')!);
+    return canvas;
+  };
+  const shape = (c: CanvasRenderingContext2D, pts: number[], grow = true) => {
+    c.lineWidth = grow ? 4 : 0.01;
+    c.lineJoin = 'round';
+    c.beginPath();
+    for (let i = 0; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]);
+    c.closePath();
+    c.fill();
+    c.stroke();
+  };
+  const cut = {
+    body: make((c) => {
+      c.drawImage(img, 0, 0);
+      c.globalCompositeOperation = 'destination-out';
+      puppet.parts.forEach((p) => shape(c, p.outline, false));
+    }),
+    parts: puppet.parts.map((p) => {
+      const mask = make((c) => shape(c, p.outline));
+      return make((c) => {
+        c.drawImage(img, 0, 0);
+        c.globalCompositeOperation = 'destination-in';
+        c.drawImage(mask, 0, 0);
+      });
+    }),
+  };
+  puppetCuts.set(img.src, cut);
+  return cut;
+}
+
+/** Draw a puppet standing on the bottom of its rect, centred, sized to the rect's height. */
+function drawPuppet(ctx: CanvasRenderingContext2D, img: HTMLImageElement, puppet: Puppet, r: Rect, time: number): void {
+  const cut = cutPuppet(img, puppet);
+  const s = r.h / img.naturalHeight;
+  const breathe = 1 + Math.sin(time * 2.6) * 0.012;
+  const x = r.x + r.w / 2 - (img.naturalWidth * s) / 2;
+  const y = r.y + r.h;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(r.x + r.w / 2, y, img.naturalWidth * s * 0.4, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Picture space, feet on the ground, breathing upwards.
+  ctx.translate(x, y);
+  ctx.scale(s, s * breathe);
+  ctx.translate(0, -img.naturalHeight);
+  ctx.drawImage(cut.body, 0, 0);
+  puppet.parts.forEach((p, i) => {
+    ctx.save();
+    ctx.translate(p.pivot[0], p.pivot[1]);
+    ctx.rotate(p.angle(time));
+    ctx.drawImage(cut.parts[i], -p.pivot[0], -p.pivot[1]);
+    ctx.restore();
+  });
+  puppet.extra?.(ctx, time);
   ctx.restore();
 }

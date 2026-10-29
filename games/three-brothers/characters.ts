@@ -449,8 +449,8 @@ function rigFor(img: HTMLImageElement, sprite: Sprite): Rig | null {
     };
     // Cuts are widened a few pixels so no painted arm edge is left on the body.
     const widen = 6;
-    const shape = (c: CanvasRenderingContext2D, arm: Arm) => {
-      c.lineWidth = widen;
+    const shape = (c: CanvasRenderingContext2D, arm: Arm, grow = true) => {
+      c.lineWidth = grow ? widen : 0.01;
       c.lineJoin = 'round';
       trace(c, arm.outline);
       c.fill();
@@ -468,7 +468,8 @@ function rigFor(img: HTMLImageElement, sprite: Sprite): Rig | null {
       body: make((c) => {
         c.drawImage(img, 0, 0);
         c.globalCompositeOperation = 'destination-out';
-        for (const arm of [sprite.arms!.left, sprite.arms!.right]) shape(c, arm);
+        // Exact cut here, widened on the arm pieces: standing still, the two line up seamlessly.
+        for (const arm of [sprite.arms!.left, sprite.arms!.right]) shape(c, arm, false);
       }),
       left: piece(sprite.arms.left),
       right: piece(sprite.arms.right),

@@ -26,6 +26,7 @@ Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for 
 
 - **Backgrounds: painted**, one per scene, by the chapter's author using the prompt below. This is what gives the game its look.
 - **The brothers: painted**, cut from the reference sheet into `art/rob.png`, `art/jack.png` and `art/phil.png`, with faces for the bottom bar in `art/<brother>-portrait.png`. Code brings them to life like paper puppets (`drawSprite` in `characters.ts`): the arms are cut out along outlines in `cast.ts` and swing at the shoulder, the head nods and tilts at the neck, and the body breathes. Poses: talking (gestures and nods), `rant` (one arm jabbing the air, bouncing, hot air) and `flail` (for cinematics). Blinking and lip movement aren't possible from one picture at this size. The code-drawn versions (from `appearance` in `cast.ts`) are the fallback if a picture is missing.
+- **Painted props** come to life the same way: `props.ts` can cut a picture into moving pieces (`drawPuppet`). The Labrador (`art/dog.png`) wags, pants and drools.
 - **Props and item icons: drawn in code** (`props.ts`): things that move or can come and go during play, lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
 - Painted versions can replace any of these later by dropping a file into `art/` (see Files).
 

@@ -134,7 +134,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     if (sprite) ctx.drawImage(sprite, h.rect.x, h.rect.y, h.rect.w, h.rect.h);
     else if (prop) {
       if (!bg && h.prop === 'water') drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
-      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg);
+      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg, art);
     } else if (!bg) drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
   }
 

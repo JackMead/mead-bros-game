@@ -58,9 +58,9 @@ export const prologue: Chapter = {
     inventory: { rob: ['soapbox'], jack: ['wallet'], phil: ['phone'] },
   },
   extras: {
-    maureen: { name: 'Maureen', colour: '#f08fb0', at: { x: 815, y: 110 } },
-    dog: { name: 'Labrador', colour: '#e8c27a', at: { x: 540, y: 280 } },
-    shipton: { name: 'Mother Shipton', colour: '#c9a2f0', at: { x: 390, y: 70 } },
+    maureen: { name: 'Maureen', colour: '#f08fb0', at: { x: 850, y: 135 } },
+    dog: { name: 'Labrador', colour: '#e8c27a', at: { x: 545, y: 250 } },
+    shipton: { name: 'Mother Shipton', colour: '#c9a2f0', at: { x: 395, y: 75 } },
   },
   intro: [
     "Knaresborough, North Yorkshire. Mother Shipton's Cave: England's oldest visitor attraction, open since 1630.",
@@ -112,39 +112,45 @@ export const prologue: Chapter = {
     well: {
       name: 'The Petrifying Well',
       description:
-        "A damp gorge by the river. Water pours over a rock face hung with things slowly turning to stone. A tea kiosk, a statue and a selfie sign.",
-      background: 'prologue-well.png',
+        "A sunny gorge above the River Nidd, with the railway viaduct beyond. Water pours over a rock face hung with things slowly turning to stone. A tea kiosk, a statue and a selfie sign.",
+      background: 'prologue-well.webp',
       placeholder: { top: '#2f4034', bottom: '#5d5140' },
       hotspots: [
         {
           id: 'well',
           name: 'Petrifying Well',
-          rect: { x: 30, y: 30, w: 290, h: 330 },
+          rect: { x: 20, y: 20, w: 260, h: 290 },
           colour: '#4f7a8a',
-          prop: 'water',
           look: "The Petrifying Well. Water pours over the rock and turns anything left in it to stone. Teddy bears, a top hat and Agatha Christie's handbag hang in the flow, halfway to being statues.",
         },
         {
           id: 'statue',
           name: 'Mother Shipton statue',
-          rect: { x: 350, y: 70, w: 80, h: 220 },
+          rect: { x: 340, y: 85, w: 110, h: 240 },
           colour: '#8a8a8a',
           look: 'A statue of Mother Shipton, the prophetess, born in this very cave in 1488. Hooked nose, pointy chin, excellent eyebrows.',
         },
         {
+          id: 'viaduct',
+          name: 'Railway viaduct',
+          rect: { x: 574, y: 100, w: 166, h: 90 },
+          colour: '#9a8a70',
+          look: "Knaresborough's railway viaduct over the River Nidd. The first one fell down in 1848, before it was even finished. They built this one in 1851. Yorkshire perseverance.",
+        },
+        {
           id: 'kiosk',
           name: 'Tea kiosk',
-          rect: { x: 700, y: 100, w: 230, h: 230 },
+          rect: { x: 748, y: 60, w: 212, h: 285 },
           colour: '#b8483f',
           look: 'A little tea kiosk. Maureen is behind the counter, doing the crossword. A sign says CASH ONLY.',
         },
         {
           id: 'board',
           name: 'Price board',
-          rect: { x: 725, y: 125, w: 180, h: 90 },
+          rect: { x: 868, y: 254, w: 64, h: 84 },
           colour: '#2b2b2b',
           prop: 'chalkboard',
-          text: ['TEA  £2.50', 'PORK PIE  £1.80', 'MEAL DEAL  £2.00', '(tea + pork pie)', 'CASH ONLY'],
+          text: ['TEA £2.50', 'PIE £1.80', 'DEAL £2', 'tea + pie', 'CASH ONLY'],
           look: {
             any: 'A chalk board. TEA £2.50. PORK PIE £1.80. MEAL DEAL, TEA AND A PORK PIE: £2.00. CASH ONLY. Lots of numbers. Jack would enjoy this.',
             jack: 'TEA £2.50. PORK PIE £1.80. MEAL DEAL, TEA AND A PORK PIE: £2.00. So tea on its own costs more than tea with a pie. The pork pie is worth minus fifty pence. I love Yorkshire.',
@@ -153,7 +159,7 @@ export const prologue: Chapter = {
         {
           id: 'sign',
           name: 'Selfie spot',
-          rect: { x: 465, y: 225, w: 120, h: 80 },
+          rect: { x: 477, y: 178, w: 106, h: 46 },
           colour: '#b5834a',
           prop: 'sign',
           text: ['BEST SELFIE SPOT!', 'Get the well in!'],
@@ -162,7 +168,7 @@ export const prologue: Chapter = {
         {
           id: 'dog',
           name: 'Labrador',
-          rect: { x: 478, y: 300, w: 96, h: 84 },
+          rect: { x: 500, y: 262, w: 100, h: 88 },
           colour: '#c99a4b',
           prop: 'dog',
           if: '!dog_gone',
@@ -174,7 +180,7 @@ export const prologue: Chapter = {
         {
           id: 'soapbox_spot',
           name: "Rob's soapbox",
-          rect: { x: 495, y: 360, w: 60, h: 36 },
+          rect: { x: 500, y: 322, w: 60, h: 36 },
           colour: '#8a6a3f',
           prop: 'soapbox',
           if: 'soapbox_placed',
@@ -182,9 +188,9 @@ export const prologue: Chapter = {
         },
       ],
       stand: {
-        rob: [{ x: 525, y: 360, if: 'soapbox_placed', pose: 'rant' }, { x: 380, y: 440 }],
-        jack: [{ x: 610, y: 440 }],
-        phil: [{ x: 660, y: 440 }],
+        rob: [{ x: 530, y: 324, if: 'soapbox_placed', pose: 'rant' }, { x: 300, y: 440 }],
+        jack: [{ x: 650, y: 444 }],
+        phil: [{ x: 712, y: 438 }],
       },
     },
   },
@@ -308,6 +314,7 @@ export const prologue: Chapter = {
     { on: 'sign', if: 'phone_unlocked', say: ["Me: The perfect spot. Whoever's got the phone should try it here."] },
     { on: 'sign', say: ['Me: The perfect spot. Now we just need a camera, and someone to hold it.'] },
     { on: 'well', say: ["Me: Better not touch it. Things that touch the well turn to stone. That's sort of the point of it."] },
+    { on: 'viaduct', say: ["Me: It's miles away, over the river. Lovely, though."] },
     { on: 'statue', say: ["Me: The plaque says she predicted the future. Bet she didn't predict us."] },
   ],
   puzzles: [

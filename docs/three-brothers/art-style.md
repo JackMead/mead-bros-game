@@ -16,7 +16,7 @@ Don't name other games or studios in the prompt; describe the style instead.
 
 Add the scene description under the master prompt. Spell out the layout (what goes left, centre, right), keep the bottom third as open floor for the brothers, and say "no people, no animals, no text, all signs blank". Expect a few attempts.
 
-- **Prologue, `prologue-well`:** the Petrifying Well. Rock face with petrifying objects on the left; Mother Shipton statue centre-left; blank selfie sign with painted footprints centre; tea kiosk with striped awning and blank chalkboard on the right; open gravel path along the bottom third; trees framing the top.
+- **Prologue, `prologue-well.webp` (done, made in ChatGPT):** the Petrifying Well. Rock face with petrifying objects on the left; Mother Shipton statue centre-left; blank selfie sign with painted footprints centre; tea kiosk with striped awning and blank chalkboard on the right; open gravel path along the bottom third; trees framing the top.
 
 ## Palette
 
@@ -53,4 +53,6 @@ Put images in `games/three-brothers/art/`. The game picks them up by name:
 
 Scenes are laid out on a 960x540 grid (the bottom 84 pixels are the toolbar). Paint backgrounds at 1920x1080 so they stay sharp. Once a painting is in, the tappable areas in the chapter file (`rect`) may need nudging to match where things ended up.
 
-Keep files small: a background around 300 to 600 KB (`.webp` or `.jpg`).
+Keep files small: a background around 300 to 600 KB. Claude converts uploads to a 1920x1080 `.webp`.
+
+Backgrounds fill the whole 16:9 screen; the bottom bar covers the bottom 84 of 540 pixels, so keep the bottom of the painting as plain floor.

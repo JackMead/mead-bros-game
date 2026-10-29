@@ -111,7 +111,8 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
   const scene = chapter.scenes[game.scene];
   const bg = art(scene.background);
   if (bg) {
-    ctx.drawImage(bg, 0, 0, width, sceneHeight);
+    // Painted at 16:9 for the whole screen; the bottom bar covers the foreground.
+    ctx.drawImage(bg, 0, 0, width, height);
   } else {
     const g = ctx.createLinearGradient(0, 0, 0, sceneHeight);
     g.addColorStop(0, scene.placeholder.top);

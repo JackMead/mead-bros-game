@@ -1,5 +1,5 @@
 import { cast } from './cast';
-import { drawBrother, drawHead, shade } from './characters';
+import { drawBrother, drawHead, drawSprite, shade, type Pose } from './characters';
 import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } from './cinema';
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
@@ -97,9 +97,10 @@ function drawTitle(ui: Ui, ctx: CanvasRenderingContext2D): void {
 
   // The three of them, posing.
   const feet = 500;
-  drawBrother(ctx, 'jack', 690, feet, config.figure.height * cast.jack.height * 1.7, { time: ui.time, talking: false });
-  drawBrother(ctx, 'phil', 890, feet, config.figure.height * cast.phil.height * 1.7, { time: ui.time, talking: false });
-  drawBrother(ctx, 'rob', 790, feet + 6, config.figure.height * cast.rob.height * 1.7, { time: ui.time, talking: false });
+  const pose = { time: ui.time, talking: false };
+  figure(ctx, 'jack', 690, feet, config.figure.height * cast.jack.height * 1.7, pose);
+  figure(ctx, 'phil', 890, feet, config.figure.height * cast.phil.height * 1.7, pose);
+  figure(ctx, 'rob', 790, feet + 6, config.figure.height * cast.rob.height * 1.7, pose);
 }
 
 function hill(ctx: CanvasRenderingContext2D, y: number, colour: string, freq: number, amp: number): void {
@@ -146,7 +147,6 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     .sort((p, q) => p.s!.y - q.s!.y);
   for (const { b, s } of placed) {
     const h = config.figure.height * cast[b].height;
-    const sprite = art(`${b}.png`);
     const pull = pulled(ui, b, s!, h);
     if (pull === 'gone') continue;
     if (pull) {
@@ -154,13 +154,11 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
       ctx.translate(pull.x, pull.y);
       ctx.rotate(pull.rotation);
       ctx.scale(pull.scale, pull.scale);
-      if (sprite) ctx.drawImage(sprite, -h * 0.3, -h / 2, h * 0.6, h);
-      else drawBrother(ctx, b, 0, h / 2, h, { time: ui.time, talking: false, pose: s!.pose });
+      figure(ctx, b, 0, h / 2, h, { time: ui.time, talking: false });
       ctx.restore();
       continue;
     }
-    if (sprite) ctx.drawImage(sprite, s!.x - h * 0.3, s!.y - h, h * 0.6, h);
-    else drawBrother(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
+    figure(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
     if (b === game.active && !ui.queue.length) {
       const bob = Math.sin(ui.time * 4) * 2;
       ctx.fillStyle = colours.highlight;
@@ -195,6 +193,14 @@ function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
     roundRect(ctx, k, 8, 'rgba(0,0,0,0.45)', 'rgba(255,255,255,0.3)');
     text(ctx, 'Skip ▸▸', k.x + k.w / 2, k.y + 27, { size: 15, colour: colours.text, align: 'center', bold: true });
   }
+}
+
+/** A brother, painted if his picture is in art/, otherwise drawn in code. Feet at (x, y). */
+function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
+  const sprite = cast[b].sprite;
+  const img = art(sprite?.file);
+  if (sprite && img) drawSprite(ctx, b, img, sprite.neck, x, y, h, pose);
+  else drawBrother(ctx, b, x, y, h, pose);
 }
 
 function drawPlaceholder(ctx: CanvasRenderingContext2D, r: Rect, name: string, colour: string, shape?: 'rect' | 'ellipse'): void {

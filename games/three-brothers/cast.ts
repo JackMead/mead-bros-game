@@ -21,6 +21,12 @@ export interface Brother {
   colour: string;
   /** How he's drawn until there's art (see characters.ts). He describes himself. */
   appearance: Appearance;
+  /**
+   * Painted figure in art/ (cut from docs/three-brothers/reference/brothers.webp).
+   * `neck` is how far down the picture (0 to 1) the head ends, so the head can
+   * move separately when he talks.
+   */
+  sprite?: { file: string; neck: number };
   /** Drawn height relative to an average brother. */
   height: number;
   look: string;
@@ -46,6 +52,7 @@ export const cast: Record<BrotherId, Brother> = {
       shoes: '#2b3554',
       build: 1.05,
     },
+    sprite: { file: 'rob.png', neck: 0.2 },
     height: 1.18,
     look: 'Rob. The eldest and the tallest. He has brought his soapbox. He always brings his soapbox.',
     fallback: [
@@ -67,7 +74,8 @@ export const cast: Record<BrotherId, Brother> = {
       build: 0.85,
       stubble: true,
     },
-    height: 1,
+    sprite: { file: 'jack.png', neck: 0.226 },
+    height: 1.09,
     look: 'Jack. Does sums for fun. Vegetarian, and will mention it.',
     fallback: [
       "Me: The odds of that working are roughly zero. I've checked.",
@@ -90,7 +98,8 @@ export const cast: Record<BrotherId, Brother> = {
       glasses: true,
       backpack: '#f2cc2f',
     },
-    height: 1,
+    sprite: { file: 'phil.png', neck: 0.222 },
+    height: 1.07,
     look: 'Phil. The youngest. Table tennis ace. Hands and feet permanently freezing.',
     fallback: [
       "Me: Nah. I'll stick to table tennis.",

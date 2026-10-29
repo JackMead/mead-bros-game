@@ -75,7 +75,10 @@ canvas.addEventListener('pointerdown', (e) => {
 });
 canvas.addEventListener('pointermove', (e) => {
   const p = toGame(e);
-  if (e.pointerType === 'mouse') hoverAt(ui, p.x, p.y);
+  if (e.pointerType === 'mouse') {
+    hoverAt(ui, p.x, p.y);
+    canvas.style.cursor = ui.hover || ui.hoverChoice !== null ? 'pointer' : 'default';
+  }
   if (press && Math.hypot(p.x - press.x, p.y - press.y) > 14) press.done = true;
 });
 canvas.addEventListener('pointerup', () => {

@@ -30,9 +30,15 @@ Play it at `/games/three-brothers/`. Works on phones (landscape) and desktop.
 
 ## Spoiler rules (for humans and AI)
 
-- Claude never describes puzzle solutions in chat, commit messages, PR titles or PR descriptions. "Added 3 puzzles, all checks pass" is fine; "the dog wants the pie" is not.
-- Solutions live only in `games/three-brothers/chapters/` and `docs/three-brothers/spoilers/`. Don't open those until you've played.
-- Scorecards in `playtests/` use labels like "Puzzle 2", never what the puzzle is.
+Everyone plays every chapter blind, its author included, so **every message, image and file anyone might see before playing must be spoiler-free.** The full rules for Claude are in `CLAUDE.md` under "No spoilers". In short:
+
+- **Solutions live only** in `games/three-brothers/chapters/` and `docs/three-brothers/spoilers/`. Don't open those until you've played.
+- **Claude never reveals, in chat, images, commits, PRs or public docs:** how an obstacle is passed, which item goes where, which brother does what, what changes after an action, or any in-game line beyond the intro and ending. Not even half a hint.
+- **Describe work by type and count instead.** "Lined up 7 tappable areas with the painting" is fine. Saying where a character ends up after a puzzle is not.
+- **Screenshots** show only the title screen or a chapter's untouched opening, with no dialogue on screen.
+- **Scorecards** use labels like "Puzzle 2", never what the puzzle is.
+- **Want a hint or the answer?** Ask for it explicitly ("spoil puzzle 2 for me"). Claude will check before answering.
+- `npm test` fails if a public doc quotes an in-game line (see `games/three-brothers/spoilers.test.ts`).
 
 ## How the code fits together
 

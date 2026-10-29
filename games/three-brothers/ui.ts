@@ -37,6 +37,12 @@ export interface Ui {
   label: { text: string; x: number; y: number; t: number } | null;
   /** Mouse-over text (desktop only, never the only way to learn something). */
   hover: string | null;
+  /** Conversation option under the mouse (desktop only). */
+  hoverChoice: number | null;
+  /** Seconds since the game started, for animation. */
+  time: number;
+  /** 1 = black, fading to 0 when a chapter opens. */
+  fade: number;
 }
 
 export type Target =
@@ -63,6 +69,9 @@ export function createUi(chapters: Chapter[]): Ui {
     lookMode: false,
     label: null,
     hover: null,
+    hoverChoice: null,
+    time: 0,
+    fade: 0,
   };
 }
 
@@ -79,8 +88,8 @@ export const layout = {
     return { x: x0 + i * (bar.slot + bar.gap), y: barTop + (bar.portrait - bar.slot) / 2, w: bar.slot, h: bar.slot };
   },
   menuButton: (): Rect => ({ x: width - 52, y: 10, w: 42, h: 42 }),
-  chapterCard: (i: number): Rect => ({ x: 180, y: 190 + i * 84, w: 600, h: 72 }),
-  restartButton: (i: number): Rect => ({ x: 660, y: 190 + i * 84 + 18, w: 108, h: 36 }),
+  chapterCard: (i: number): Rect => ({ x: 40, y: 190 + i * 96, w: 540, h: 84 }),
+  restartButton: (i: number): Rect => ({ x: 456, y: 190 + i * 96 + 24, w: 108, h: 36 }),
   dialogue: (): Rect => ({ x: 20, y: sceneHeight - 128, w: width - 40, h: 118 }),
   choice: (i: number, count: number): Rect => {
     const h = 36;
@@ -92,11 +101,16 @@ export function inside(r: Rect, x: number, y: number): boolean {
   return x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h;
 }
 
-/** Where each brother is drawn: feet position, as a rect around the figure. */
-export function figureRect(chapter: Chapter, state: State, b: BrotherId): Rect | null {
+/** Where a brother stands in the current scene (feet position), or null if he isn't in it. */
+export function standFor(chapter: Chapter, state: State, b: BrotherId): Stand | null {
   const stands = chapter.scenes[state.scene].stand[b];
   if (!stands || !chapter.brothers.includes(b)) return null;
-  const s: Stand | undefined = stands.find((st) => check(st.if, state));
+  return stands.find((st) => check(st.if, state)) ?? null;
+}
+
+/** The area a brother's figure covers, for tapping. */
+export function figureRect(chapter: Chapter, state: State, b: BrotherId): Rect | null {
+  const s = standFor(chapter, state, b);
   if (!s) return null;
   const h = config.figure.height * cast[b].height;
   return { x: s.x - config.figure.width / 2, y: s.y - h, w: config.figure.width, h };
@@ -149,6 +163,7 @@ export function startChapter(ui: Ui, index: number, store: Store, fresh = false)
   if (fresh) store.clear(chapter.id);
   const saved = store.load(chapter.id);
   ui.chapter = chapter;
+  ui.fade = 1;
   ui.selected = null;
   ui.lookMode = false;
   ui.choices = [];
@@ -245,6 +260,11 @@ export function hold(ui: Ui, x: number, y: number, store: Store): void {
 }
 
 export function hoverAt(ui: Ui, x: number, y: number): void {
+  ui.hoverChoice = null;
+  if (ui.screen === 'play' && !ui.queue.length && ui.choices.length) {
+    const i = ui.choices.findIndex((_, i) => inside(layout.choice(i, ui.choices.length), x, y));
+    ui.hoverChoice = i >= 0 ? i : null;
+  }
   if (ui.screen !== 'play' || ui.queue.length || ui.choices.length) {
     ui.hover = null;
     return;
@@ -262,6 +282,8 @@ export function status(ui: Ui): string {
 }
 
 export function update(ui: Ui, dt: number): void {
+  ui.time += dt;
+  ui.fade = Math.max(0, ui.fade - dt / config.fadeSeconds);
   if (ui.label) {
     ui.label.t -= dt;
     if (ui.label.t <= 0) ui.label = null;

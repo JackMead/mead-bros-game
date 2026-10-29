@@ -36,7 +36,13 @@ Copy `games/sandbox/` to `games/<id>/` (lowercase, dash-separated), then update 
 
 `games/three-brothers/` is a story game the three of us write together, one chapter at a time. Before touching it, read `docs/three-brothers/README.md` (process), `story-bible.md` (continuity) and `rubric.md` (puzzle rules).
 
-- **No spoilers outside the chapter files.** Never describe puzzle solutions in chat, commit messages, PR titles or PR descriptions. The person asking may be the chapter's author, who plays it blind.
+- **No spoilers, anywhere a brother might look before playing.** Everyone plays every chapter blind, including its author and the brother you're talking to. This covers chat replies, images and screenshots, commit messages, PR titles and descriptions, code comments outside `chapters/`, and every doc outside `docs/three-brothers/spoilers/`.
+  - **A spoiler is anything that helps pass an obstacle:** a solution or any step of one, which item is used where, which brother does what, what a character, item or place looks like *after* an action, or any in-game line other than the intro and ending (refusals and descriptions are clues too).
+  - **Describe work by kind and count, not content.** For example: "lined up 7 tappable areas", "fixed 3 lines flagged by playtesters", "puzzle 2 got a clearer clue".
+  - **Screenshots:** only the title screen, or a chapter's untouched opening state with no dialogue showing. To check a later state, look at it yourself; don't send it.
+  - **Before sending any message, image, commit or PR, check:** could a brother who hasn't played learn anything about getting past an obstacle from this? If so, cut it.
+  - Only reveal a solution when someone explicitly asks to be spoiled, and confirm which chapter or puzzle first.
+  - `npm test` fails if a public doc quotes an in-game line.
 - Chapters are data in `games/three-brothers/chapters/`; don't change the engine to write a chapter unless it truly can't express something.
 - `npm test` checks every chapter is valid, finishable and has no dead ends. AI playtesting is described in `docs/three-brothers/playtesting.md`.
 

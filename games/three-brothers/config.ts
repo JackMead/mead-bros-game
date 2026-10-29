@@ -11,8 +11,12 @@ export const config = {
   longPressSeconds: 0.45,
   /** How long a tapped thing's name stays on screen. */
   labelSeconds: 1.6,
-  /** Brother figures, in game pixels. */
-  figure: { width: 34, height: 110 },
+  /** Brother figures, in game pixels. Rob is taller (see cast.ts). */
+  figure: { width: 40, height: 112 },
+  /** Fade from black when a chapter opens. */
+  fadeSeconds: 0.6,
+  /** Speech over a character's head wraps at this width. */
+  speechWidth: 420,
   bar: { portrait: 70, slot: 64, gap: 8 },
   /** The solvability check gives up after this many states (a sign the chapter is far too big). */
   maxSolverStates: 200_000,

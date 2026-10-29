@@ -1,5 +1,6 @@
 import { cast } from './cast';
 import { config } from './config';
+import { ICONS, PROPS } from './props';
 import { BROTHERS, type BrotherId, type Chapter } from './types';
 
 /**
@@ -44,6 +45,7 @@ export function validate(chapter: Chapter): string[] {
   for (const [id, scene] of Object.entries(chapter.scenes)) {
     for (const h of scene.hotspots) {
       conditions.push({ where: `hotspot ${h.id}`, cond: h.if });
+      if (h.prop && !PROPS[h.prop]) say(`hotspot ${h.id}`, `unknown prop "${h.prop}" (see props.ts)`);
       const { x, y, w, h: hh } = h.rect;
       if (x < 0 || y < 0 || x + w > config.width || y + hh > config.sceneHeight) {
         say(`hotspot ${h.id}`, 'is outside the scene (or under the bottom bar)');
@@ -85,6 +87,9 @@ export function validate(chapter: Chapter): string[] {
     }
   }
 
+  for (const [id, item] of Object.entries(chapter.items)) {
+    if (item.icon && !ICONS[item.icon]) say(`item ${id}`, `unknown icon "${item.icon}" (see props.ts)`);
+  }
   for (const p of chapter.puzzles) if (!settable.has(p.solved)) say(`puzzle ${p.id}`, `flag "${p.solved}" is never set`);
   if (!chapter.scenes[chapter.start.scene]) say('start', `unknown scene "${chapter.start.scene}"`);
   if (!chapter.brothers.includes(chapter.start.brother)) say('start', `"${chapter.start.brother}" isn't playable`);

@@ -12,19 +12,32 @@ Paste this first, then describe the scene:
 
 Don't name other games or studios in the prompt; describe the style instead.
 
+## Scene prompts
+
+Add the scene description under the master prompt. Spell out the layout (what goes left, centre, right), keep the bottom third as open floor for the brothers, and say "no people, no animals, no text, all signs blank". Expect a few attempts.
+
+- **Prologue, `prologue-well.webp` (done, made in ChatGPT):** the Petrifying Well. Rock face with petrifying objects on the left; Mother Shipton statue centre-left; blank selfie sign with painted footprints centre; tea kiosk with striped awning and blank chalkboard on the right; open gravel path along the bottom third; trees framing the top.
+
 ## Palette
 
 Warm ochres and mossy greens for Yorkshire stone and countryside; deep teal for water; amber light; dusky purples for shadow and anything magical (Mother Shipton).
 
+## Who draws what (v1)
+
+- **Backgrounds: painted**, one per scene, by the chapter's author using the prompt below. This is what gives the game its look.
+- **The brothers: drawn in code** (`games/three-brothers/characters.ts`) from their `appearance` in `cast.ts`, with blinking, breathing and talking. This keeps all three consistent in every chapter. Change your own look in `cast.ts`.
+- **Props and item icons: drawn in code** (`props.ts`): things that move or can come and go during play, lettering on signs and boards (painted signs are left blank), and inventory icons. A hotspot uses one with `prop`, an item with `icon`.
+- Painted versions can replace any of these later by dropping a file into `art/` (see Files).
+
 ## The brothers
 
-Draw each brother **once**, as a reference sheet, and reuse it. Never redraw a brother from scratch in another tool.
+| | Looks |
+| --- | --- |
+| **Rob** | Tallest. Short light brown hair, clean shaven, black t-shirt, jeans |
+| **Jack** | Slight build. Mid-length dark brown hair, stubble, t-shirt and shorts |
+| **Phil** | Glasses and a beard, mid-length blonde-brown hair, joggers, a yellow backpack with ears |
 
-> Cartoon character, full body, standing, plain background, same style as above. [Description.]
-
-- **Rob:** the tallest, eldest. *(Rob to add: hair, clothes, a soapbox under his arm.)*
-- **Jack:** middle brother. *(Jack to add.)*
-- **Phil:** youngest. *(Phil to add: probably wearing gloves.)*
+If we ever paint them, draw each brother **once** as a reference sheet in one tool and reuse it. Never redraw a brother from scratch in another tool.
 
 ## Files
 
@@ -40,4 +53,6 @@ Put images in `games/three-brothers/art/`. The game picks them up by name:
 
 Scenes are laid out on a 960x540 grid (the bottom 84 pixels are the toolbar). Paint backgrounds at 1920x1080 so they stay sharp. Once a painting is in, the tappable areas in the chapter file (`rect`) may need nudging to match where things ended up.
 
-Keep files small: a background around 300 to 600 KB (`.webp` or `.jpg`).
+Keep files small: a background around 300 to 600 KB. Claude converts uploads to a 1920x1080 `.webp`.
+
+Backgrounds fill the whole 16:9 screen; the bottom bar covers the bottom 84 of 540 pixels, so keep the bottom of the painting as plain floor.

@@ -32,6 +32,14 @@ Copy `games/sandbox/` to `games/<id>/` (lowercase, dash-separated), then update 
 - Three.js is the one shared runtime dependency. No other new runtime dependencies without discussing it in the PR first. Dev dependencies are fine if justified.
 - Add or update a `*.test.ts` next to the file when you change game logic.
 
+## The Three Brothers of Yorkshire
+
+`games/three-brothers/` is a story game the three of us write together, one chapter at a time. Before touching it, read `docs/three-brothers/README.md` (process), `story-bible.md` (continuity) and `rubric.md` (puzzle rules).
+
+- **No spoilers outside the chapter files.** Never describe puzzle solutions in chat, commit messages, PR titles or PR descriptions. The person asking may be the chapter's author, who plays it blind.
+- Chapters are data in `games/three-brothers/chapters/`; don't change the engine to write a chapter unless it truly can't express something.
+- `npm test` checks every chapter is valid, finishable and has no dead ends. AI playtesting is described in `docs/three-brothers/playtesting.md`.
+
 ## Workflow
 
 - Work on a branch; open a PR into `main` with a short description of what changed and how to try it.

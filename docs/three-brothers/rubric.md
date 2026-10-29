@@ -67,4 +67,10 @@ Flagged puzzles get fixed (usually with a better clue) and retested before the c
 
 Add a dated line after each chapter's playtests: what worked, what didn't, what changes in the rules above.
 
-- *2026-10-29, Prologue:* (see below, after the first AI playtest)
+- *2026-10-29, Prologue (AI round 1):*
+  - **Escalating refusals work.** A chain of "no" lines that each narrow it down ("someone taller" then "I need to be higher up") was the most praised clue in every report. Do this on purpose.
+  - **Companions must talk back.** When a line says "who's got the X?", players ask the other brothers. A stock grumble there feels like a dead end. New rule: talking to another brother gives a useful line whenever he's relevant to the current obstacle.
+  - **Teach controls in the world, not just the intro.** Testers missed that you could switch brother until they typed "help". The first puzzle that needs another brother should say so in a line ("Who's got the cash?").
+  - **Fallback lines go stale.** A brother's generic line about his weakness ("hands like ice") reads wrong once a puzzle fixes it. Keep fallback lines about personality, not current state.
+  - **Red herrings with good refusals are fine.** The Overthinker spent 8 commands on the statue and well and didn't mind, because each refusal was funny and the statue paid off in the story.
+  - **Gentle hit the target** (1.5 to 2 out of 5). Later chapters asking for Medium need clues split across places, not sat in one description.

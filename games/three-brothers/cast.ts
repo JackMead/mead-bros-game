@@ -26,6 +26,8 @@ export interface Sprite {
   file: string;
   /** How far down the picture (0 to 1) the head ends, so the head can move on its own. */
   neck: number;
+  /** The same picture with his mouth open, swapped in at the head while he talks. */
+  talk?: string;
   /** Arms as they appear on screen: left and right of the picture. */
   arms?: { left: Arm; right: Arm };
   /**
@@ -74,6 +76,7 @@ export const cast: Record<BrotherId, Brother> = {
     },
     sprite: {
       file: 'rob.png',
+      talk: 'rob-talk.png',
       neck: 0.2,
       poses: {
         rant: [
@@ -110,6 +113,7 @@ export const cast: Record<BrotherId, Brother> = {
     },
     sprite: {
       file: 'jack.png',
+      talk: 'jack-talk.png',
       neck: 0.226,
       arms: {
         left: { pivot: [22, 104], outline: [8, 105, 18, 90, 28, 90, 30, 110, 31, 135, 32, 180, 32, 215, 30, 250, 5, 250, 4, 215, 8, 170, 9, 135] },
@@ -141,6 +145,7 @@ export const cast: Record<BrotherId, Brother> = {
     },
     sprite: {
       file: 'phil.png',
+      talk: 'phil-talk.png',
       neck: 0.222,
       arms: {
         left: { pivot: [17, 102], outline: [5, 105, 14, 88, 26, 88, 28, 110, 29, 135, 30, 180, 31, 215, 30, 245, 3, 245, 2, 215, 5, 170, 5, 135] },

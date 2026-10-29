@@ -1,5 +1,5 @@
 import { cast } from './cast';
-import { drawBrother, drawHead, drawSprite, shade, type Pose } from './characters';
+import { drawBrother, drawHead, drawSprite, mouthOpen, shade, type Pose } from './characters';
 import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } from './cinema';
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
@@ -201,7 +201,7 @@ function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: numbe
   const img = art(sprite?.file);
   const frames = pose.pose ? sprite?.poses?.[pose.pose]?.map((f) => ({ img: art(f.file), feetX: f.feetX })) : undefined;
   const ready = frames?.every((f) => f.img) ? (frames as { img: HTMLImageElement; feetX: number }[]) : undefined;
-  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose, ready);
+  if (sprite && img) drawSprite(ctx, b, img, sprite, x, y, h, pose, ready, art(sprite.talk));
   else drawBrother(ctx, b, x, y, h, pose);
 }
 
@@ -250,7 +250,8 @@ function drawBar(ui: Ui, ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.roundRect(r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
     ctx.clip();
-    const face = art(`${b}-portrait.png`);
+    const talking = talker === b && mouthOpen(b, ui.time);
+    const face = (talking && art(`${b}-portrait-talk.png`)) || art(`${b}-portrait.png`);
     // A painted face bobs while its brother talks.
     const bob = talker === b ? -Math.abs(Math.sin(ui.time * 10)) * 3 : 0;
     if (face) ctx.drawImage(face, r.x + 2, r.y + 2 + bob, r.w - 4, r.w - 4);

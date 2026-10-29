@@ -349,6 +349,7 @@ export function drawSprite(
   height: number,
   p: Pose,
   frames?: { img: HTMLImageElement; feetX: number }[],
+  talkImg?: HTMLImageElement | null,
 ): void {
   const t = p.time + phase[id];
   if (frames?.length) return drawPoseFrames(ctx, img, frames, fx, fy, height, t, p.talking);
@@ -407,7 +408,10 @@ export function drawSprite(
   if (flail) tilt += Math.sin(t * 13) * 0.12;
   ctx.translate(fx, top + nod);
   ctx.rotate(tilt);
-  ctx.drawImage(rig?.body ?? img, 0, 0, iw, neckY + overlap, -w / 2, -headH, w, headH + overlap * s);
+  // Mouth open or shut: the talking picture's head is swapped in while he speaks.
+  const open = p.talking && talkImg && mouthOpen(id, p.time);
+  const head = open ? (rigFor(talkImg, sprite)?.body ?? talkImg) : (rig?.body ?? img);
+  ctx.drawImage(head, 0, 0, iw, neckY + overlap, -w / 2, -headH, w, headH + overlap * s);
   ctx.restore();
 
   if (rant) drawRantLines(ctx, fx + w * 0.22, fy - height + 8, t);
@@ -448,6 +452,12 @@ function drawPoseFrames(
   ctx.drawImage(frame.img, -frame.feetX * s, -h, w, h);
   ctx.restore();
   drawRantLines(ctx, fx + base.naturalWidth * s * 0.22, fy - height + 8, t);
+}
+
+/** Lip-flap: whether a talking brother's mouth is open right now. Irregular, like speech. */
+export function mouthOpen(id: BrotherId, time: number): boolean {
+  const t = time + phase[id];
+  return Math.sin(t * 15) + Math.sin(t * 9.7) * 0.7 > 0.2;
 }
 
 /** How far each arm swings out from hanging, in radians. */

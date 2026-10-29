@@ -24,6 +24,7 @@ Add or tweak profiles here as we learn what's useful.
 3. Each tester reports, for each puzzle as they experienced it: what the obstacle was, what they tried, what clue (if any) led them to the answer, and whether they could explain why the answer made sense *before* it worked. Plus what was funny, and what annoyed them.
 4. Claude saves full reports to `spoilers/<chapter>-ai-playtest.md` and the numbers (`npm run play -- --session <file> --score`) to the public scorecard in `playtests/<chapter>.md`.
 5. Fix flagged puzzles (see the rubric's scorecard rules) and re-run the testers that struggled.
+6. Play the chapter once through the real screen in a headless browser (Playwright), tapping things where a player would, to catch anything hidden or untappable. Keep the screenshots private: they show solutions.
 
 ## Human playtests
 

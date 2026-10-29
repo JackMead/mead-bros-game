@@ -1,10 +1,11 @@
 import { cast } from './cast';
 import { drawBrother, drawHead, shade } from './characters';
+import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } from './cinema';
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
 import { ICONS, PROPS } from './props';
 import { BROTHERS, type BrotherId, type Rect } from './types';
-import { layout, standFor, status, type Ui } from './ui';
+import { inCinematic, layout, standFor, status, type Ui } from './ui';
 
 /** Drawing only: reads the UI and game state, never changes them. */
 
@@ -37,10 +38,15 @@ export function render(ui: Ui, ctx: CanvasRenderingContext2D): void {
   if (ui.screen === 'title') {
     drawTitle(ui, ctx);
   } else if (ui.chapter && ui.game) {
+    const shake = shakeOffset(ui);
+    ctx.save();
+    ctx.translate(shake.x, shake.y);
     drawScene(ui, ctx);
+    ctx.restore();
     drawBar(ui, ctx);
+    drawButtons(ui, ctx);
     if (ui.screen === 'end') drawEnd(ui, ctx);
-    else if (ui.queue.length) drawLine(ui, ui.queue[0], ctx);
+    else if (ui.queue.length && !ui.queue[0].cue) drawLine(ui, ui.queue[0], ctx);
     else if (ui.choices.length) drawChoices(ui, ctx);
     if (ui.screen === 'play') drawStatus(ui, ctx);
   }
@@ -127,9 +133,11 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     if (sprite) ctx.drawImage(sprite, h.rect.x, h.rect.y, h.rect.w, h.rect.h);
     else if (prop) {
       if (!bg && h.prop === 'water') drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
-      prop(ctx, h.rect, ui.time, h.text ?? [], !!bg);
+      prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg);
     } else if (!bg) drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
   }
+
+  drawCinemaBack(ctx, ui, bg);
 
   // Brothers, back to front.
   const talker = speaking(ui);
@@ -139,6 +147,18 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
   for (const { b, s } of placed) {
     const h = config.figure.height * cast[b].height;
     const sprite = art(`${b}.png`);
+    const pull = pulled(ui, b, s!, h);
+    if (pull === 'gone') continue;
+    if (pull) {
+      ctx.save();
+      ctx.translate(pull.x, pull.y);
+      ctx.rotate(pull.rotation);
+      ctx.scale(pull.scale, pull.scale);
+      if (sprite) ctx.drawImage(sprite, -h * 0.3, -h / 2, h * 0.6, h);
+      else drawBrother(ctx, b, 0, h / 2, h, { time: ui.time, talking: false, pose: s!.pose });
+      ctx.restore();
+      continue;
+    }
     if (sprite) ctx.drawImage(sprite, s!.x - h * 0.3, s!.y - h, h * 0.6, h);
     else drawBrother(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
     if (b === game.active && !ui.queue.length) {
@@ -156,16 +176,24 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     }
   }
 
-  // Menu button.
-  const m = layout.menuButton();
-  roundRect(ctx, m, 8, 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
-  ctx.fillStyle = colours.text;
-  for (let i = 0; i < 3; i++) ctx.fillRect(m.x + 11, m.y + 13 + i * 7, m.w - 22, 3);
+  drawCinemaFront(ctx, ui);
 
   if (ui.label) {
     ctx.globalAlpha = Math.min(1, ui.label.t * 2);
     outlined(ctx, ui.label.text, ui.label.x, Math.max(28, ui.label.y - 16), { size: 17, colour: colours.text, align: 'center' });
     ctx.globalAlpha = 1;
+  }
+}
+
+function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  const m = layout.menuButton();
+  roundRect(ctx, m, 8, 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
+  ctx.fillStyle = colours.text;
+  for (let i = 0; i < 3; i++) ctx.fillRect(m.x + 11, m.y + 13 + i * 7, m.w - 22, 3);
+  if (inCinematic(ui)) {
+    const k = layout.skipButton();
+    roundRect(ctx, k, 8, 'rgba(0,0,0,0.45)', 'rgba(255,255,255,0.3)');
+    text(ctx, 'Skip ▸▸', k.x + k.w / 2, k.y + 27, { size: 15, colour: colours.text, align: 'center', bold: true });
   }
 }
 

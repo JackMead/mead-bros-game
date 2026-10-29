@@ -25,6 +25,8 @@ export interface Line {
   /** Brother id, extra id, or null for narration. */
   speaker: string | null;
   text: string;
+  /** A cinematic cue such as "pull rob" (see cues.ts) instead of words. */
+  cue?: string;
 }
 
 export interface Result {
@@ -224,6 +226,7 @@ function move(state: State, item: string, to: BrotherId): void {
 
 export function parseLines(chapter: Chapter, texts: string[], active: BrotherId): Line[] {
   return texts.map((raw) => {
+    if (/^\[.*\]$/.test(raw.trim())) return { speaker: null, text: '', cue: raw.trim().slice(1, -1) };
     const [head, rest] = splitOnce(raw, ': ');
     if (rest !== undefined) {
       const key = head.trim().toLowerCase();

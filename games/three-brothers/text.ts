@@ -64,7 +64,7 @@ export function inventory(chapter: Chapter, state: State): string {
 }
 
 export function formatLines(chapter: Chapter, lines: Line[]): string[] {
-  return lines.map((l) => {
+  return lines.filter((l) => !l.cue).map((l) => {
     const who = speakerInfo(chapter, l.speaker);
     return who ? `${who.name}: "${l.text}"` : l.text;
   });

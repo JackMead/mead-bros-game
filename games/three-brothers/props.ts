@@ -186,12 +186,12 @@ function drawSign(ctx: CanvasRenderingContext2D, r: Rect, _t: number, text: stri
 }
 
 /** Glints running down a waterfall. Drawn over whatever's there. */
-function drawWater(ctx: CanvasRenderingContext2D, r: Rect, time: number): void {
+function drawWater(ctx: CanvasRenderingContext2D, r: Rect, time: number, _text: string[], painted: boolean): void {
   ctx.save();
   ctx.beginPath();
   ctx.rect(r.x, r.y, r.w, r.h);
   ctx.clip();
-  ctx.strokeStyle = 'rgba(225,245,255,0.45)';
+  ctx.strokeStyle = painted ? 'rgba(235,250,255,0.5)' : 'rgba(225,245,255,0.45)';
   ctx.lineCap = 'round';
   ctx.lineWidth = 1.5;
   const streams = Math.round(r.w / 14);

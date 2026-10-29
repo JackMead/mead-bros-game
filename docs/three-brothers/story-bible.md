@@ -56,8 +56,10 @@ Not used in a puzzle yet: Phil's table tennis.
 Facts later chapters must respect.
 
 - The curse (above), word for word.
-- Mother Shipton appeared out of the rock of the Petrifying Well. She can stop the water mid-air.
-- At the moment of the curse, every petrified teddy bear on the well turned its head.
+- Mother Shipton stepped out of her own statue as a glowing purple spirit. She can stop the water of the well mid-air.
+- At the moment of the curse, the petrified teddy bears on the well turned their heads, eyes glowing red.
+- The curse opened a time vortex in the Petrifying Well. It pulled the brothers in one by one, and three streaks of light shot off in different directions.
+- A phone was left lying on the gravel by the well, still showing the selfie.
 - The selfie was taken, with Mother Shipton's face in the background.
 
 ## Open threads
@@ -65,7 +67,7 @@ Facts later chapters must respect.
 Things a later chapter can pick up. Close them by moving them to "Closed threads" with the chapter that did it. Part of the fun is learning which to close and which to leave open.
 
 - Where did each brother land, and when?
-- Does the selfie still exist? Who has the phone now?
+- Who finds the phone with the selfie on it, and when? Does the photo still show her face?
 - Why did the teddy bears turn their heads?
 - Does Mother Shipton want something besides being in the photo?
 - Rob's soapbox: did it travel with him?

@@ -1,6 +1,7 @@
 import { cast } from './cast';
 import { config } from './config';
-import { act, check, newGame, visibleHotspots, type Action, type Line, type State } from './engine';
+import { CUES, parseCue } from './cues';
+import { act, check, newGame, parseLines, visibleHotspots, type Action, type Line, type State } from './engine';
 import { BROTHERS, type BrotherId, type Chapter, type Rect, type Stand } from './types';
 
 /**
@@ -43,7 +44,26 @@ export interface Ui {
   time: number;
   /** 1 = black, fading to 0 when a chapter opens. */
   fade: number;
+  /** What cinematic cues have set going (see cues.ts, drawn by cinema.ts). */
+  cinema: Cinema;
 }
+
+export interface Effect {
+  name: string;
+  args: string[];
+  /** `ui.time` when it started. */
+  start: number;
+}
+
+export interface Cinema {
+  effects: Effect[];
+  /** Time at which animated scenery froze, or null. */
+  frozenAt: number | null;
+  /** While a cue is holding up the next line: when it lets go. */
+  holdUntil: number | null;
+}
+
+const noCinema = (): Cinema => ({ effects: [], frozenAt: null, holdUntil: null });
 
 export type Target =
   | { kind: 'hotspot'; id: string; name: string }
@@ -52,6 +72,7 @@ export type Target =
   | { kind: 'item'; id: string }
   | { kind: 'look' }
   | { kind: 'menu' }
+  | { kind: 'skip' }
   | { kind: 'chapter'; index: number }
   | { kind: 'restart'; index: number };
 
@@ -72,6 +93,7 @@ export function createUi(chapters: Chapter[]): Ui {
     hoverChoice: null,
     time: 0,
     fade: 0,
+    cinema: noCinema(),
   };
 }
 
@@ -88,6 +110,7 @@ export const layout = {
     return { x: x0 + i * (bar.slot + bar.gap), y: barTop + (bar.portrait - bar.slot) / 2, w: bar.slot, h: bar.slot };
   },
   menuButton: (): Rect => ({ x: width - 52, y: 10, w: 42, h: 42 }),
+  skipButton: (): Rect => ({ x: width - 150, y: 10, w: 88, h: 42 }),
   chapterCard: (i: number): Rect => ({ x: 40, y: 190 + i * 96, w: 540, h: 84 }),
   restartButton: (i: number): Rect => ({ x: 456, y: 190 + i * 96 + 24, w: 108, h: 36 }),
   dialogue: (): Rect => ({ x: 20, y: sceneHeight - 128, w: width - 40, h: 118 }),
@@ -127,6 +150,7 @@ export function hitTest(ui: Ui, x: number, y: number): Target | null {
   const { chapter, game } = ui;
   if (!chapter || !game) return null;
   if (inside(layout.menuButton(), x, y)) return { kind: 'menu' };
+  if (inCinematic(ui) && inside(layout.skipButton(), x, y)) return { kind: 'skip' };
   if (inside(layout.lookButton(), x, y)) return { kind: 'look' };
   for (const [i, b] of BROTHERS.entries()) {
     if (chapter.brothers.includes(b) && inside(layout.portrait(i), x, y)) {
@@ -137,7 +161,10 @@ export function hitTest(ui: Ui, x: number, y: number): Target | null {
     if (inside(layout.slot(i), x, y)) return { kind: 'item', id: item };
   }
   if (y >= sceneHeight) return null;
+  // Taps go through the brother you're playing (his portrait is for himself), so he
+  // never hides something he's standing in front of.
   for (const b of BROTHERS) {
+    if (b === game.active) continue;
     const r = figureRect(chapter, game, b);
     if (r && inside(r, x, y)) return { kind: 'brother', id: b, where: 'scene' };
   }
@@ -164,6 +191,7 @@ export function startChapter(ui: Ui, index: number, store: Store, fresh = false)
   const saved = store.load(chapter.id);
   ui.chapter = chapter;
   ui.fade = 1;
+  ui.cinema = noCinema();
   ui.selected = null;
   ui.lookMode = false;
   ui.choices = [];
@@ -184,7 +212,7 @@ export function startChapter(ui: Ui, index: number, store: Store, fresh = false)
     return;
   }
   ui.screen = 'play';
-  ui.queue = history.length ? [] : chapter.intro.map((text) => ({ speaker: null, text }));
+  ui.queue = history.length ? [] : parseLines(chapter, chapter.intro, chapter.start.brother);
 }
 
 /** A short tap (or click) at game coordinates. */
@@ -197,8 +225,13 @@ export function tap(ui: Ui, x: number, y: number, store: Store): void {
     return;
   }
   if (t?.kind === 'menu') return showTitle(ui, store);
+  if (t?.kind === 'skip') {
+    skipCinematic(ui);
+    return;
+  }
 
-  // Reading dialogue: any tap moves on.
+  // Reading dialogue: any tap moves on. Cues play by themselves.
+  if (ui.queue[0]?.cue) return;
   if (ui.queue.length) {
     ui.queue.shift();
     if (!ui.queue.length && ui.game?.done) ui.screen = 'end';
@@ -284,6 +317,7 @@ export function status(ui: Ui): string {
 export function update(ui: Ui, dt: number): void {
   ui.time += dt;
   ui.fade = Math.max(0, ui.fade - dt / config.fadeSeconds);
+  playCues(ui);
   if (ui.label) {
     ui.label.t -= dt;
     if (ui.label.t <= 0) ui.label = null;
@@ -312,4 +346,43 @@ export function showTitle(ui: Ui, store: Store): void {
     if (!saved?.length) return 'new';
     return saved.reduce((s, a) => act(chapter, s, a).state, newGame(chapter)).done ? 'done' : 'started';
   });
+}
+
+/** Run cues at the front of the queue until one holds things up or a spoken line is next. */
+export function playCues(ui: Ui): void {
+  const c = ui.cinema;
+  if (c.holdUntil !== null) {
+    if (ui.time < c.holdUntil) return;
+    c.holdUntil = null;
+    ui.queue.shift();
+  }
+  while (ui.queue[0]?.cue) {
+    const cue = parseCue(`[${ui.queue[0].cue}]`);
+    const def = cue && CUES[cue.name];
+    if (cue && def) {
+      if (cue.name === 'freeze') c.frozenAt = ui.time;
+      else if (cue.name === 'clear') {
+        c.effects = c.effects.filter((e) => e.name === 'pull' || e.name === 'place');
+        c.frozenAt = null;
+      } else c.effects.push({ name: cue.name, args: cue.args, start: ui.time });
+      const hold = def.seconds(cue.args);
+      if (hold > 0) {
+        c.holdUntil = ui.time + hold;
+        return;
+      }
+    }
+    ui.queue.shift();
+  }
+  if (!ui.queue.length && ui.game?.done && ui.screen === 'play') ui.screen = 'end';
+}
+
+/** True while a chapter's closing scene is playing (so it can be skipped). */
+export function inCinematic(ui: Ui): boolean {
+  return ui.screen === 'play' && !!ui.game?.done && ui.queue.length > 0;
+}
+
+export function skipCinematic(ui: Ui): void {
+  ui.queue = [];
+  ui.cinema = noCinema();
+  if (ui.game?.done) ui.screen = 'end';
 }

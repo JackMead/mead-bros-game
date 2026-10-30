@@ -17,7 +17,7 @@ import type { Chapter } from './types';
  * and what to print.
  *
  * Commands: look, look at <thing>, use <thing>, use <item> on <thing>,
- * give <item> to <brother>, play as <brother>, inventory, choose <n>, help.
+ * give <item> to <someone>, play as <brother>, inventory, choose <n>, help.
  */
 export const HELP = [
   'Commands:',
@@ -25,7 +25,7 @@ export const HELP = [
   '  look at <thing>           examine a thing, a brother or an item',
   '  use <thing>               tap / interact / talk to it',
   '  use <item> on <thing>     use an item you hold on something',
-  '  give <item> to <brother>  same as "use <item> on <brother>"',
+  '  give <item> to <someone>  same as "use <item> on <someone>"; works on anyone',
   '  play as <brother>         switch to Rob, Jack or Phil',
   '  inventory                 what you are carrying',
   '  choose <n>                pick an option in a conversation',

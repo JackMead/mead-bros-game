@@ -258,7 +258,7 @@ export const whitby: Chapter = {
           look: 'The 199 steps, winding down to the old town. Somebody has counted them. Jack would have counted them twice.',
         },
       ],
-      stand: { phil: [{ x: 610, y: 440 }] },
+      stand: { phil: [{ x: 610, y: 440, if: 'got_suit', outfit: '1890' }, { x: 610, y: 440 }] },
     },
     old_town: {
       name: 'Church Street and the harbour',
@@ -323,7 +323,7 @@ export const whitby: Chapter = {
           look: 'Church Street runs on to the swing bridge over the river.',
         },
       ],
-      stand: { phil: [{ x: 560, y: 440 }] },
+      stand: { phil: [{ x: 560, y: 440, if: 'got_suit', outfit: '1890' }, { x: 560, y: 440 }] },
     },
     bridge: {
       name: 'The swing bridge',
@@ -384,7 +384,7 @@ export const whitby: Chapter = {
           look: 'Over the bridge, a road climbs up to the West Cliff, where the grand hotels are. Even the seagulls look posher over there.',
         },
       ],
-      stand: { phil: [{ x: 410, y: 440 }] },
+      stand: { phil: [{ x: 410, y: 440, if: 'got_suit', outfit: '1890' }, { x: 410, y: 440 }] },
     },
     west_cliff: {
       name: 'The West Cliff',
@@ -438,7 +438,7 @@ export const whitby: Chapter = {
           look: 'A young gentleman in a striped blazer, peering sadly over the terrace railings at the cliff below.',
         },
       ],
-      stand: { phil: [{ x: 560, y: 440 }] },
+      stand: { phil: [{ x: 560, y: 440, if: 'got_suit', outfit: '1890' }, { x: 560, y: 440 }] },
     },
   },
   rules: [

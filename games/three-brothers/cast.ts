@@ -36,6 +36,8 @@ export interface Sprite {
    * where his feet are, across the picture.
    */
   poses?: Record<string, { file: string; feetX: number }[]>;
+  /** Other clothes a chapter can put him in (a stand's `outfit`): a whole painted figure each. */
+  outfits?: Record<string, Sprite>;
 }
 
 export interface Brother {
@@ -147,6 +149,7 @@ export const cast: Record<BrotherId, Brother> = {
       file: 'phil.png',
       talk: 'phil-talk.png',
       neck: 0.222,
+      outfits: { '1890': { file: 'phil-1890.png', talk: 'phil-1890-talk.png', neck: 0.222 } },
       arms: {
         left: { pivot: [17, 102], outline: [5, 105, 14, 88, 26, 88, 28, 110, 29, 135, 30, 180, 31, 215, 30, 245, 3, 245, 2, 215, 5, 170, 5, 135] },
         right: { pivot: [113, 102], outline: [125, 105, 116, 88, 104, 88, 101, 110, 100, 135, 99, 180, 99, 215, 100, 245, 127, 245, 128, 215, 124, 170, 124, 135] },

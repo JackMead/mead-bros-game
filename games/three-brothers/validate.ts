@@ -53,7 +53,12 @@ export function validate(chapter: Chapter): string[] {
       }
     }
     for (const [b, stands] of Object.entries(scene.stand)) {
-      stands?.forEach((s) => conditions.push({ where: `scene ${id} stand ${b}`, cond: s.if }));
+      stands?.forEach((s) => {
+        conditions.push({ where: `scene ${id} stand ${b}`, cond: s.if });
+        if (s.outfit && !cast[b as BrotherId].sprite?.outfits?.[s.outfit]) {
+          say(`scene ${id} stand ${b}`, `unknown outfit "${s.outfit}" (see cast.ts)`);
+        }
+      });
     }
   }
 

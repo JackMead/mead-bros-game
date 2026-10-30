@@ -44,6 +44,7 @@ Copy `games/sandbox/` to `games/<id>/` (lowercase, dash-separated), then update 
   - Only reveal a solution when someone explicitly asks to be spoiled, and confirm which chapter or puzzle first.
   - `npm test` fails if a public doc quotes an in-game line.
 - Chapters are data in `games/three-brothers/chapters/`; don't change the engine to write a chapter unless it truly can't express something.
+- Every new chapter ships with `inDevelopment: true` (an "In development" sticker on the title screen). Only remove it when a brother says he has playtested the chapter. AI playtests don't count.
 - `npm test` checks every chapter is valid, finishable and has no dead ends. AI playtesting is described in `docs/three-brothers/playtesting.md`.
 
 ## Workflow

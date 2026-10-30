@@ -148,7 +148,10 @@ export interface Chapter {
   place: string;
   /** Who can be played. */
   brothers: BrotherId[];
-  /** Still being built (art, fixes): the title screen puts a sticker on it. */
+  /**
+   * Not yet playtested by a human: the title screen puts a sticker on it. Every new
+   * chapter starts with this set; only a brother who has played it takes it off.
+   */
   inDevelopment?: boolean;
   start: {
     scene: string;

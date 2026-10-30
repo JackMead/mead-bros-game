@@ -25,7 +25,7 @@ Play it at `/games/three-brothers/`. Works on phones (landscape) and desktop.
 2. **Copy** `briefs/_template.md` to `briefs/<number>-<name>.md` and fill it in: where and when, which brother, what happens, jokes, which threads you pick up or close, how many puzzles and how hard.
 3. **Ask Claude** (from your phone is fine): *"Build chapter N of three-brothers from docs/three-brothers/briefs/N-name.md. Don't tell me the puzzles."*
 4. Claude writes the puzzles to the rubric, runs the automatic checks and the AI playtesters, fixes what they flag, and updates the story bible. It tells you only the spoiler-free scorecard.
-5. **Play it blind** on the PR preview or after merge. Then add your notes to `playtests/`.
+5. **Play it blind** on the PR preview or after merge. Then add your notes to `playtests/`. A new chapter goes live marked **In development** (`inDevelopment: true` in its chapter file) until a brother has playtested it; once one has, ask Claude to take the sticker off.
 6. Your brothers play it and add theirs. Those notes feed the rubric for the next chapter.
 
 ## Spoiler rules (for humans and AI)

@@ -95,6 +95,14 @@ function drawTitle(ui: Ui, ctx: CanvasRenderingContext2D): void {
       text(ctx, 'Start again', b.x + b.w / 2, b.y + 24, { size: 14, colour: colours.text, align: 'center' });
     }
   });
+  if (ui.chapters.some((c) => c.inDevelopment)) {
+    const below = layout.chapterCard(ui.chapters.length - 1);
+    text(ctx, "In development: not playtested by any of us yet. Expect rough edges.", below.x + 2, below.y + below.h + 24, {
+      size: 14,
+      colour: '#f3ead8',
+      shadow: true,
+    });
+  }
 
   // The three of them, posing.
   const feet = 500;

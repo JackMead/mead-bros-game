@@ -17,7 +17,7 @@ import type { Chapter } from './types';
  * and what to print.
  *
  * Commands: look, look at <thing>, use <thing>, use <item> on <thing>,
- * give <item> to <brother>, play as <brother>, inventory, choose <n>, help.
+ * give <item> to <someone>, play as <brother>, inventory, choose <n>, help.
  */
 export const HELP = [
   'Commands:',
@@ -25,7 +25,7 @@ export const HELP = [
   '  look at <thing>           examine a thing, a brother or an item',
   '  use <thing>               tap / interact / talk to it',
   '  use <item> on <thing>     use an item you hold on something',
-  '  give <item> to <brother>  same as "use <item> on <brother>"',
+  '  give <item> to <someone>  same as "use <item> on <someone>"; works on anyone',
   '  play as <brother>         switch to Rob, Jack or Phil',
   '  inventory                 what you are carrying',
   '  choose <n>                pick an option in a conversation',
@@ -35,7 +35,7 @@ export function intro(chapter: Chapter, state: State): string {
   return [
     `${chapter.title} (${chapter.era}, ${chapter.place})`,
     '',
-    ...chapter.intro.filter((l) => !l.startsWith('Tap ')),
+    ...chapter.intro.filter((l) => !l.startsWith('Tap ') && !/^\[.*\]$/.test(l.trim())),
     '',
     chapter.brothers.length > 1
       ? 'You can play as any brother here ("play as jack"), and talk to the others ("talk to phil"). Type "help" for all commands.'
@@ -109,15 +109,18 @@ function parse(chapter: Chapter, state: State, input: string): Action | string {
     return t ? { type: 'look', target: t } : notHere(m[1]);
   }
 
-  m = /^(?:use|give|put|show|offer|feed) (.+?) (?:on|to|with|in|into|at) (.+)$/.exec(s);
+  m = /^(use|give|put|show|offer|feed) (.+?) (?:on|to|with|in|into|at) (.+)$/.exec(s);
   if (m) {
-    const item = resolveItem(chapter, state, m[1]);
-    if (!item) return `${cast[state.active].name} isn't carrying "${m[1]}".`;
-    const t = resolve(chapter, state, m[2]);
-    return t ? { type: 'item', item, target: t } : notHere(m[2]);
+    const item = resolveItem(chapter, state, m[2]);
+    // "use Steps down to the old town" is one thing's name, not an item used on something.
+    const whole = m[1] === 'use' ? resolve(chapter, state, s.slice(4)) : undefined;
+    if (!item && whole) return { type: 'use', target: whole };
+    if (!item) return `${cast[state.active].name} isn't carrying "${m[2]}".`;
+    const t = resolve(chapter, state, m[3]);
+    return t ? { type: 'item', item, target: t } : notHere(m[3]);
   }
 
-  m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with) (.+)$/.exec(s);
+  m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with|go to|go|walk to|walk|enter|climb) (.+)$/.exec(s);
   if (m) {
     if (resolveItem(chapter, state, m[1]) && !m[1].includes(' on ')) {
       return `Use the ${chapter.items[resolveItem(chapter, state, m[1])!].name} on what? Try "use <item> on <thing>".`;

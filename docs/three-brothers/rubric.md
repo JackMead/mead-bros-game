@@ -75,3 +75,11 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **Red herrings with good refusals are fine.** The Overthinker spent 8 commands on the statue and well and didn't mind, because each refusal was funny and the statue paid off in the story.
   - **Text testers can't see the screen.** A brother's figure once covered something that had to be tapped, which no text playtest could catch. Before shipping, Claude also plays the chapter through in a headless browser and checks every needed thing can be tapped (privately: those frames are spoilers). Taps now pass through the brother you're playing.
   - **Gentle hit the target** (1.5 to 2 out of 5). Later chapters asking for Medium need clues split across places, not sat in one description.
+- *2026-10-30, Chapter 1 (AI rounds 1 to 4):*
+  - **Never edit a chapter while testers are playing.** A mid-test fix broke the build and showed three testers the answers. The play tool now refuses to print source, but the rule stands.
+  - **Medium needs more than one idea per step.** Single fetch chains (A unlocks B unlocks C) rated 1.5 however they were dressed up. What moved the needle: a clue that only clicks when you connect two scenes, and a brother's trait that creates the obstacle as well as solving it.
+  - **Don't let the game take the step for the player.** If talking to someone again quietly does the clever bit, testers call it automatic. Let the player do the connecting.
+  - **Menus can be brute-forced for free.** Three or four options with no cost to a wrong pick means a masher always gets through. Keep menus for jokes and character, and put the real thinking somewhere else, like which item, which place or which name.
+  - **Menacing flavour invites a puzzle.** A sinister animal with a backstory made every tester expect to use it. Either give it a clear "not this" or pay it off in the story (here, the ending).
+  - **Spell out unfamiliar facts once.** Old money (half a crown is two and six) needed saying in plain words somewhere for newcomers; otherwise the right answer felt lucky.
+

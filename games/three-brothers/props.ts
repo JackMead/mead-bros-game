@@ -34,6 +34,11 @@ export const ICONS: Record<string, (ctx: CanvasRenderingContext2D, r: Rect, time
   wallet: drawWallet,
   tea: drawTea,
   pie: drawPie,
+  cards: drawCards,
+  bat: drawBat,
+  coin: drawCoin,
+  kipper: drawKipper,
+  float: drawFloat,
 };
 
 function begin(ctx: CanvasRenderingContext2D, width = 2): void {
@@ -313,6 +318,118 @@ function drawPie(ctx: CanvasRenderingContext2D, r: Rect): void {
   ctx.ellipse(p.x + p.w / 2, p.y + 3, p.w / 2 - 1, 5, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
+  ctx.restore();
+}
+
+/** A fanned hand of trading cards, the front one shiny. */
+function drawCards(ctx: CanvasRenderingContext2D, r: Rect, time: number): void {
+  const p = inset(r, 0.3, 0.22);
+  const cx = p.x + p.w / 2;
+  const cy = p.y + p.h;
+  ctx.save();
+  begin(ctx);
+  ['#d9534f', '#5b8fd9', '#9b6ad9', '#e8c040'].forEach((colour, i) => {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate((i - 1.5) * 0.28);
+    ctx.fillStyle = '#f3ead8';
+    ctx.beginPath();
+    ctx.roundRect(-p.w / 2, -p.h, p.w, p.h, 3);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = colour;
+    ctx.fillRect(-p.w / 2 + 3, -p.h + 3, p.w - 6, p.h * 0.5);
+    if (i === 3) {
+      ctx.fillStyle = `rgba(255,255,255,${0.25 + 0.25 * Math.sin(time * 3)})`;
+      ctx.fillRect(-p.w / 2 + 3, -p.h + 3, p.w - 6, p.h * 0.5);
+    }
+    ctx.restore();
+  });
+  ctx.restore();
+}
+
+/** A table tennis bat: red rubber, wooden handle. */
+function drawBat(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const p = inset(r, 0.18, 0.14);
+  ctx.save();
+  begin(ctx);
+  ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+  ctx.rotate(-0.6);
+  ctx.fillStyle = '#c8935a';
+  ctx.beginPath();
+  ctx.roundRect(-4, p.h * 0.1, 8, p.h * 0.42, 3);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#c0392b';
+  ctx.beginPath();
+  ctx.ellipse(0, -p.h * 0.12, p.w * 0.34, p.h * 0.3, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** A big silver coin. */
+function drawCoin(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const x = r.x + r.w / 2;
+  const y = r.y + r.h / 2;
+  const rad = Math.min(r.w, r.h) * 0.3;
+  ctx.save();
+  begin(ctx);
+  ctx.fillStyle = '#c9ccd1';
+  ctx.beginPath();
+  ctx.arc(x, y, rad, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = '#8e9299';
+  ctx.beginPath();
+  ctx.arc(x, y, rad * 0.72, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** A golden smoked fish, looking at you. */
+function drawKipper(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const p = inset(r, 0.14, 0.32);
+  const cy = p.y + p.h / 2;
+  ctx.save();
+  begin(ctx);
+  ctx.fillStyle = '#c98a3e';
+  ctx.beginPath();
+  ctx.moveTo(p.x + p.w, cy - p.h / 2);
+  ctx.lineTo(p.x + p.w * 0.8, cy);
+  ctx.lineTo(p.x + p.w, cy + p.h / 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(p.x + p.w * 0.42, cy, p.w * 0.4, p.h / 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = INK;
+  ctx.beginPath();
+  ctx.arc(p.x + p.w * 0.16, cy - 2, 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** A small round cork float. */
+function drawFloat(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const x = r.x + r.w / 2;
+  const y = r.y + r.h / 2;
+  const rad = Math.min(r.w, r.h) * 0.22;
+  ctx.save();
+  begin(ctx);
+  ctx.fillStyle = '#c49a6c';
+  ctx.beginPath();
+  ctx.arc(x, y, rad, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#8a6a44';
+  for (const [dx, dy] of [[-0.3, -0.2], [0.25, 0.1], [-0.05, 0.4], [0.1, -0.45]]) {
+    ctx.beginPath();
+    ctx.arc(x + dx * rad, y + dy * rad, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
 

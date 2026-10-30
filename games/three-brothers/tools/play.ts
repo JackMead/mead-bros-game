@@ -11,10 +11,21 @@
  */
 /// <reference types="node" />
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { chapters } from '../chapters';
-import { newGame, type State } from '../engine';
-import { intro, run } from '../text';
+import type { State } from '../engine';
 import type { Chapter } from '../types';
+
+// Chapters are the solutions. If one fails to compile, the bundler's error would print
+// its source, so load them here and say only what broke and where.
+let loaded: typeof import('../chapters') & typeof import('../engine') & typeof import('../text');
+try {
+  loaded = { ...(await import('../chapters')), ...(await import('../engine')), ...(await import('../text')) };
+} catch (e) {
+  const err = e as { message?: string; loc?: { file?: string; line?: number; column?: number } };
+  const where = err.loc ? ` at ${err.loc.file ?? '?'}:${err.loc.line ?? '?'}:${err.loc.column ?? '?'}` : '';
+  console.error(`A chapter failed to load${where}: ${(err.message ?? String(e)).split('\n')[0].slice(0, 200)}`);
+  process.exit(1);
+}
+const { chapters, newGame, intro, run } = loaded;
 
 interface Session {
   chapter: string;

@@ -148,8 +148,8 @@ export const whitby: Chapter = {
     inventory: { phil: ['cards', 'bat'] },
   },
   extras: {
-    stoker: { name: 'Bram Stoker', colour: '#c9a0dc', at: { x: 515, y: 200 } },
-    sailor: { name: 'Old sailor', colour: '#7fb8d9', at: { x: 610, y: 210 } },
+    stoker: { name: 'Bram Stoker', colour: '#c9a0dc', at: { x: 508, y: 240 } },
+    sailor: { name: 'Old sailor', colour: '#7fb8d9', at: { x: 603, y: 250 } },
     dog: { name: 'Black dog', colour: '#b8443a', at: { x: 375, y: 310 } },
     fishwife: { name: 'Fishwife', colour: '#f08fb0', at: { x: 635, y: 250 } },
     pawnbroker: { name: 'Pawnbroker', colour: '#d9c27f', at: { x: 235, y: 90 } },
@@ -230,7 +230,7 @@ export const whitby: Chapter = {
         {
           id: 'stoker',
           name: 'Bram Stoker',
-          rect: { x: 465, y: 215, w: 95, h: 160 },
+          rect: { x: 468, y: 252, w: 80, h: 123 },
           colour: '#4a3a5a',
           sprite: 'stoker.png',
           look: "A big man with a red beard, scribbling in a notebook and muttering to himself. He looks like he hasn't slept in a week.",
@@ -238,7 +238,7 @@ export const whitby: Chapter = {
         {
           id: 'sailor',
           name: 'Old sailor',
-          rect: { x: 565, y: 225, w: 85, h: 150 },
+          rect: { x: 568, y: 262, w: 71, h: 113 },
           colour: '#2f4a6b',
           sprite: 'sailor.png',
           look: 'An ancient sailor with a white beard and a clay pipe. He has the look of a man with a lot of stories and no one to tell them to.',

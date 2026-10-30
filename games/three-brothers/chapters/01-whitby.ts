@@ -150,15 +150,15 @@ export const whitby: Chapter = {
   extras: {
     stoker: { name: 'Bram Stoker', colour: '#c9a0dc', at: { x: 508, y: 240 } },
     sailor: { name: 'Old sailor', colour: '#7fb8d9', at: { x: 603, y: 250 } },
-    dog: { name: 'Black dog', colour: '#b8443a', at: { x: 375, y: 310 } },
-    fishwife: { name: 'Fishwife', colour: '#f08fb0', at: { x: 635, y: 250 } },
+    dog: { name: 'Black dog', colour: '#b8443a', at: { x: 370, y: 300 } },
+    fishwife: { name: 'Fishwife', colour: '#f08fb0', at: { x: 632, y: 275 } },
     pawnbroker: { name: 'Pawnbroker', colour: '#d9c27f', at: { x: 235, y: 90 } },
     jeweller: { name: 'Jeweller', colour: '#a3a3c2', at: { x: 435, y: 100 } },
-    fisherman: { name: 'Fisherman', colour: '#7fd9b8', at: { x: 320, y: 220 } },
+    fisherman: { name: 'Fisherman', colour: '#7fd9b8', at: { x: 320, y: 255 } },
     keeper: { name: 'Bridge keeper', colour: '#e8a33d', at: { x: 505, y: 150 } },
-    paperboy: { name: 'Paperboy', colour: '#f2cc2f', at: { x: 670, y: 260 } },
-    doorman: { name: 'Hobbs', colour: '#d6b0ff', at: { x: 455, y: 220 } },
-    algernon: { name: 'Algy', colour: '#ff9f6b', at: { x: 885, y: 130 } },
+    paperboy: { name: 'Paperboy', colour: '#f2cc2f', at: { x: 670, y: 295 } },
+    doorman: { name: 'Hobbs', colour: '#d6b0ff', at: { x: 455, y: 240 } },
+    algernon: { name: 'Algy', colour: '#ff9f6b', at: { x: 885, y: 188 } },
   },
   intro: [
     '[flash]',
@@ -222,7 +222,7 @@ export const whitby: Chapter = {
         {
           id: 'black_dog',
           name: 'Black dog',
-          rect: { x: 320, y: 325, w: 100, h: 85 },
+          rect: { x: 336, y: 310, w: 68, h: 100 },
           colour: '#222222',
           sprite: 'black-dog.png',
           look: "A huge black dog, sat among the graves, staring at me with eyes the colour of ketchup. It has not blinked once. It doesn't look hungry. It looks like it has already eaten.",
@@ -310,7 +310,7 @@ export const whitby: Chapter = {
         {
           id: 'fishwife',
           name: 'Fishwife',
-          rect: { x: 595, y: 265, w: 75, h: 150 },
+          rect: { x: 598, y: 285, w: 69, h: 130 },
           colour: '#7a3a4a',
           sprite: 'fishwife.png',
           look: 'A fishwife in a shawl and a big apron, with forearms like hams and a voice that carries to Scarborough.',
@@ -349,7 +349,7 @@ export const whitby: Chapter = {
         {
           id: 'fisherman',
           name: 'Fisherman',
-          rect: { x: 280, y: 235, w: 80, h: 165 },
+          rect: { x: 291, y: 265, w: 59, h: 135 },
           colour: '#3a5a6a',
           sprite: 'fisherman.png',
           look: 'A fisherman in a thick knitted gansey, mending nets with fingers like sausages. His stomach is rumbling so loudly I can hear it from here.',
@@ -371,7 +371,7 @@ export const whitby: Chapter = {
         {
           id: 'paperboy',
           name: 'Paperboy',
-          rect: { x: 640, y: 275, w: 60, h: 135 },
+          rect: { x: 639, y: 305, w: 63, h: 105 },
           colour: '#6a5a2a',
           sprite: 'paperboy.png',
           look: 'A small boy in a big cap with a bag of newspapers and a voice like a foghorn.',
@@ -417,7 +417,7 @@ export const whitby: Chapter = {
         {
           id: 'doorman',
           name: 'Doorman',
-          rect: { x: 420, y: 235, w: 70, h: 165 },
+          rect: { x: 435, y: 250, w: 40, h: 150 },
           colour: '#3a2a5a',
           sprite: 'doorman.png',
           look: 'A doorman with more brass buttons than any coat needs. He guards the gate onto the terrace like it owes him money.',
@@ -432,7 +432,7 @@ export const whitby: Chapter = {
         {
           id: 'algernon',
           name: 'Young gentleman',
-          rect: { x: 840, y: 140, w: 90, h: 200 },
+          rect: { x: 858, y: 198, w: 54, h: 142 },
           colour: '#b85a3a',
           sprite: 'algernon.png',
           look: 'A young gentleman in a striped blazer, peering sadly over the terrace railings at the cliff below.',

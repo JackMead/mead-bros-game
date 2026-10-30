@@ -355,6 +355,6 @@ export const prologue: Chapter = {
     '[clear]',
     '[place phone 572 392 34]',
     'When the light fades, the selfie spot is empty. Just a phone on the gravel, still showing the photo.',
-    'To be continued. Chapter 1 is waiting for its author.',
+    'To be continued in Chapter 1.',
   ],
 };

@@ -35,7 +35,7 @@ export function intro(chapter: Chapter, state: State): string {
   return [
     `${chapter.title} (${chapter.era}, ${chapter.place})`,
     '',
-    ...chapter.intro.filter((l) => !l.startsWith('Tap ')),
+    ...chapter.intro.filter((l) => !l.startsWith('Tap ') && !/^\[.*\]$/.test(l.trim())),
     '',
     chapter.brothers.length > 1
       ? 'You can play as any brother here ("play as jack"), and talk to the others ("talk to phil"). Type "help" for all commands.'
@@ -109,12 +109,15 @@ function parse(chapter: Chapter, state: State, input: string): Action | string {
     return t ? { type: 'look', target: t } : notHere(m[1]);
   }
 
-  m = /^(?:use|give|put|show|offer|feed) (.+?) (?:on|to|with|in|into|at) (.+)$/.exec(s);
+  m = /^(use|give|put|show|offer|feed) (.+?) (?:on|to|with|in|into|at) (.+)$/.exec(s);
   if (m) {
-    const item = resolveItem(chapter, state, m[1]);
-    if (!item) return `${cast[state.active].name} isn't carrying "${m[1]}".`;
-    const t = resolve(chapter, state, m[2]);
-    return t ? { type: 'item', item, target: t } : notHere(m[2]);
+    const item = resolveItem(chapter, state, m[2]);
+    // "use Steps down to the old town" is one thing's name, not an item used on something.
+    const whole = m[1] === 'use' ? resolve(chapter, state, s.slice(4)) : undefined;
+    if (!item && whole) return { type: 'use', target: whole };
+    if (!item) return `${cast[state.active].name} isn't carrying "${m[2]}".`;
+    const t = resolve(chapter, state, m[3]);
+    return t ? { type: 'item', item, target: t } : notHere(m[3]);
   }
 
   m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with) (.+)$/.exec(s);

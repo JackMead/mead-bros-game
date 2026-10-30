@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newGame } from './engine';
 import { prologue } from './chapters/00-prologue';
+import { whitby } from './chapters/01-whitby';
 import { intro, run } from './text';
 
 // Only checks the parser, using actions that solve nothing.
@@ -38,5 +39,9 @@ describe('text commands, after playtest round 1', () => {
 
   it('mentions switching and talking in the intro', () => {
     expect(intro(prologue, start)).toContain('play as');
+  });
+
+  it('reads a place whose name contains "to" as one thing', () => {
+    expect(run(whitby, newGame(whitby), 'use Steps down to the old town').state.scene).toBe('old_town');
   });
 });

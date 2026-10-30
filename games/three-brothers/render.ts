@@ -135,7 +135,10 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     else if (prop) {
       if (!bg && h.prop === 'water') drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
       prop(ctx, h.rect, sceneryTime(ui), h.text ?? [], !!bg, art);
-    } else if (!bg) drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
+    } else if (!bg || h.sprite) {
+      // Fixed scenery is in the painting; a person or animal waiting for its picture still needs a stand-in.
+      drawPlaceholder(ctx, h.rect, h.name, h.colour ?? '#777', h.shape);
+    }
   }
 
   drawCinemaBack(ctx, ui, bg);

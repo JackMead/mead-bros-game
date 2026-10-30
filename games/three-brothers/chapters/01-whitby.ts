@@ -13,13 +13,13 @@ const cardChoices: Choice[] = [
   },
   {
     label: 'The grumpy rock crab.',
-    say: ['Stoker: A crab. A villain who scuttles away sideways? No. No, no, no.'],
+    say: ['Stoker: A crab. A villain who scuttles sideways up three storeys? It would take him all night. No.'],
   },
   {
     label: 'The purple bat with fangs.',
     say: [
       'Stoker: A bat.',
-      'Stoker: Wings. Fangs. A creature of the night...',
+      'Stoker: Wings, to reach any window. Fangs. A creature of the night...',
       'Stoker: Sir, this is it! This is exactly it! May I keep it? Name your price.',
       "Me: That's a rare card, young man. I've had it since I was nine.",
       'Stoker: Half a crown.',
@@ -33,7 +33,7 @@ const cardChoices: Choice[] = [
     label: 'The shiny golden dragon.',
     say: ['Me: Actually, no. Not the dragon. Nobody gets the dragon. I would rather stay in 1890.'],
   },
-  { label: 'Never mind.', say: ['Stoker: Hmm? Yes. Wings. Something with wings...'] },
+  { label: 'Never mind.', say: ['Stoker: Hmm? Yes. A high window. Something of the night...'] },
 ];
 
 /** Talking to Hobbs, the doorman, once Phil looks the part. */
@@ -51,8 +51,19 @@ const doormanChoices: Choice[] = [
   },
   {
     label: "Young man. I'm expected on the terrace.",
+    if: '!heard_ball_lost',
     say: [
-      'Doorman: Of course, sir. Very good, sir.',
+      'Doorman: Very good, sir. Expected by whom?',
+      'Me: By... the terrace.',
+      "Doorman: The terrace doesn't expect anybody, sir. Guests do. Which guest?",
+      "Me: I'll come back.",
+    ],
+  },
+  {
+    label: 'Young man. Mr Fanshawe is expecting me.',
+    if: 'heard_ball_lost',
+    say: [
+      'Doorman: Mr Fanshawe? Of course, sir. Very good, sir.',
       'Hobbs opens the gate, then notices the white trainers.',
       "Doorman: And sir's... shoes?",
       'Me: American.',
@@ -63,37 +74,37 @@ const doormanChoices: Choice[] = [
   { label: 'Never mind.', say: ['Doorman: Sir.'] },
 ];
 
-/** What Phil tells Algernon when asked who he's ever beaten. */
-const formChoices: Choice[] = [
+/** What Phil stakes on the match. */
+const wagerChoices: Choice[] = [
+  { label: 'The fire salamander.', say: ['Algernon: Pretty. But I expect they print those by the thousand. Something RARE, old chap.'] },
+  { label: 'The grumpy rock crab.', say: ['Algernon: A crab? I can get a crab at the harbour for a farthing.'] },
   {
-    label: 'I work in cyber security.',
+    label: 'The shiny golden dragon.',
     say: [
-      'Algernon: Cyber...? Is that a regiment?',
-      "Me: It's sort of... computers. I'm not technical. I go to the meetings.",
-      "Algernon: Never mind. I asked who you've beaten, old chap.",
-    ],
-  },
-  {
-    label: "I'm getting married soon.",
-    say: [
-      'Algernon: Congratulations! And have you beaten your fiancée?',
-      'Me: I would never dare.',
-      "Algernon: At whiff-whaff, I mean. Well, it's no matter. Who HAVE you beaten?",
-    ],
-  },
-  {
-    label: 'My brothers, and my dad. Want to hear about every game?',
-    say: [
+      'Me: ...The dragon.',
+      'Phil holds it up. It catches the evening sun.',
+      'Algernon: Good Lord. It SHINES. It shimmers! I have never seen the like. Done!',
+      'Algernon: And if you win?',
+      'Me: A bed for the night. Somewhere with carpets.',
+      'Algernon: Done again! And who have you ever beaten, by the way?',
       'Me: So there was this one against Rob, nine-all in the decider, and he does this serve he thinks is clever...',
       'Five minutes pass.',
       "Me: ...and that's Dad. And then Jack. Jack doesn't really count, but I'll tell you anyway.",
-      'Algernon: Brothers AND a father! A whole family vanquished! Say no more, sir.',
-      'Algernon: Well, do say more. Later. Over dinner. Now: to the table!',
+      'Algernon: Brothers AND a father! Now: to the table!',
     ],
     do: ['set:challenge_accepted'],
   },
-  { label: 'Never mind.', say: ['Algernon: As you like. Ball, bat and form, old chap. A fellow needs all three.'] },
+  { label: 'Never mind.', say: ["Algernon: Something rare, old chap. Something I couldn't simply buy. Then we play."] },
 ];
+
+/** Algernon, once he has a ball and Phil is on the terrace. */
+const wagerAsk = {
+  say: [
+    'Algernon: A ball! Where on earth did you find it? Splendid. A game, then.',
+    "Algernon: Only I never play without a wager, old chap. Not money: I've plenty of that. Something rare. Something I couldn't simply buy.",
+  ],
+  do: ['set:wager_asked'],
+};
 
 /** The match itself. */
 const match = {
@@ -107,6 +118,7 @@ const match = {
     'Me: Eleven-two. Good game, young man.',
     'Algernon: Two? I got two?',
     'Me: I let you have the second one. I always let them have the second one.',
+    'Me: And I will be keeping my dragon, thank you, young man.',
   ],
   do: ['take:float', 'set:match_won'],
 };
@@ -171,7 +183,7 @@ export const whitby: Chapter = {
     float: {
       name: 'Cork float',
       icon: 'float',
-      look: 'A little cork float off a herring net. Round, light and bouncy. About the size of a ping-pong ball.',
+      look: 'A little cork float off a herring net. Round, light and surprisingly bouncy.',
     },
   },
   scenes: {
@@ -436,10 +448,11 @@ export const whitby: Chapter = {
     { look: 'phil', if: '!stoker_paid', say: ["Me: No money, no phone, wrong century. Mr Stoker's stuck with his book, and I've got nothing to sell but my good looks. And my cards."] },
     { look: 'phil', if: '!got_suit !seen_doorman', say: ["Me: I've got money now. Sort of. Next: a bed for the night. Somewhere nice. Somewhere with carpets."] },
     { look: 'phil', if: '!got_suit', say: ["Me: Apparently joggers are 'nightclothes' on the West Cliff. If I'm going in there, I need to look like I belong in there."] },
-    { look: 'phil', if: '!in_hotel', say: ["Me: Look at me. Practically gentry. Now all I need is for that doorman to realise it."] },
+    { look: 'phil', if: '!in_hotel', say: ["Me: Look at me. Practically gentry. That doorman's a tough crowd, though. He'll want to know who I'm here for."] },
     { look: 'phil', if: '!heard_ball_lost', say: ["Me: Somebody on that terrace looks very sad about something. I'm a people person. I should find out what."] },
     { look: 'phil', if: '!got_float', say: ["Me: They need a ball. Something small, round, light and bouncy. Whitby's not exactly a sports shop, but there must be something."] },
-    { look: 'phil', if: '!challenge_accepted', say: ['Me: Ball, bat, table, opponent. All I need now is for him to agree to play me.'] },
+    { look: 'phil', if: '!wager_asked', say: ['Me: Ball, bat, table, opponent. Time to ask for a game.'] },
+    { look: 'phil', if: '!challenge_accepted', say: ["Me: He won't play for money. What have I got that nobody in 1890 could buy?"] },
     { look: 'phil', say: ['Me: Game time, young man.'] },
 
     // ---- St Mary's churchyard ----
@@ -457,12 +470,12 @@ export const whitby: Chapter = {
         'Me: Never better, young man. Never better.',
         'Me: (Eighteen ninety. EIGHTEEN NINETY.)',
         'Stoker: Bram Stoker. I write. Or I did, until this afternoon. My villain must take flight in chapter four, and I cannot think what he should turn into.',
-        "Stoker: Something of the night. Something with wings. And everything I think of is ridiculous. I'd pay good money for the right idea, I'm that desperate.",
+        "Stoker: Some creature of the night, that can reach a lady's window three storeys up. A wolf can't climb. A mist is too vague. And everything else I think of is ridiculous. I'd pay good money for the right idea, I'm that desperate.",
       ],
       do: ['set:knows_date'],
     },
     { on: 'stoker', if: 'stoker_paid', say: ["Stoker: A bat! Of course it's a bat. I'll make him a Count. Transylvanian. With a cape."] },
-    { on: 'stoker', say: ['Stoker: Something with wings... An owl? Too wise. A moth? Too silly. A pigeon? Good heavens, no.'] },
+    { on: 'stoker', say: ['Stoker: A creature of the night, at a high window... A cat? Too cosy. A spider? Too slow. A pigeon? Good heavens, no.'] },
     { look: 'stoker', if: 'stoker_paid', say: ['Me: Mr Stoker, scribbling faster than a man should be able to. I think I just invented Dracula. Nobody will ever believe me.'] },
 
     { look: 'cards', if: 'stoker_paid', say: ['Me: A fire salamander, a grumpy rock crab, a shiny golden dragon, and a gap where the bat used to be. I\'ll get over it. I won\'t get over it.'] },
@@ -470,7 +483,7 @@ export const whitby: Chapter = {
     { on: 'stoker', item: 'cards', if: 'stoker_paid', say: ["Stoker: No more, thank you, the bat is perfect. I couldn't possibly take the dragon."] },
     { on: 'stoker', item: 'cards', if: '!knows_date', say: ["Stoker: Coloured cards? Not now, please, whatever they are. I'm hopelessly stuck."] },
     { on: 'stoker', item: 'cards', say: ['Stoker: Pictures of beasts? Show me, then. Quickly.'], choices: cardChoices },
-    { on: 'stoker', item: 'bat', say: ["Stoker: A paddle? For butter? No, no. Something that FLIES, man. Something alive, with wings."] },
+    { on: 'stoker', item: 'bat', say: ["Stoker: A paddle? For butter? No, no. A CREATURE, man. One that can reach a high window."] },
     { on: 'stoker', item: 'kipper', say: ["Stoker: Thank you, no. I've just eaten. And I'm working."] },
     { on: 'stoker', item: 'coin', say: ["Stoker: It's yours, sir. You earned it."] },
 
@@ -705,7 +718,7 @@ export const whitby: Chapter = {
       on: 'algernon',
       if: '!heard_ball_lost',
       say: [
-        'Algernon: I say! You there! You haven\'t seen a ball, have you? Little cork thing?',
+        "Algernon: I say! You there! Algernon Fanshawe, how d'you do. You haven't seen a ball, have you? Little cork thing?",
         'Algernon: Sailed clean over the railings and off the cliff. Whiff-whaff is quite ruined.',
         'Me: Whiff-whaff?',
         "Algernon: The new parlour game! You bat a little ball across a table. All the rage. And there isn't another ball to be had in the whole of Whitby.",
@@ -717,40 +730,28 @@ export const whitby: Chapter = {
     {
       on: 'algernon',
       if: 'has:float !in_hotel',
-      say: ["Algernon: Is that a ball? Splendid! But I can't play you through the railings, old bean. Come round to the terrace. Hobbs will let you in if you look the part."],
+      say: ["Algernon: Is that a ball? Splendid! But I can't play you through the railings, old bean. Come round to the terrace."],
     },
-    {
-      on: 'algernon',
-      if: 'has:float !challenge_accepted',
-      say: [
-        'Algernon: A ball! Where on earth did you find it?',
-        "Algernon: Now, I don't play just anybody, you understand. A fellow must have form. So tell me: who've you beaten?",
-      ],
-      choices: formChoices,
-    },
+    { on: 'algernon', if: 'has:float !wager_asked', ...wagerAsk },
+    { on: 'algernon', if: 'has:float !challenge_accepted', say: ["Algernon: Put up something worth winning, old chap, and I'll play you. Something rare."] },
     { on: 'algernon', if: 'challenge_accepted', say: ['Algernon: Whenever you\'re ready, old chap. Bats at the ready!'] },
     { on: 'algernon', if: '!in_hotel', say: ['Algernon: No ball, no whiff-whaff. Cork, it was. Bounced like a dream. And residents only on the terrace, I\'m afraid. Hobbs is very strict.'] },
     { on: 'algernon', say: ['Algernon: No ball, no game. Cork, it was. Light as a feather and round as a pea. Oh, it bounced like a dream.'] },
-    { on: 'algernon', item: 'float', if: '!in_hotel', say: ["Algernon: A ball! But I can't play you through the railings, old bean. Come round to the terrace. Hobbs will let you in if you look the part."] },
-    {
-      on: 'algernon',
-      item: 'float',
-      if: '!challenge_accepted',
-      say: [
-        'Algernon: A ball! Where on earth did you find it?',
-        "Algernon: Now, I don't play just anybody, you understand. A fellow must have form. So tell me: who've you beaten?",
-      ],
-      choices: formChoices,
-    },
+    { on: 'algernon', item: 'float', if: '!in_hotel', say: ["Algernon: A ball! But I can't play you through the railings, old bean. Come round to the terrace."] },
+    { on: 'algernon', item: 'float', if: '!wager_asked', ...wagerAsk },
+    { on: 'algernon', item: 'float', if: '!challenge_accepted', say: ['Algernon: Yes, yes, the ball. But what are you putting up, old chap? Something rare.'] },
     { on: 'algernon', item: 'bat', if: 'challenge_accepted', say: ['Algernon: Not at me, old chap! At the table!'] },
     { on: 'algernon', item: 'bat', if: '!heard_ball_lost', say: ['Algernon: I say, what a peculiar paddle!'] },
     { on: 'algernon', item: 'bat', if: '!has:float', say: ['Algernon: What a splendid paddle! Useless without a ball, alas.'] },
-    { on: 'algernon', item: 'bat', if: '!in_hotel', say: ["Algernon: Bat and ball! But I can't play you through the railings, old bean. Come round. Hobbs will let you in if you look the part."] },
+    { on: 'algernon', item: 'bat', if: '!in_hotel', say: ["Algernon: Bat and ball! But I can't play you through the railings, old bean. Come round."] },
+    { on: 'algernon', item: 'bat', if: '!wager_asked', ...wagerAsk },
+    { on: 'algernon', item: 'bat', say: ['Algernon: Splendid paddle. But first, the wager. Something rare, old chap.'] },
     {
       on: 'algernon',
-      item: 'bat',
-      say: ["Algernon: Bat and ball! Steady on, though. I don't play just anybody. A fellow must have form. So tell me: who've you beaten?"],
-      choices: formChoices,
+      item: 'cards',
+      if: 'wager_asked !challenge_accepted',
+      say: ['Algernon: Picture cards? Let me see. Which are you putting up?'],
+      choices: wagerChoices,
     },
     { on: 'algernon', item: 'cards', say: ['Algernon: Collectable cards? How frightfully modern. Do you have any of cricketers?'] },
     { on: 'algernon', item: 'kipper', say: ['Algernon: Kippers are for breakfast, old chap. It\'s practically teatime.'] },
@@ -794,6 +795,7 @@ export const whitby: Chapter = {
     'Me: Things go into the well here... and they are still there when I get home.',
     "Me: It's the well. It's all about the well.",
     '[wait 1]',
+    'Across the harbour, up in the churchyard, a big black dog howls at the moon.',
     'Later, Phil stands at the window of the nicest room he has ever slept in, wearing a dead man\'s suit, looking at the moon over the Abbey.',
     'Me: Bed. Roof. Rich friend. Not bad for day one.',
     "Me: The wedding. The festival. I've got to get back for both.",

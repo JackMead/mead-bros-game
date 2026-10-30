@@ -122,3 +122,34 @@ Fixed afterwards: the quoting bug; `tools/play.ts` now loads chapters inside a t
 - Hobbs remarks on the suit when he lets Phil in, and Phil visibly walks onto the terrace.
 - Removed the bandstand line, which played on every arrival with no bandstand to see.
 - The text version accepts "go", "walk", "enter" and "climb".
+
+## Round 4, 2026-10-30 (Veteran, Overthinker)
+
+### Veteran
+
+- Veteran (round 4): finished, 73/80 (~45 exploring first; whole chain ~21 once acting). Difficulty 2.
+- Stoker: ~3 cmds, dragon tried first (refused, plants it). Explained: yes, instantly. Easiest puzzle; fine as opener.
+- Suit: 1 cmd. 2/6 joke works as a clue. Explained: yes.
+- Kipper: 1 cmd (second fishwife talk). Explained: yes. Little sense of decision.
+- Float: 2 cmds. Good classic chain. Explained: yes.
+- Doorman: 4 cmds incl. a deliberate wrong pick. Name from jeweller's gossip (blazer, big hotel, never stopped talking). "Best puzzle in the chapter." Note: menu can be tried in full.
+- Wager: 3 cmds; salamander refusal useful; dragon payoff satisfying.
+- Suggestions for Medium: a red-herring item; competing plans; cork less spelled out.
+- Annoyed: three rooms between churchyard and West Cliff gets tedious on round trips.
+- Funny: some sort of boy, What dog?, Lady Cholmondeley, meetings, counted twice, young man/fishwife/sixty-three, American, one ball, second one, Harrogate, kipper looking.
+
+### Overthinker
+
+- Overthinker (round 4): finished, 65/80. Difficulty 2. Batched two movement commands once (ran in order).
+- Kipper: ~2 cmds once fisherman known hungry; second fishwife visit. Explained: yes. "Bite my hand off" briefly pointed at the dog. Risk: relies on talking to fishwife again; first refusal reads as closed. Suggest a thought line.
+- Float: 2 cmds (kipper to fisherman, use nets). Clean.
+- Stoker: ~5 incl. deliberate bat paddle (refusal "excellent, redirects to creatures") and dragon (refused, sets up payoff). Explained: yes.
+- Suit: 1 cmd. Explained: yes.
+- Doorman: Fanshawe from the jeweller (young gent, striped blazer, big hotel) connected to Algy's blazer; enjoyed it. Explained: yes.
+- Wager: salamander refusal specific; dragon pays off "nobody gets the dragon". Explained: yes.
+- Red herrings, none unfair: black dog, schooner, "bite my hand off", Abbey bats.
+- Funny: young man incl. fishwife, two-slash-six, dog already eaten, some sort of boy, kipper looking, one ball, kept in a sleeve, American, second one, chip shop.
+
+**Overall:** both finished, nobody stuck, no brute force. Rated 2/5, up from 1.5. The Fanshawe clue was both testers' favourite. Iteration stopped here; see the public scorecard for the call on difficulty.
+
+**Changed after round 4:** Phil's thought line (tap his portrait) now nudges back towards food going spare once he's met the hungry fisherman.

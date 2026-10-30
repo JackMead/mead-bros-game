@@ -455,6 +455,7 @@ export const whitby: Chapter = {
 
     // ---- What Phil's thinking (tap Phil) ----
     { look: 'phil', if: '!knows_date', say: ["Me: Phil Mead. Engaged. Cyber security. Currently standing in a graveyard. Step one: find out where I am, without looking like I don't know where I am."] },
+    { look: 'phil', if: 'heard_hungry !got_kipper', say: ["Me: That poor fisherman's not eaten since four. Somebody round here must have food going spare. Food I'm not going to eat, ideally."] },
     { look: 'phil', if: '!stoker_paid', say: ["Me: No money, no phone, wrong century. Mr Stoker's stuck with his book, and I've got nothing to sell but my good looks. And my cards."] },
     { look: 'phil', if: '!got_suit !seen_doorman', say: ["Me: I've got money now. Sort of. Next: a bed for the night. Somewhere nice. Somewhere with carpets."] },
     { look: 'phil', if: '!got_suit', say: ["Me: Apparently joggers are 'nightclothes' on the West Cliff. If I'm going in there, I need to look like I belong in there."] },

@@ -120,7 +120,7 @@ function parse(chapter: Chapter, state: State, input: string): Action | string {
     return t ? { type: 'item', item, target: t } : notHere(m[3]);
   }
 
-  m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with) (.+)$/.exec(s);
+  m = /^(?:use|tap|talk to|talk|speak to|open|take|pick up|push|pull|touch|press|interact with|go to|go|walk to|walk|enter|climb) (.+)$/.exec(s);
   if (m) {
     if (resolveItem(chapter, state, m[1]) && !m[1].includes(' on ')) {
       return `Use the ${chapter.items[resolveItem(chapter, state, m[1])!].name} on what? Try "use <item> on <thing>".`;

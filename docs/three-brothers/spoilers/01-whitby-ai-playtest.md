@@ -4,9 +4,9 @@ Puzzles, as tracked by the scorecard:
 
 - Puzzle 1: the bat card for Bram Stoker, for the half-crown.
 - Puzzle 2: the half-crown for the suit at the pawnbroker's.
-- Puzzle 3: getting past Hobbs (suit, then name-dropping Mr Fanshawe; the name-drop was added after round 1).
+- Puzzle 3: getting past Hobbs. Round 1: the suit. Rounds 2 and 3: suit, then name-drop Algernon's surname, which he gave himself. From round 4: he only says "Algy"; the surname comes from the jeweller's story in the old town.
 - Puzzle 4: a cork float off the herring nets, once the fisherman's fed with the kipper.
-- Puzzle 5: the match. Rounds 1 and 2: talk Algernon into it. From round 2: stake the golden dragon card.
+- Puzzle 5: the match. Round 1: tell Algernon who you've beaten. From round 2: stake the golden dragon card.
 
 ## Round 1, 2026-10-30 (void)
 
@@ -76,3 +76,49 @@ Fixed afterwards: the quoting bug; `tools/play.ts` now loads chapters inside a t
 - The jeweller's story about the hat now comes from Phil asking about it, not out of nowhere.
 - The black dog "looks like it has already eaten", so a kipper isn't expected there.
 - The help text now says items can be given to anyone, not only brothers.
+
+## Round 3, 2026-10-30 (Veteran, Newcomer, Button-Masher)
+
+### Veteran
+
+- Veteran (round 3): finished, 68 commands, no hints. Difficulty 1.5 ("fair, well clued, too gentle for Medium"). Sent a few commands batched in parallel (ran in order).
+- P1 Stoker: 1 cmd after talking (score 46 after exploring everything). Explained: yes. Phil's bat is a good red herring.
+- P2 Suit: 1 cmd. 2/6 step adds flavour not challenge (coin is literally named Half-crown coin).
+- P4 Kipper: 2 cmds. Refusal plants the item well; but talking to fishwife again does the thinking.
+- P4 Float: 1 cmd after kipper; corks announced twice.
+- P3 Doorman: 2-4 cmds; Fanshawe option. Mostly explained; 1-in-3 menu.
+- P5 Wager: ~5 cmds incl. deliberate wrong picks; dragon "pride and joy", "shiny". Explained: yes.
+- Annoyed: flavour hotspots cost commands; "Ooh. Bandstand" plays every arrival but no bandstand listed.
+- Suggestions: make the player do the thinking at the fishwife; make the wager less signposted; no puzzle combines ideas.
+- Funny: young man/ages/"less of the young man", Lady Cholmondeley, Harrogate, crab for a farthing, one ball, meetings, dead brother-in-law's suit, American, match history, second one, dog already eaten, What dog?
+
+### Newcomer
+
+- Newcomer (round 3): finished, 65/80. Difficulty 2.
+- P1 Stoker: 2 cmds once back (36 incl. exploring). Explained: yes ("pay good money" nudged selling).
+- P2 Suit: ~3 cmds. Partly: didn't know half a crown = 2s 6d; felt lucky. Suggest saying it explicitly.
+- P3 Doorman: 2 cmds, Fanshawe (Algernon introduced himself). Explained: yes. Confused: room description unchanged after being let in.
+- P4 Kipper/float: ~11 incl walking. Best chain. Risk: cork clue only via "look at nets".
+- P5 Wager: 3 cmds. Dragon. Mostly yes.
+- Other: "play as Rob" reply terse; dog feels like a puzzle; "hands off my nets" doesn't hint persuasion (worked via hunger clue).
+- Funny: young man/fishwife, two-slash-six, one ball, some sort of boy, bridge keeper data, kipper looking, brother-in-law's suit, American, second one.
+
+### Button-Masher
+
+- Button-Masher (round 3): finished, 51/60. Difficulty 2.
+- P1 Stoker: ~8 cmds. Cards before talking -> "Not now" (soft dead end, nothing says come back). Bat paddle joke. Salamander then purple bat. Explained: yes. Menu brute-forceable.
+- P2 Suit: ~2 cmds; coin on first shop. Explained: partly. Never told why a suit matters; doorman only comments on trainers.
+- P4 Kipper/float: ~7. Nets "hands off", fisherman hungry, remembered fishwife's "bite my hand off"; second visit she handed over kipper; fed; nets -> float. Explained: yes. "Most satisfying chain; clues in two rooms."
+- P3 Doorman: ~4. "Expected" -> "which guest?"; after Algernon, Fanshawe option worked. Partly: same-numbered option. Brute-forceable.
+- P5 Wager: ~4. Salamander, then dragon. Partly. Brute-forceable.
+- Annoyed: "go steps" not understood; suit not visible in inventory; suit link never said; menus re-openable with no cost.
+- Funny: young man incl. fishwife "less of the young man", meetings, American shoes, second one, one ball, kipper looking, eleven-two.
+
+**Overall:** all three finished, nobody stuck. The kipper chain is now the favourite ("clues in two rooms"). Still rated 1.5 to 2: every puzzle is one step once its clue is found, and the three menus can be retried for free.
+
+**Changed after round 3:**
+- Algernon only gives his nickname. Hobbs wants a surname, and it comes from the jeweller in the old town: a cross-scene "aha" (the young gent in a striped blazer from the big hotel).
+- Stoker spells out that half a crown is two shillings and sixpence.
+- Hobbs remarks on the suit when he lets Phil in, and Phil visibly walks onto the terrace.
+- Removed the bandstand line, which played on every arrival with no bandstand to see.
+- The text version accepts "go", "walk", "enter" and "climb".

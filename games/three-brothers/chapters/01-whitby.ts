@@ -22,7 +22,7 @@ const cardChoices: Choice[] = [
       'Stoker: Wings, to reach any window. Fangs. A creature of the night...',
       'Stoker: Sir, this is it! This is exactly it! May I keep it? Name your price.',
       "Me: That's a rare card, young man. I've had it since I was nine.",
-      'Stoker: Half a crown.',
+      'Stoker: Half a crown. Two shillings and sixpence.',
       'Me: ...Deal.',
       'Stoker presses a heavy silver coin into his hand and starts scribbling like a man possessed.',
       'Me: Look after him. He likes to be kept in a sleeve.',
@@ -51,7 +51,7 @@ const doormanChoices: Choice[] = [
   },
   {
     label: "Young man. I'm expected on the terrace.",
-    if: '!heard_ball_lost',
+    if: '!heard_ball_lost !heard_jeweller',
     say: [
       'Doorman: Very good, sir. Expected by whom?',
       'Me: By... the terrace.',
@@ -60,14 +60,24 @@ const doormanChoices: Choice[] = [
     ],
   },
   {
+    label: 'Young man. Algy is expecting me.',
+    if: 'heard_ball_lost !heard_jeweller',
+    say: [
+      "Doorman: 'Algy', sir? I'm sure I couldn't say who that is.",
+      'Doorman: Guests here are known by their surnames, sir. A gentleman would know that. And would know the surname.',
+    ],
+  },
+  {
     label: 'Young man. Mr Fanshawe is expecting me.',
-    if: 'heard_ball_lost',
+    if: 'heard_jeweller',
     say: [
       'Doorman: Mr Fanshawe? Of course, sir. Very good, sir.',
+      "Doorman: Sir's tweeds are very fine, if I may say.",
       'Hobbs opens the gate, then notices the white trainers.',
       "Doorman: And sir's... shoes?",
       'Me: American.',
       'Doorman: Ah. That explains it, sir.',
+      'Phil strolls through the gate onto the terrace like he owns it.',
     ],
     do: ['set:in_hotel'],
   },
@@ -147,7 +157,7 @@ export const whitby: Chapter = {
     keeper: { name: 'Bridge keeper', colour: '#e8a33d', at: { x: 505, y: 150 } },
     paperboy: { name: 'Paperboy', colour: '#f2cc2f', at: { x: 670, y: 260 } },
     doorman: { name: 'Hobbs', colour: '#d6b0ff', at: { x: 455, y: 220 } },
-    algernon: { name: 'Algernon', colour: '#ff9f6b', at: { x: 885, y: 130 } },
+    algernon: { name: 'Algy', colour: '#ff9f6b', at: { x: 885, y: 130 } },
   },
   intro: [
     '[flash]',
@@ -440,7 +450,7 @@ export const whitby: Chapter = {
     { on: 'steps_up', say: ['Phil drags himself back up all 199 steps.', 'Me: Never again. Until the next time.'], do: ['goto:east_cliff'] },
     { on: 'to_bridge', say: ['Phil follows Church Street along the harbour to the swing bridge.'], do: ['goto:bridge'] },
     { on: 'to_old_town', say: ['Phil heads back into the old town.'], do: ['goto:old_town'] },
-    { on: 'to_west', say: ['Phil crosses the bridge and climbs up to the West Cliff.', 'Me: Ooh. Bandstand. Very nice.'], do: ['goto:west_cliff'] },
+    { on: 'to_west', say: ['Phil crosses the bridge and climbs up to the West Cliff.'], do: ['goto:west_cliff'] },
     { on: 'to_bridge2', say: ['Phil heads back down the hill to the bridge.'], do: ['goto:bridge'] },
 
     // ---- What Phil's thinking (tap Phil) ----
@@ -448,7 +458,7 @@ export const whitby: Chapter = {
     { look: 'phil', if: '!stoker_paid', say: ["Me: No money, no phone, wrong century. Mr Stoker's stuck with his book, and I've got nothing to sell but my good looks. And my cards."] },
     { look: 'phil', if: '!got_suit !seen_doorman', say: ["Me: I've got money now. Sort of. Next: a bed for the night. Somewhere nice. Somewhere with carpets."] },
     { look: 'phil', if: '!got_suit', say: ["Me: Apparently joggers are 'nightclothes' on the West Cliff. If I'm going in there, I need to look like I belong in there."] },
-    { look: 'phil', if: '!in_hotel', say: ["Me: Look at me. Practically gentry. That doorman's a tough crowd, though. He'll want to know who I'm here for."] },
+    { look: 'phil', if: '!in_hotel', say: ["Me: Look at me. Practically gentry. That doorman's a tough crowd, though. He wants a guest's name. A proper name."] },
     { look: 'phil', if: '!heard_ball_lost', say: ["Me: Somebody on that terrace looks very sad about something. I'm a people person. I should find out what."] },
     { look: 'phil', if: '!got_float', say: ["Me: They need a ball. Something small, round, light and bouncy. Whitby's not exactly a sports shop, but there must be something."] },
     { look: 'phil', if: '!wager_asked', say: ['Me: Ball, bat, table, opponent. Time to ask for a game.'] },
@@ -564,7 +574,7 @@ export const whitby: Chapter = {
         'Me: Got any wedding rings? I\'m getting married soon.',
         "Jeweller: In jet, sir? It's for funerals.",
         "Me: Probably not the look we're going for, then.",
-        'Jeweller: A pin for your hat, perhaps? I sold one this morning to a young gent from the big hotel, for his new topper.',
+        'Jeweller: A pin for your hat, perhaps? I sold one this morning to a Mr Fanshawe, from the big hotel on the West Cliff. Young gent, striped blazer, never stopped talking. For his new topper.',
         'Me: What happened to the old one?',
         'Jeweller: Left it hanging in some well at Knaresborough, he said. To turn to stone, if you please.',
         'Me: A well. At Knaresborough. That turns things to stone.',
@@ -725,7 +735,7 @@ export const whitby: Chapter = {
       on: 'algernon',
       if: '!heard_ball_lost',
       say: [
-        "Algernon: I say! You there! Algernon Fanshawe, how d'you do. You haven't seen a ball, have you? Little cork thing?",
+        "Algernon: I say! You there! Algy. Everybody calls me Algy. You haven't seen a ball, have you? Little cork thing?",
         'Algernon: Sailed clean over the railings and off the cliff. Whiff-whaff is quite ruined.',
         'Me: Whiff-whaff?',
         "Algernon: The new parlour game! You bat a little ball across a table. All the rage. And there isn't another ball to be had in the whole of Whitby.",

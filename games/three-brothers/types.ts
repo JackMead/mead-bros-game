@@ -148,6 +148,8 @@ export interface Chapter {
   place: string;
   /** Who can be played. */
   brothers: BrotherId[];
+  /** Still being built (art, fixes): the title screen puts a sticker on it. */
+  inDevelopment?: boolean;
   start: {
     scene: string;
     brother: BrotherId;

@@ -88,6 +88,7 @@ function drawTitle(ui: Ui, ctx: CanvasRenderingContext2D): void {
     const progress = { new: 'Tap to play', started: 'In progress: tap to carry on', done: 'Finished: tap to replay' }[ui.progress[i]];
     text(ctx, `${c.era}, ${c.place}`, r.x + 18, r.y + 52, { size: 13, colour: colours.narration });
     text(ctx, progress, r.x + 18, r.y + 70, { size: 13, colour: colours.highlight });
+    if (c.inDevelopment) drawSticker(ctx, 'In development', r.x + r.w - 78, r.y + 6);
     if (ui.progress[i] === 'started') {
       const b = layout.restartButton(i);
       roundRect(ctx, b, 8, 'rgba(0,0,0,0.3)', 'rgba(255,255,255,0.3)');
@@ -284,6 +285,17 @@ function drawBar(ui: Ui, ctx: CanvasRenderingContext2D): void {
       );
     }
   });
+}
+
+/** A slightly crooked sticker slapped on a title card, centred at (x, y). */
+function drawSticker(ctx: CanvasRenderingContext2D, label: string, x: number, y: number): void {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(0.08);
+  const r = { x: -70, y: -13, w: 140, h: 26 };
+  roundRect(ctx, r, 5, '#e8453c', '#fff3d6', 2);
+  text(ctx, label.toUpperCase(), 0, 5, { size: 13, colour: '#fff3d6', align: 'center', bold: true });
+  ctx.restore();
 }
 
 function drawEye(ctx: CanvasRenderingContext2D, x: number, y: number, colour: string): void {

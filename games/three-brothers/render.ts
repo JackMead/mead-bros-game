@@ -170,7 +170,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
       ctx.restore();
       continue;
     }
-    figure(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose });
+    figure(ctx, b, s!.x, s!.y, h, { time: ui.time, talking: talker === b, pose: s!.pose }, s!.outfit);
     if (b === game.active && !ui.queue.length) {
       const bob = Math.sin(ui.time * 4) * 2;
       ctx.fillStyle = colours.highlight;
@@ -208,8 +208,10 @@ function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
 }
 
 /** A brother, painted if his picture is in art/, otherwise drawn in code. Feet at (x, y). */
-function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose): void {
-  const sprite = cast[b].sprite;
+function figure(ctx: CanvasRenderingContext2D, b: BrotherId, x: number, y: number, h: number, pose: Pose, outfit?: string): void {
+  const usual = cast[b].sprite;
+  const changed = outfit ? usual?.outfits?.[outfit] : undefined;
+  const sprite = changed && art(changed.file) ? changed : usual;
   const img = art(sprite?.file);
   const frames = pose.pose ? sprite?.poses?.[pose.pose]?.map((f) => ({ img: art(f.file), feetX: f.feetX })) : undefined;
   const ready = frames?.every((f) => f.img) ? (frames as { img: HTMLImageElement; feetX: number }[]) : undefined;

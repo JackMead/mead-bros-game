@@ -82,6 +82,11 @@ export interface Stand {
   if?: string;
   /** A pose from `characters.ts`, e.g. "rant". */
   pose?: string;
+  /**
+   * A change of clothes from the brother's `outfits` in cast.ts. Until that picture
+   * is in art/, he's drawn as usual.
+   */
+  outfit?: string;
 }
 
 export interface Scene {

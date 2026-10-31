@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <title>Bragging Rights · Mead Bros Games</title>
+    <meta name="theme-color" content="#14110f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Bragging Rights" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="home" class="screen">
+      <a class="back" href="../../">← All games</a>
+      <h1>Bragging Rights</h1>
+      <p class="tagline">Three runs a day. Same dungeons for everyone. Best haul wins.</p>
+      <p id="today" class="today"></p>
+      <ol id="slots" class="slots"></ol>
+      <p id="total" class="total"></p>
+      <button id="play" class="primary"></button>
+      <p id="countdown" class="muted"></p>
+      <section id="records" class="records"></section>
+      <div class="row">
+        <button id="help-open" class="ghost">How to play</button>
+        <button id="mute" class="ghost"></button>
+      </div>
+      <p class="muted small">v0 prototype: scores stay on this phone and the play limit is on your honour.</p>
+    </main>
+
+    <section id="game" class="screen hidden">
+      <header class="hud">
+        <button id="menu" class="icon" aria-label="Menu">☰</button>
+        <div class="hud-main">
+          <div class="hud-row">
+            <span id="hearts" class="hearts" aria-label="Hearts"></span>
+            <span id="relics" class="relics"></span>
+            <span id="floor" class="floor"></span>
+          </div>
+          <div class="oil" aria-label="Lamp oil"><div id="oil-bar" class="oil-bar"></div><span id="oil-text"></span></div>
+        </div>
+        <button id="help-game" class="icon" aria-label="How to play">?</button>
+      </header>
+      <div id="board-wrap" class="board-wrap">
+        <canvas id="board"></canvas>
+      </div>
+      <p id="hint" class="hint"></p>
+      <footer class="actions">
+        <button id="page-0" class="action page"></button>
+        <button id="page-1" class="action page"></button>
+        <button id="ring" class="action ring hidden"></button>
+        <button id="wait" class="action">Wait</button>
+      </footer>
+      <div id="inspect" class="inspect hidden"></div>
+    </section>
+
+    <div id="modal" class="modal hidden"><div class="card" id="modal-card"></div></div>
+
+    <div id="help" class="modal hidden">
+      <div class="card help">
+        <h2>How to play</h2>
+        <ul>
+          <li><b>Tap a neighbouring square</b> to move, in any of 8 directions. Tap an enemy next to you to attack it.</li>
+          <li><b>Red squares</b> are where enemies will strike next turn. Step out of them. Hold an enemy to see what it does.</li>
+          <li>Hitting first matters: you always act before enemies do.</li>
+          <li><b>Hearts</b> are your health. You get one back each time you reach the stairs.</li>
+          <li><b>Your lamp</b> burns a little every turn. When it goes out, the run ends. Pick up oil to top it up.</li>
+          <li><b>Pages</b> bend the rules once, and crumble when you leave the floor. Use them.</li>
+          <li><b>The ring</b> hides you for a few turns, but every use draws a wraith, now and on every floor after.</li>
+          <li><b>At the stairs</b>, bank your relics and leave, or go deeper for more. Die or run out of oil and you keep only a quarter.</li>
+          <li>8 floors. Three runs a day, and all three count towards your daily total.</li>
+        </ul>
+        <button id="help-close" class="primary">Got it</button>
+      </div>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

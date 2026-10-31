@@ -12,3 +12,6 @@ Project-wide decisions. Per-game design notes go in `docs/<game-id>.md`.
 | 2026-10-29 | `three-brothers`: authors write the story, Claude writes the puzzles to a shared rubric | Everyone, the author included, can play every chapter blind |
 | 2026-10-29 | `three-brothers`: automatic solvability check plus AI playtester profiles | Catch broken or unfair puzzles before a brother plays them; the rubric learns from each round |
 | 2026-10-29 | `vite-node` and `@types/node` as dev dependencies | Run and typecheck the text-mode playtest tool |
+| 2026-10-31 | `bragging-rights`: daily turn-based roguelike, scope in `docs/bragging-rights.md` | Something competitive and replayable alongside the story game; skill is the only progression |
+| 2026-10-31 | `bragging-rights`: deterministic rules replayed from seed + action log | Resume mid-run on a phone now; lets a v1 server verify scores by replaying them |
+| 2026-10-31 | `bragging-rights`: installable PWA, files in `public/games/bragging-rights/` | App-like on phones without app stores; Vite serves the manifest and worker unchanged |

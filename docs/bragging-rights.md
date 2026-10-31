@@ -1,6 +1,6 @@
 # Bragging Rights
 
-> **Status: draft scope, awaiting sign-off.** Nothing is built yet. Don't start the build until this doc is marked signed off.
+> **Status: scope signed off by Rob on 2026-10-31. v0 built** (`games/bragging-rights/`) with a placeholder long road kit. Changes to scope need sign-off again before building.
 
 A turn-based roguelike for phones. Three runs a day through the same secret dungeons as your brothers, and the best haul wins the day.
 
@@ -81,4 +81,46 @@ Rob drafts the first pass of each kit, Claude builds the systems, and anyone can
 - **Backend owner:** Rob is asking in the group once the concept is agreed.
 - **Missed days (parked):** v0 scores an unplayed day as 0. Later, consider counting only each brother's best N days per season.
 - **Tuning (decide in playtests):** number of hearts, oil per turn, share of relics lost on death, league points per place, and whether 8-way movement stays readable or falls back to 4-way.
-- **Long road kit:** Rob's first pass of enemies, hazard and pages.
+- **Long road kit:** Rob's first pass of enemies, hazard and pages. v0 runs on placeholders (below).
+
+## v0 as built
+
+### Files
+
+All in `games/bragging-rights/`. Logic files never touch the DOM or canvas and are tested in Node.
+
+| File | What it does |
+|---|---|
+| `config.ts` | Every tunable number |
+| `sim.ts` | The rules: `newRun`, `step(state, action)`, `replay(seed, actions)` |
+| `generate.ts` | Builds a floor from seed + depth + kit. Never depends on how the player is doing |
+| `kit.ts`, `kits/` | Floor kit format and the kits themselves |
+| `daily.ts` | UK-date seeds, play counter, save/resume, records |
+| `bot.ts`, `tools/bot-stats.ts` | A crude bot for tests and rough balance numbers (`npm run bragging:bot -- 500`) |
+| `render.ts`, `fx.ts`, `audio.ts`, `main.ts` | Drawing, animation, sound and screens |
+
+The manifest, service worker and icons live in `public/games/bragging-rights/` so Vite serves them unchanged next to the page.
+
+### Rules settled during the build
+
+The scope left these open. They are starting points for playtesting, not final:
+
+- **Starting values:** 4 hearts, 150 oil burning 1 per turn, keep 25% of carried relics on death or lamp-out, ring hides you for 3 enemy turns, at most 3 wraiths per floor.
+- **The ring is on floor 1 of every run**, so everyone faces the same temptation.
+- **You always act first.** Hitting a 1-heart enemy kills it before its telegraphed attack lands, which rewards aggression.
+- **Telegraphed attacks hit whatever is on the squares**, enemies included, so you can bait enemies into each other.
+- **Swap leaves telegraphs where they were aimed**; shove dazes the enemy and cancels its attack.
+- **Chargers won't charge across a chasm**, but if you dodge they run on and can fall into one beyond you.
+- **Reaching the stairs ends your turn before enemies act.**
+- **Lamp light is cosmetic.** The board is never darkened enough to hide anything.
+- **Pages** in v0: shove, swap, ward (raise a wall), blink (short teleport).
+- **No healing items** in v0. Hearts only come back at the stairs.
+
+### Placeholder kit
+
+Until the first pass arrives, the long road uses stand-ins: goblin (melee), goblin archer (archer, from floor 2), dire wolf (charger, from floor 3), cave troll (brute, from floor 4) and wraith (the ring's hunter). Swap them by editing `kits/longRoad.ts`; no engine changes are needed unless a new behaviour is wanted.
+
+### Known limits
+
+- The bot is crude (it can't handle trolls or use pages), so its numbers only show whether something is wildly off. Real tuning needs human playtests.
+- Scores and the play limit are local and on the honour system until v1.

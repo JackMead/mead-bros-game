@@ -153,3 +153,14 @@ Fixed afterwards: the quoting bug; `tools/play.ts` now loads chapters inside a t
 **Overall:** both finished, nobody stuck, no brute force. Rated 2/5, up from 1.5. The Fanshawe clue was both testers' favourite. Iteration stopped here; see the public scorecard for the call on difficulty.
 
 **Changed after round 4:** Phil's thought line (tap his portrait) now nudges back towards food going spare once he's met the hungry fisherman.
+
+## Rework after Rob's playtest (2026-10-31)
+
+Rob finished the old version in about 5 minutes. Rebuilt to 10 puzzles across 6 scenes: Phil's cards are separate items (bat to Stoker; two spares sold to the paperboy for a penny each; dragon is the wager); kipper costs a penny to take away (free only if eaten, which Phil won't); the suit is bought as an item and can only be put on with fingers warmed at the smokehouse fire, and the warmth is lost leaving the old town; the match moves to a new parlour scene and needs a net (the Gazette, bought with the second penny). The solver caught the finale being reachable early; fixed.
+
+### Round 6 (Veteran, Button-Masher)
+
+- **Veteran:** finished, 108/120 (~55 exploring). Difficulty 2. Estimated 15 to 20 minutes for a human. Best puzzle: warming the fingers for the collar studs. Easiest: Stoker and the wager. Nothing fallen into by accident. Parser: "on Phil" matched Phil's bat. Stale West Cliff description. Suggested: Stoker's need less direct, paperboy not naming a price, net needing a combination.
+- **Button-Masher:** finished, 82/90. Difficulty 2. Card puzzles brute-forceable with few cards and few people. Thought standing in the warm smokehouse should be enough; the refusal didn't point at the fire. Same parser bug.
+
+**Changed after round 6:** parser reads a brother's name as the brother and accepts "wear"; the suit refusal now points at real heat, not warm air; the paperboy no longer names his price; the West Cliff description no longer mentions Algy once he's gone in.

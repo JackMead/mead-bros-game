@@ -60,11 +60,24 @@ No puzzle flagged. Both testers named the reworked puzzle as the best in the cha
 
 **On difficulty:** the testers land it at 2 out of 5, against a Medium brief. It's fair and nobody got stuck, but it's on the gentle side of Medium. The testers' main reasons: each step has one obvious candidate, and conversation menus can be retried for free. Ready for humans: your times and stuck points will tell us whether it needs more teeth.
 
+## After Rob's playtest: rework, AI round 6
+
+Rob finished the first version in about 5 minutes, so the chapter was rebuilt: 10 puzzles across 6 scenes, nothing you can fall into by accident. Fewest possible moves: 28.
+
+| Tester | Finished | Commands | Brute-forced? | Difficulty (1-5) |
+| --- | --- | --- | --- | --- |
+| The Veteran | Yes | 108 | No | 2 |
+| The Button-Masher | Yes | 82 | Card hand-offs by elimination | 2 |
+
+All 10 puzzles solved by both. Nothing fallen into by accident; nothing unfair. Fixed afterwards: 1 parser bug, 3 lines flagged by testers. The Veteran estimates 15 to 20 minutes for a human: longer, but still short of the 30 to 40 minute target, so it's worth one more pass after the new art is in.
+
 ## Human playtests
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.
 
 ### Rob
+
+Played 2026-10-30, about 5 minutes. Far too easy for the brief: answers can be fallen into rather than worked out. Monkey Island's lesson: you should never solve something by accident; every answer needs specific, deliberate steps. Decision: rework the chapter with more and harder puzzles (8 to 10, Medium to Hard, 30 to 40 minutes, 1 to 2 new scenes) before moving on to Chapter 2.
 
 ### Jack
 

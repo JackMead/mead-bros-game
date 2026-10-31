@@ -6,6 +6,7 @@ How Claude designs puzzles for this game, and how we judge them. It improves aft
 
 No chapter's author can opt out of these.
 
+1. **No accidental solves:** you can never fall into an answer. Every solution needs a specific, deliberate action by the player (use this on that, go there and do this). Talking to people and looking at things give clues, never solutions, and a conversation menu is never the whole puzzle.
 1. **Fair:** the solution can be justified in one sentence using only things the player has seen or been told in the game. If the justification needs "because adventure games", it fails.
 2. **Clued:** every solution is hinted at least once before it's needed, in a description, a line of dialogue or a character's refusal. A good "no" points somewhere: "This lid's rusted on, I can't shift it" says *something to lever it, or someone stronger*. (Examples in this rubric are invented; never quote a real chapter here.)
 3. **No dead ends:** the player can never lose something they need, or lock themselves out. Checked automatically.
@@ -82,4 +83,8 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **Menus can be brute-forced for free.** Three or four options with no cost to a wrong pick means a masher always gets through. Keep menus for jokes and character, and put the real thinking somewhere else, like which item, which place or which name.
   - **Menacing flavour invites a puzzle.** A sinister animal with a backstory made every tester expect to use it. Either give it a clear "not this" or pay it off in the story (here, the ending).
   - **Spell out unfamiliar facts once.** Old money (half a crown is two and six) needed saying in plain words somewhere for newcomers; otherwise the right answer felt lucky.
+- *2026-10-30, Chapter 1 (first human playtest, Rob):* **5 minutes against a 20 to 30 minute target.** The AI testers' 2/5 was generous: a human who knows adventure games went straight through. Lessons:
+  - **AI testers over-count time.** They spend most of their commands exploring. Judge length by the fewest moves and by humans, not by tester command counts.
+  - **No accidental solves** (now fixed rule 1). Several answers were triggered just by talking to everyone.
+  - **More inventory, more threads.** With one or two items in hand there's only ever one candidate. Medium needs several items in play, a couple of decoys, and two or three threads open at once.
 

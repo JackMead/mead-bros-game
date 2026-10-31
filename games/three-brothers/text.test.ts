@@ -44,4 +44,9 @@ describe('text commands, after playtest round 1', () => {
   it('reads a place whose name contains "to" as one thing', () => {
     expect(run(whitby, newGame(whitby), 'use Steps down to the old town').state.scene).toBe('old_town');
   });
+
+  it('reads a brother\'s name as the brother, not an item named after him', () => {
+    expect(run(whitby, newGame(whitby), 'use bat on phil').output).not.toContain("not on that");
+    expect(run(whitby, newGame(whitby), 'look at phil').output).not.toContain('table tennis bat');
+  });
 });

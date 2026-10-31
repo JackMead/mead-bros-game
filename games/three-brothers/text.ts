@@ -109,6 +109,12 @@ function parse(chapter: Chapter, state: State, input: string): Action | string {
     return t ? { type: 'look', target: t } : notHere(m[1]);
   }
 
+  m = /^(?:wear|put on|dress in) (.+)$/.exec(s);
+  if (m) {
+    const item = resolveItem(chapter, state, m[1]);
+    return item ? { type: 'item', item, target: state.active } : `${cast[state.active].name} isn't carrying "${m[1]}".`;
+  }
+
   m = /^(use|give|put|show|offer|feed) (.+?) (?:on|to|with|in|into|at) (.+)$/.exec(s);
   if (m) {
     const item = resolveItem(chapter, state, m[2]);
@@ -150,6 +156,9 @@ function resolveItem(chapter: Chapter, state: State, query: string): string | un
 function resolve(chapter: Chapter, state: State, query: string): string | undefined {
   const q = norm(query);
   if (['me', 'myself', 'self'].includes(q)) return state.active;
+  // A brother's exact name beats an item named after him ("Phil" is Phil, not Phil's bat).
+  const brother = chapter.brothers.find((b) => q === b || q === norm(cast[b].name));
+  if (brother) return brother;
   return (
     resolveItem(chapter, state, query) ??
     chapter.brothers.find((b) => matches(query, b, cast[b].name)) ??

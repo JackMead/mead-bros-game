@@ -39,6 +39,14 @@ export const ICONS: Record<string, (ctx: CanvasRenderingContext2D, r: Rect, time
   coin: drawCoin,
   kipper: drawKipper,
   float: drawFloat,
+  'card-red': (ctx, r, t) => drawCard(ctx, r, t, '#d9534f', false),
+  'card-blue': (ctx, r, t) => drawCard(ctx, r, t, '#5b8fd9', false),
+  'card-purple': (ctx, r, t) => drawCard(ctx, r, t, '#9b6ad9', false),
+  'card-gold': (ctx, r, t) => drawCard(ctx, r, t, '#e8c040', true),
+  penny: (ctx, r) => drawCoppers(ctx, r, 1),
+  tuppence: (ctx, r) => drawCoppers(ctx, r, 2),
+  suit: drawSuit,
+  newspaper: drawNewspaper,
 };
 
 function begin(ctx: CanvasRenderingContext2D, width = 2): void {
@@ -345,6 +353,91 @@ function drawCards(ctx: CanvasRenderingContext2D, r: Rect, time: number): void {
     }
     ctx.restore();
   });
+  ctx.restore();
+}
+
+/** One trading card, picture in its colour; a shiny one shimmers. */
+function drawCard(ctx: CanvasRenderingContext2D, r: Rect, time: number, colour: string, shiny: boolean): void {
+  const p = inset(r, 0.3, 0.18);
+  ctx.save();
+  begin(ctx);
+  ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+  ctx.rotate(-0.12);
+  ctx.fillStyle = '#f3ead8';
+  ctx.beginPath();
+  ctx.roundRect(-p.w / 2, -p.h / 2, p.w, p.h, 3);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = colour;
+  ctx.fillRect(-p.w / 2 + 3, -p.h / 2 + 3, p.w - 6, p.h * 0.55);
+  if (shiny) {
+    ctx.fillStyle = `rgba(255,255,255,${0.25 + 0.3 * Math.sin(time * 3)})`;
+    ctx.fillRect(-p.w / 2 + 3, -p.h / 2 + 3, p.w - 6, p.h * 0.55);
+  }
+  ctx.restore();
+}
+
+/** One or two big copper pennies. */
+function drawCoppers(ctx: CanvasRenderingContext2D, r: Rect, count: number): void {
+  const rad = Math.min(r.w, r.h) * 0.24;
+  ctx.save();
+  begin(ctx);
+  for (let i = 0; i < count; i++) {
+    const x = r.x + r.w / 2 + (count === 2 ? (i ? 7 : -7) : 0);
+    const y = r.y + r.h / 2 + (count === 2 ? (i ? 5 : -5) : 0);
+    ctx.fillStyle = '#b8733a';
+    ctx.beginPath();
+    ctx.arc(x, y, rad, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#7a4a22';
+    ctx.beginPath();
+    ctx.arc(x, y, rad * 0.7, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = INK;
+  }
+  ctx.restore();
+}
+
+/** A folded brown tweed jacket. */
+function drawSuit(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const p = inset(r, 0.2, 0.18);
+  ctx.save();
+  begin(ctx);
+  ctx.fillStyle = '#7a5a3a';
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y + p.h * 0.15);
+  ctx.lineTo(p.x + p.w * 0.35, p.y);
+  ctx.lineTo(p.x + p.w * 0.5, p.y + p.h * 0.45);
+  ctx.lineTo(p.x + p.w * 0.65, p.y);
+  ctx.lineTo(p.x + p.w, p.y + p.h * 0.15);
+  ctx.lineTo(p.x + p.w, p.y + p.h);
+  ctx.lineTo(p.x, p.y + p.h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#f3ead8';
+  ctx.beginPath();
+  ctx.moveTo(p.x + p.w * 0.38, p.y + p.h * 0.04);
+  ctx.lineTo(p.x + p.w * 0.5, p.y + p.h * 0.4);
+  ctx.lineTo(p.x + p.w * 0.62, p.y + p.h * 0.04);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+/** A folded newspaper. */
+function drawNewspaper(ctx: CanvasRenderingContext2D, r: Rect): void {
+  const p = inset(r, 0.16, 0.24);
+  ctx.save();
+  begin(ctx);
+  ctx.fillStyle = '#e8e2d0';
+  ctx.fillRect(p.x, p.y, p.w, p.h);
+  ctx.strokeRect(p.x, p.y, p.w, p.h);
+  ctx.fillStyle = '#8a8478';
+  ctx.fillRect(p.x + 4, p.y + 4, p.w - 8, 4);
+  for (let i = 0; i < 3; i++) ctx.fillRect(p.x + 4, p.y + 12 + i * 5, p.w * 0.4, 2);
+  for (let i = 0; i < 3; i++) ctx.fillRect(p.x + p.w * 0.55, p.y + 12 + i * 5, p.w * 0.35, 2);
   ctx.restore();
 }
 

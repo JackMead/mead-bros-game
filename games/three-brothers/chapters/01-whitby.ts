@@ -699,7 +699,7 @@ export const whitby: Chapter = {
         "Pawnbroker: There's a gent's suit in the window, if you've the money. Two and six.",
         'Me: Two and six what?',
         'Pawnbroker: Two shillings and sixpence, lad. Where are you from?',
-        'Me: ...Harrogate.',
+        'Me: ...Filey.',
         'Pawnbroker: That explains it.',
       ],
     },

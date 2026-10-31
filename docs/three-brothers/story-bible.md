@@ -30,10 +30,14 @@ Each brother owns his entry here and in `games/three-brothers/cast.ts`. Catchphr
 | | Rob | Jack | Phil |
 | --- | --- | --- | --- |
 | Age | Eldest | Middle | Youngest |
+| Born | London | Scarborough | Scarborough |
+| Lives | York | Oxford | Belfast |
 | Good at | Being tall; reaching things | Maths, spotting a pattern | Table tennis; reflexes, aim |
 | Weakness | Gets on his soapbox and won't get off | Vegetarian: won't touch meat | Permanently cold hands and feet |
 | Visual gag | Carries an actual soapbox, for ranting | | Blowing on his fingers |
 | Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "That doesn't add up." | "Young man", to everyone, whatever their age |
+
+Where they're from (from Rob): the family home was in Scarborough and later moved to Filey. Joke potential for later chapters: the only brother who lives in Yorkshire wasn't born there, and the two born there both left. The curse won't let any of them out of the county.
 
 More about Phil, from Chapter 1 (written by Rob; Phil can rework any of it):
 

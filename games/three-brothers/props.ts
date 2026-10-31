@@ -26,6 +26,7 @@ export const PROPS: Record<string, Draw> = {
   chalkboard: drawChalkboard,
   sign: drawSign,
   water: drawWater,
+  newspaper: (ctx, r) => drawNewspaper(ctx, r),
 };
 
 export const ICONS: Record<string, (ctx: CanvasRenderingContext2D, r: Rect, time: number) => void> = {

@@ -460,7 +460,7 @@ export const whitby: Chapter = {
     west_cliff: {
       name: 'The West Cliff',
       description:
-        'The smart side of Whitby. A whalebone arch frames the sea, and a grand hotel looks down its nose at the harbour. A doorman guards the gate in its railings, and a young gentleman mopes on the terrace.',
+        'The smart side of Whitby. A whalebone arch frames the sea, and a grand hotel looks down its nose at the harbour. A doorman guards the gate in its railings, with the terrace behind.',
       background: 'whitby-west-cliff.webp',
       placeholder: { top: '#8fb0c8', bottom: '#6a7a5a' },
       hotspots: [
@@ -796,7 +796,7 @@ export const whitby: Chapter = {
       say: [
         'Phil gets the trousers on, the waistcoat on, the jacket on. Then the collar.',
         "Me: Four tiny brass studs. And my fingers are so cold I can't feel them, never mind the studs.",
-        "Me: Everything off again. I'm not walking round Whitby with my collar flapping. I need proper heat in these hands first.",
+        "Me: Everything off again. I'm not walking round Whitby with my collar flapping. I need these hands right up to some proper heat first. Not warm air. Heat.",
       ],
     },
 
@@ -886,7 +886,7 @@ export const whitby: Chapter = {
         'Paperboy: Gazette! Read all about it! Russian ship in port! Famous author in town! Yorkshire beat Lancashire! A penny! Big enough to wrap a cod in!',
         'Me: Love all sport, me. Even this one.',
         'Me: (Quietly.) Best not mention to anyone round here that I support a team from Manchester.',
-        "Paperboy: I collect picture cards, me. Got eleven. I'd give a penny for a good 'un. Not a bat, mind. I hate bats.",
+        "Paperboy: I collect picture cards, me. Got eleven. Not bats, mind. I hate bats.",
       ],
     },
     { on: 'paperboy', say: ["Paperboy: Gazette! Read all about it! I've got a dragon at home now! Well, I haven't. But I want one."] },

@@ -38,7 +38,7 @@ const seeds = Array.from({ length: runs }, (_, i) => mix(0xb2a6, i + 1));
 const pars = new Map<number, number>();
 if (withPar) {
   const t = performance.now();
-  for (const seed of seeds) pars.set(seed, findPar(seed, { beam: 30 }).score);
+  for (const seed of seeds) pars.set(seed, findPar(seed, { beam: config.par.beam }).score);
   console.log(`par searched for ${runs} dungeons in ${((performance.now() - t) / 1000).toFixed(0)}s, mean ${(mean([...pars.values()])).toFixed(1)}`);
 }
 

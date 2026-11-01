@@ -4,9 +4,12 @@ import { Sound, type SoundName } from './audio';
 import { config } from './config';
 import {
   SLOT_NAMES, activeRun, allRuns, compact, day, dayTotal, load, persist, playsLeft, recordAction, records,
-  resume, startPlaytest, startRun, ukDate, type KeyValueStore, type RunRecord, type SaveData,
+  resume, parKey, startPlaytest, startRun, storePar, ukDate,
+  type KeyValueStore, type ParRecord, type RunRecord, type SaveData,
 } from './daily';
 import { canCollect, submitRun } from './collect';
+import { requestPar } from './par';
+import { keyMoments, momentText, postMortem } from './postmortem';
 import { runCode } from './runcode';
 import { Fx } from './fx';
 import { dist, same } from './grid';
@@ -14,7 +17,7 @@ import { BEHAVIOUR_HELP } from './kit';
 import { enemyType, getKit } from './kits';
 import { PAGES } from './pages';
 import { computeLayout, render, squareAt, type Layout } from './render';
-import { canDescend, enemyAt, pageTargets, step } from './sim';
+import { canDescend, enemyAt, pageTargets, step, windingUp } from './sim';
 import type { Action, GameEvent, OutcomeKind, Pos, RunState } from './types';
 import { registerServiceWorker } from './pwa';
 
@@ -288,6 +291,8 @@ function showOver(): void {
       <div class="stat">Floor<b>${state.depth} of ${config.run.floors}</b></div>
       <div class="stat">Turns<b>${state.turn}</b></div>
     </div>
+    <p id="par-line" class="par">Finding this dungeon's par…</p>
+    ${lessons(r)}
     ${askFault ? `<p class="q">Was that your mistake?</p><div class="chips">${chip('fault:mine', 'Yes, my fault')}${chip('fault:unfair', 'No, felt unfair')}</div>` : ''}
     <p class="q">How did that run feel?</p>
     <div class="chips">${chip('feel:easy', 'Too easy')}${chip('feel:right', 'About right')}${chip('feel:hard', 'Too hard')}</div>
@@ -320,6 +325,35 @@ function showOver(): void {
     const note = document.getElementById('send-note');
     if (note) note.textContent = ok ? 'This run is sent to the playtest log when you tap Done.' : '';
   });
+  void parFor(r).then((par) => {
+    const line = document.getElementById('par-line');
+    if (!line) return;
+    if (!par || par.score <= 0) { line.remove(); return; }
+    const share = Math.round((o.score / par.score) * 100);
+    line.innerHTML = o.score >= par.score
+      ? `<b>You matched or beat par</b> (◆ ${par.score}), the best line the solver found on this dungeon.`
+      : `<b>${share}% of par.</b> The best line found on this dungeon banks ◆ ${par.score} on floor ${par.depth}.`;
+  });
+}
+
+/** Par for a run's dungeon: from the save if already found, otherwise searched in the background. */
+async function parFor(r: RunRecord): Promise<ParRecord | null> {
+  const cached = save.pars[parKey(r.seed)];
+  if (cached) return cached;
+  const par = await requestPar(r.seed, r.kit);
+  if (par) {
+    storePar(save, r.seed, par);
+    persist(store, save);
+  }
+  return par;
+}
+
+/** The post-mortem: up to three moments a different move would have saved a heart. */
+function lessons(r: RunRecord): string {
+  const moments = keyMoments(postMortem(r.seed, r.actions, r.kit));
+  if (moments.length === 0) return '<p class="muted">No avoidable hits this run.</p>';
+  const items = moments.map((m) => `<li${m.turningPoint ? ' class="turning"' : ''}>${momentText(m)}</li>`).join('');
+  return `<div class="lessons"><p class="q">Where it went wrong</p><ul>${items}</ul></div>`;
 }
 
 function copyText(text: string, button: HTMLButtonElement): void {
@@ -367,7 +401,9 @@ function updateHud(): void {
 
   $('hint').textContent = targeting !== null
     ? `${PAGES[p.pages[targeting]!].name}: tap a blue square, or tap the page again to cancel.`
-    : 'Tap a neighbouring square to move or attack. Hold an enemy to inspect it.';
+    : windingUp(state).length
+      ? 'Winding up: step outside the dashed outline and it gets a free hit.'
+      : 'Tap a neighbouring square to move or attack. Hold an enemy to inspect it.';
 }
 
 function choosePage(slot: number): void {

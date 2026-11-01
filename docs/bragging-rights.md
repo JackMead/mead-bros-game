@@ -193,3 +193,25 @@ Melee rule experiment: 30 dungeons, 110 oil, balanced and greedy players thinkin
 | **Disengage** (leaving the reach of an enemy about to strike gives it a free hit) | 3.1 to 5.3, 3 to 17% | 37 to 67% | Yes (81 vs 69) | 30 to 47% | **Meets the goal** |
 | Lunge + disengage | 3.2 to 5.3, 3 to 20% | 47 to 70% | Yes | 30 to 47% | No better than disengage alone |
 | Disengage + 5 hearts | 3.5 to 6.4, 3 to 27% | 30 to 53% | Yes (81 vs 68) | 30 to 47% | Softer for beginners, still bites |
+
+## v0.3 (signed off 2026-11-01)
+
+Ships to the playtest page when the v0.2 play window ends, as one batch.
+
+- **Disengage:** a goblin or wraith next to you that is winding up gets a free hit if you step out of its reach. Kill it first (you act first), sidestep within its reach, or pay the heart. Its reach is outlined on the board, and the hint line explains it.
+- **5 hearts** (was 4) and **110 oil** (was 150).
+- **Par:** after each run the solver searches that dungeon in a background worker (1 to 2 seconds on a laptop) and shows your haul as a share of the best line found. Cached per dungeon and build, and shown on the home screen.
+- **Post-mortem:** after each run, up to three moments where a different move would have taken no damage without walking into a certain hit next turn. The hit that ended the run is marked. `postmortem.ts`.
+
+Machine playtest of v0.3 (30 dungeons, par mean 118.6):
+
+| Player | Escaped | Banked | Died | Lamp out | Share of par | Hits per run |
+|---|---|---|---|---|---|---|
+| Careful, 1 turn ahead | 7% | 80% | 7% | 7% | 23% | 3.6 |
+| Careful, 3 turns | 30% | 67% | 0% | 3% | 70% | 1.2 |
+| Balanced, 1 turn | 7% | 50% | 30% | 13% | 22% | 5.5 |
+| Balanced, 3 turns | 53% | 37% | 3% | 7% | 74% | 3.5 |
+| Greedy, 1 turn | 3% | 0% | 53% | 43% | 10% | 7.0 |
+| Greedy, 3 turns | 57% | 3% | 27% | 13% | 61% | 6.4 |
+
+Balanced play now beats both careful and greedy play, banking happens on floors 1 to 7, and skill shows clearly in share of par.

@@ -4,6 +4,7 @@ import { alignedDir } from './grid';
 import type { FloorKit } from './kit';
 import { enemyType } from './kits';
 import { PAGES } from './pages';
+import { windingUp } from './sim';
 import type { Behaviour, Enemy, Pos, RunState } from './types';
 
 /** Drawing only: reads the game state and the visual effects, changes neither. */
@@ -57,6 +58,7 @@ export function render(ctx: CanvasRenderingContext2D, light: CanvasRenderingCont
   drawLight(ctx, light, view, dpr);
   drawItems(ctx, view);
   drawTelegraphs(ctx, view);
+  drawReach(ctx, view);
   if (view.targets) drawTargets(ctx, view.targets, t, fx.time);
   for (const g of fx.ghosts) {
     ctx.save();
@@ -276,6 +278,25 @@ function drawTelegraphs(ctx: CanvasRenderingContext2D, { state, layout, fx }: Vi
       ctx.fillStyle = 'rgba(255, 150, 120, 0.9)';
       for (const sq of intent.squares) chevron(ctx, (sq.x + 0.5) * t, (sq.y + 0.5) * t, dir, t * 0.16);
     }
+  }
+}
+
+/** Dashed outline around each enemy winding up next to you: leave it and you take a hit. */
+function drawReach(ctx: CanvasRenderingContext2D, { state, layout, fx }: View): void {
+  const t = layout.tile;
+  const f = state.floor;
+  for (const e of windingUp(state)) {
+    const x0 = Math.max(0, e.pos.x - 1);
+    const y0 = Math.max(0, e.pos.y - 1);
+    const x1 = Math.min(f.width - 1, e.pos.x + 1);
+    const y1 = Math.min(f.height - 1, e.pos.y + 1);
+    ctx.save();
+    ctx.setLineDash([t * 0.12, t * 0.08]);
+    ctx.lineDashOffset = -fx.time * t * 0.4;
+    ctx.strokeStyle = 'rgba(255, 176, 92, 0.95)';
+    ctx.lineWidth = Math.max(2, t * 0.045);
+    ctx.strokeRect(x0 * t + 2, y0 * t + 2, (x1 - x0 + 1) * t - 4, (y1 - y0 + 1) * t - 4);
+    ctx.restore();
   }
 }
 

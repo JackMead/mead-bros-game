@@ -8,7 +8,7 @@ export const config = {
     deathKeepShare: 0.25,
   },
   player: {
-    hearts: 4,
+    hearts: 5,
     oil: 110,
     oilPerTurn: 1,
     attack: 1,
@@ -47,16 +47,18 @@ export const config = {
     maxDarkness: 0.5,
   },
   storageKey: 'bragging-rights:v1',
+  /** Par search width: wider finds better lines but takes longer (about 3s on a laptop at 30). */
+  par: { beam: 30 },
   /** Bump when rules or numbers change, so playtest runs from different builds aren't mixed up. */
   build: 'v0.3',
   /**
-   * Rule experiments, tried by machine playtest before anything ships (see docs).
-   * Defaults are the rules as played.
+   * Rules chosen by machine playtest (see docs). Defaults are the rules as played;
+   * the others stay switchable so they can be compared again later.
    */
   experiments: {
     /** How melee enemies strike: the square you're on, a 'lunge' through it, or every square in 'reach'. */
     melee: 'square' as 'square' | 'lunge' | 'reach',
-    /** Stepping away from an enemy that is about to strike you gives it a free hit. */
-    disengage: false as boolean,
+    /** Stepping out of reach of an enemy that is about to strike you gives it a free hit. On since v0.3. */
+    disengage: true as boolean,
   },
 } as const;

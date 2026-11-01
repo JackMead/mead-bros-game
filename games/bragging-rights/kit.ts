@@ -51,9 +51,9 @@ export interface Palette {
 }
 
 export const BEHAVIOUR_HELP: Record<Behaviour, string> = {
-  melee: 'Walks towards you and strikes the square you are on.',
+  melee: 'Walks towards you and strikes the square you are on. While it winds up, stepping out of its reach gives it a free hit.',
   archer: 'Shoots along a straight line when you share a row, column or diagonal. Hits anything in the way.',
   brute: 'Slow: moves every other turn. Smashes through walls and hits every square around it.',
   charger: 'Charges in a straight line when lined up with you, then needs a turn to recover. Falls into chasms.',
-  hunter: 'Drifts through walls and always knows where you are, even when you are unseen.',
+  hunter: 'Drifts through walls and always knows where you are, even when you are unseen. While it winds up, stepping out of its reach gives it a free hit.',
 };

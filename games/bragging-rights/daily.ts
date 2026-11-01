@@ -54,7 +54,26 @@ export interface SaveData {
   days: Record<string, DayRecord>;
   /** Unlimited practice runs on random seeds. Development only: off once scores count (v1). */
   playtest: RunRecord[];
+  /** Par found for each dungeon, keyed by `<build>:<seed>` (par changes when the rules do). */
+  pars: Record<string, ParRecord>;
   muted: boolean;
+}
+
+export interface ParRecord {
+  score: number;
+  depth: number;
+}
+
+const PARS_KEEP = 60;
+
+export function parKey(seed: number): string {
+  return `${config.build}:${seed}`;
+}
+
+export function storePar(save: SaveData, seed: number, par: ParRecord): void {
+  save.pars[parKey(seed)] = par;
+  const keys = Object.keys(save.pars);
+  for (const k of keys.slice(0, Math.max(0, keys.length - PARS_KEEP))) delete save.pars[k];
 }
 
 export interface KeyValueStore {
@@ -81,7 +100,7 @@ export function dailySeed(date: string, slot: number): number {
 }
 
 export function emptySave(): SaveData {
-  return { version: 1, days: {}, playtest: [], muted: false };
+  return { version: 1, days: {}, playtest: [], pars: {}, muted: false };
 }
 
 export function load(store: KeyValueStore): SaveData {
@@ -94,6 +113,7 @@ export function load(store: KeyValueStore): SaveData {
     // Fill in fields added after the first saves were written.
     for (const d of Object.values(save.days)) d.runs = d.runs.map((r) => normalise(r, 'daily', d.date));
     save.playtest = (save.playtest ?? []).map((r) => normalise(r, 'playtest', r.date ?? ''));
+    save.pars = save.pars ?? {};
     return save;
   } catch {
     return emptySave();

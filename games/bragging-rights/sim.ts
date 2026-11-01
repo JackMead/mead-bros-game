@@ -131,6 +131,16 @@ export function pageTargets(s: RunState, slot: number): Pos[] {
   return out;
 }
 
+/** Enemies next to you that are winding up a strike: walking out of their reach costs a hit. */
+export function windingUp(s: RunState): Enemy[] {
+  if (!config.experiments.disengage || s.phase !== 'play') return [];
+  const kit = getKit(s.kitId);
+  return s.floor.enemies.filter((e) => {
+    const b = enemyType(kit, e.type).behaviour;
+    return (b === 'melee' || b === 'hunter') && e.intent.type === 'attack' && dist(e.pos, s.player.pos) === 1;
+  });
+}
+
 /** Every square some enemy will hit next turn. Useful for the UI and for bots. */
 export function dangerSquares(s: RunState): Pos[] {
   const out: Pos[] = [];

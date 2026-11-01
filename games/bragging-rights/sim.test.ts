@@ -98,8 +98,36 @@ describe('enemies telegraph and you can dodge', () => {
     expect(s.player.hearts).toBe(config.player.hearts - 1);
   });
 
-  it('stepping off the telegraphed square avoids the hit', () => {
-    const s = act(setup(rows), wait, move(-1, 0));
+  it('sidestepping within its reach avoids the hit', () => {
+    let s = act(setup(['...g...', '.......', '...@...']), wait);
+    const g = s.floor.enemies[0].pos;
+    const me = s.player.pos;
+    // A neighbouring square that is still next to the goblin.
+    const side = [-1, 0, 1].flatMap((dx) => [-1, 0, 1].map((dy) => ({ dx, dy })))
+      .find(({ dx, dy }) => (dx || dy) && Math.max(Math.abs(me.x + dx - g.x), Math.abs(me.y + dy - g.y)) === 1
+        && !(me.x + dx === g.x && me.y + dy === g.y))!;
+    s = act(s, move(side.dx, side.dy));
+    expect(s.player.hearts).toBe(config.player.hearts);
+  });
+
+  it('walking out of reach of an enemy winding up gives it a free hit', () => {
+    let s = act(setup(['...g...', '.......', '...@...', '.......']), wait);
+    s = act(s, move(0, 1)); // (3,3): out of reach
+    expect(s.player.hearts).toBe(config.player.hearts - 1);
+  });
+
+  it('killing it first costs nothing', () => {
+    let s = act(setup(['...g...', '.......', '...@...']), wait);
+    const g = s.floor.enemies[0].pos;
+    s = act(s, move(g.x - s.player.pos.x, g.y - s.player.pos.y));
+    expect(s.floor.enemies).toHaveLength(0);
+    expect(s.player.hearts).toBe(config.player.hearts);
+  });
+
+  it('no free hit from an enemy that is only moving', () => {
+    let s = setup(['...g...', '.......', '.......', '...@...', '.......']);
+    expect(s.floor.enemies[0].intent.type).toBe('move');
+    s = act(s, move(0, 1));
     expect(s.player.hearts).toBe(config.player.hearts);
   });
 

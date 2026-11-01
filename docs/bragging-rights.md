@@ -250,3 +250,5 @@ Built for fast play: threats should grab your eye and tools should feel like a b
 | **Free + stronger + 5-turn ring** | **24.5 / 76.2** | **14.9 / 60.6** | **60 to 66%** |
 
 Under v0.3 rules pages already lift two-turn hauls by 17 to 28% over none (an earlier "no value" reading came from a solver flaw that hoarded pages). Bots plan only 1 or 2 turns ahead, so they understate combinations a person can see.
+
+**Shipped as v0.4 (Rob signed off the page package):** pages don't use your turn, Shove pushes 3 squares with 2 impact damage, dazes last 2 turns, Ward dazes enemies next to you, Blink reaches 4 squares, and the ring hides you for 5 turns.

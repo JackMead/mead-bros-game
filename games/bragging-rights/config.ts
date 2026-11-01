@@ -17,17 +17,17 @@ export const config = {
     heartsPerFloor: 1,
   },
   ring: {
-    invisibleTurns: 3,
+    invisibleTurns: 5,
     maxHuntersPerFloor: 3,
   },
   pages: {
-    shoveDistance: 2,
+    shoveDistance: 3,
     /** Damage when a shoved enemy hits a wall or another enemy. */
-    shoveImpact: 1,
+    shoveImpact: 2,
     /** Enemy turns a shoved (or warded) enemy loses. */
-    dazeTurns: 1,
+    dazeTurns: 2,
     swapRange: 4,
-    blinkRange: 3,
+    blinkRange: 4,
   },
   ranges: {
     archer: 5,
@@ -54,7 +54,7 @@ export const config = {
   /** Par search width: wider finds better lines but takes longer (about 3s on a laptop at 30). */
   par: { beam: 30 },
   /** Bump when rules or numbers change, so playtest runs from different builds aren't mixed up. */
-  build: 'v0.3',
+  build: 'v0.4',
   /**
    * Rules chosen by machine playtest (see docs). Defaults are the rules as played;
    * the others stay switchable so they can be compared again later.
@@ -65,8 +65,8 @@ export const config = {
     /** Stepping out of reach of an enemy that is about to strike you gives it a free hit. On since v0.3. */
     disengage: true as boolean,
     /** Using a page doesn't use up your turn: enemies don't act. */
-    freePages: false as boolean,
+    freePages: true as boolean,
     /** Ward also dazes every enemy next to you. */
-    wardDaze: false as boolean,
+    wardDaze: true as boolean,
   },
 } as const;

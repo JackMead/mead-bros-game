@@ -172,11 +172,28 @@ describe('enemies telegraph and you can dodge', () => {
 });
 
 describe('pages', () => {
-  it('shove pushes two squares, and a wall hurts', () => {
-    const s = act(setup(['@w.#'], (b) => { b.player.pages[0] = 'shove'; }), { type: 'page', slot: 0, x: 1, y: 0 });
-    expect(s.floor.enemies[0].pos).toEqual({ x: 2, y: 0 });
-    expect(s.floor.enemies[0].hp).toBe(1);
+  it('shove pushes up to three squares, a wall hurts, and it is dazed', () => {
+    const s = act(setup(['@t..#'], (b) => { b.player.pages[0] = 'shove'; }), { type: 'page', slot: 0, x: 1, y: 0 });
+    const troll = s.floor.enemies[0];
+    expect(troll.pos).toEqual({ x: 3, y: 0 });
+    expect(troll.hp).toBe(3 - config.pages.shoveImpact);
+    expect(troll.intent.type).toBe('stunned');
     expect(s.player.pages[0]).toBeNull();
+  });
+
+  it('pages are free actions: no turn, no oil, enemies do not act', () => {
+    const before = setup(['@...g'], (b) => { b.player.pages[0] = 'blink'; });
+    const s = act(before, { type: 'page', slot: 0, x: 2, y: 0 });
+    expect(s.turn).toBe(before.turn);
+    expect(s.player.oil).toBe(before.player.oil);
+    expect(s.floor.enemies[0].pos).toEqual(before.floor.enemies[0].pos);
+  });
+
+  it('a daze lasts two enemy turns', () => {
+    let s = act(setup(['@t...'], (b) => { b.player.pages[0] = 'shove'; }), { type: 'page', slot: 0, x: 1, y: 0 });
+    const at = s.floor.enemies[0].pos;
+    s = act(s, wait, wait);
+    expect(s.floor.enemies[0].pos).toEqual(at);
   });
 
   it('shove into a chasm', () => {
@@ -184,11 +201,11 @@ describe('pages', () => {
     expect(s.floor.enemies).toHaveLength(0);
   });
 
-  it('blink jumps up to 3 squares', () => {
-    const s = setup(['@....'], (b) => { b.player.pages[1] = 'blink'; });
-    expect(step(s, { type: 'page', slot: 1, x: 4, y: 0 }).ok).toBe(false);
-    expect(act(s, { type: 'page', slot: 1, x: 3, y: 0 }).player.pos).toEqual({ x: 3, y: 0 });
-    expect(pageTargets(s, 1)).toHaveLength(3);
+  it('blink jumps up to 4 squares', () => {
+    const s = setup(['@.....'], (b) => { b.player.pages[1] = 'blink'; });
+    expect(step(s, { type: 'page', slot: 1, x: 5, y: 0 }).ok).toBe(false);
+    expect(act(s, { type: 'page', slot: 1, x: 4, y: 0 }).player.pos).toEqual({ x: 4, y: 0 });
+    expect(pageTargets(s, 1)).toHaveLength(4);
   });
 
   it('swap trades places with an enemy', () => {

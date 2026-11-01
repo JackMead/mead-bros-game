@@ -9,7 +9,7 @@ export const config = {
   },
   player: {
     hearts: 4,
-    oil: 150,
+    oil: 110,
     oilPerTurn: 1,
     attack: 1,
     pageSlots: 2,
@@ -48,5 +48,15 @@ export const config = {
   },
   storageKey: 'bragging-rights:v1',
   /** Bump when rules or numbers change, so playtest runs from different builds aren't mixed up. */
-  build: 'v0.2',
+  build: 'v0.3',
+  /**
+   * Rule experiments, tried by machine playtest before anything ships (see docs).
+   * Defaults are the rules as played.
+   */
+  experiments: {
+    /** How melee enemies strike: the square you're on, a 'lunge' through it, or every square in 'reach'. */
+    melee: 'square' as 'square' | 'lunge' | 'reach',
+    /** Stepping away from an enemy that is about to strike you gives it a free hit. */
+    disengage: false as boolean,
+  },
 } as const;

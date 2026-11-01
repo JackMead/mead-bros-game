@@ -30,7 +30,7 @@ args.forEach((a, i) => {
   const keys = path.split('.');
   let obj = config as unknown as Record<string, unknown>;
   for (const k of keys.slice(0, -1)) obj = obj[k] as Record<string, unknown>;
-  obj[keys.at(-1)!] = Number(value);
+  obj[keys.at(-1)!] = value === 'true' ? true : value === 'false' ? false : Number.isNaN(Number(value)) ? value : Number(value);
   console.log(`set ${path} = ${value}`);
 });
 
@@ -48,7 +48,7 @@ function mean(xs: number[]): number {
 const pct = (n: number) => `${Math.round(n * 100)}%`;
 
 console.log(`\n${runs} dungeons per player, build ${config.build}\n`);
-console.log('player            escaped  banked  died  lamp   mean◆  %par  bank floors     ring  pages  turns  ended by');
+console.log('player            escaped  banked  died  lamp   mean◆  %par  bank floors     ring  pages  turns   hits  ended by');
 for (const name of personas) {
   for (const horizon of horizons) {
     const reports: RunReport[] = seeds.map((seed, i) => {
@@ -75,6 +75,7 @@ for (const name of personas) {
       pct(reports.filter((r) => r.ringUses > 0).length / reports.length).padStart(5),
       (found ? pct(used / found) : '-').padStart(6),
       mean(reports.map((r) => r.turns)).toFixed(0).padStart(6),
+      mean(reports.map((r) => Object.values(r.damageBy).reduce((a, b) => a + b, 0))).toFixed(1).padStart(6),
       ' ' + Object.entries(ended).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k} ${n}`).join(', '),
     ].join(' '));
   }

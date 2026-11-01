@@ -177,3 +177,19 @@ Signed off by Rob on 2026-11-01 (batch 2). Every batch is played by machine befo
 6. **Par** averaged 125: a full search clears all 8 floors with nearly every relic.
 
 Bot limits: they value holding pages, so page use (about 45%) understates how humans will use them. Treat page and ring numbers from bots with caution.
+
+### Decisions and experiments (2026-11-01)
+
+- **Oil 150 → 110** (Rob). In the code as build v0.3; goes to the playtest page at the end of the current window.
+- **Skilled players should get hit; the skill is in trade-offs as much as move planning** (Rob). The rule that achieves it is chosen by machine playtest. Candidates are switches in `config.experiments`, off by default.
+
+Melee rule experiment: 30 dungeons, 110 oil, balanced and greedy players thinking 1 to 3 turns ahead. "Hits" is the mean damage taken per run.
+
+| Rule | 3-turn players: hits, deaths | 1-turn players: deaths | Greed punished? | Ring use | Verdict |
+|---|---|---|---|---|---|
+| Strike your square (current) | 0.7 to 2.1, 0% | 20 to 27% | Barely | 17 to 33% | Kiting makes skilled play damage-free |
+| Lunge through your square | 1.0 to 2.1, 0% | 30 to 37% | Barely | 23 to 37% | Sidestepping beats it |
+| Reach (every square around) | 0.9 to 2.5, 0% | 23 to 43% | No | 13 to 40% | Easier for skilled players |
+| **Disengage** (leaving the reach of an enemy about to strike gives it a free hit) | 3.1 to 5.3, 3 to 17% | 37 to 67% | Yes (81 vs 69) | 30 to 47% | **Meets the goal** |
+| Lunge + disengage | 3.2 to 5.3, 3 to 20% | 47 to 70% | Yes | 30 to 47% | No better than disengage alone |
+| Disengage + 5 hearts | 3.5 to 6.4, 3 to 27% | 30 to 53% | Yes (81 vs 68) | 30 to 47% | Softer for beginners, still bites |

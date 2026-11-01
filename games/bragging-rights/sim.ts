@@ -159,6 +159,7 @@ function playerAct(s: RunState, kit: FloorKit, action: Action, events: GameEvent
         return true;
       }
       if (tileAt(s.floor, to) !== 'floor') return false;
+      if (config.experiments.disengage) disengage(s, kit, to, events);
       events.push({ type: 'playerMove', from: p.pos, to });
       p.pos = to;
       collect(s, events);
@@ -185,6 +186,18 @@ function playerAct(s: RunState, kit: FloorKit, action: Action, events: GameEvent
     }
     default:
       return false;
+  }
+}
+
+/** Experiment: enemies about to strike you get a free hit if you step out of their reach. */
+function disengage(s: RunState, kit: FloorKit, to: Pos, events: GameEvent[]): void {
+  for (const e of s.floor.enemies) {
+    const t = enemyType(kit, e.type);
+    if ((t.behaviour !== 'melee' && t.behaviour !== 'hunter') || e.intent.type !== 'attack') continue;
+    if (dist(e.pos, s.player.pos) !== 1 || dist(e.pos, to) <= 1) continue;
+    events.push({ type: 'attack', by: e.id, at: s.player.pos });
+    hurtPlayer(s, e.intent.damage, events);
+    e.intent = { type: 'move' };
   }
 }
 
@@ -422,6 +435,8 @@ function decide(s: RunState, kit: FloorKit, e: Enemy): void {
   let intent: Intent = { type: 'move' };
   switch (t.behaviour) {
     case 'melee':
+      if (d === 1) intent = { type: 'attack', squares: meleeSquares(s, e.pos, me), damage: t.damage };
+      break;
     case 'hunter':
       if (d === 1) intent = { type: 'attack', squares: [{ ...me }], damage: t.damage };
       break;
@@ -448,6 +463,20 @@ function decide(s: RunState, kit: FloorKit, e: Enemy): void {
     }
   }
   e.intent = intent;
+}
+
+function meleeSquares(s: RunState, from: Pos, target: Pos): Pos[] {
+  const open = (p: Pos) => inBounds(s.floor, p) && tileAt(s.floor, p) !== 'wall';
+  switch (config.experiments.melee) {
+    case 'square':
+      return [{ ...target }];
+    case 'lunge': {
+      const beyond = add(target, { x: Math.sign(target.x - from.x), y: Math.sign(target.y - from.y) });
+      return open(beyond) ? [{ ...target }, beyond] : [{ ...target }];
+    }
+    case 'reach':
+      return DIRS.map((d) => add(from, d)).filter(open);
+  }
 }
 
 /** True if nothing solid lies strictly between a and b. Chargers also refuse to charge over a chasm. */

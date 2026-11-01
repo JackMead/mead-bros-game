@@ -87,4 +87,10 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **AI testers over-count time.** They spend most of their commands exploring. Judge length by the fewest moves and by humans, not by tester command counts.
   - **No accidental solves** (now fixed rule 1). Several answers were triggered just by talking to everyone.
   - **More inventory, more threads.** With one or two items in hand there's only ever one candidate. Medium needs several items in play, a couple of decoys, and two or three threads open at once.
+- *2026-11-01, Chapter 3 (AI rounds 1 and 2):*
+  - **Don't let a refusal name the fix.** A long chain with a clue at every step still rated 2 to 2.5, because characters kept saying what they needed. Describe the symptom and let the player name the cure.
+  - **Deductions beat chains.** The one puzzle that needed two things from different scenes connected was every tester's favourite. Aim for more than one per chapter.
+  - **A flavour item can earn its place.** Making a treasured item the price of progress got a bigger reaction than a new key item would have.
+  - **Show the payoff.** If a line says something was written, let the player read it.
+  - **Check public docs for answers by hand.** The spoiler test only catches quoted lines. A story bible entry can still give away a solution in its own words.
 

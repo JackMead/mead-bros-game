@@ -51,7 +51,17 @@ More about Phil, from Chapter 1 (written by Rob; Phil can rework any of it):
 - Loves pop punk; desperate not to miss his summer festival in Leeds.
 - Supports a Manchester football team (keep it generic) but likes all sport.
 
-Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), then Jack writes Rob's.
+More about Rob, from Chapter 3 (written by Jack; Rob can rework any of it):
+
+- A recent dad, inordinately proud of his son, and will boast about him. Insists he no longer has time for things because of him. The son stays unnamed unless Rob names him. A second child is on the way.
+- A keen weightlifter: loves lifting things over his head, and asks people if he can bench press them.
+- Rants that cyclists are dangerous on the road, and moans about the state of things generally.
+- Loves to read, and will always have got through more books this year than whoever he's talking to.
+- Loves dolly mixture, cheese, and cooking a curry.
+- Was a goalkeeper, fancies himself a football analyst, and supports Hull City to some degree.
+- Studied politics in Nottingham and worked for the Lib Dems. Now a doomer about all of it, and thinks the general public are morons. Keep this in the background: the rants are about cyclists and the state of things.
+
+Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), then Jack writes Rob's (3). More chapters follow.
 
 ## Cast (non-brothers)
 
@@ -64,6 +74,9 @@ Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), th
 | Algernon | 1 | A wealthy young gentleman staying at a grand hotel on Whitby's West Cliff. Talks a lot. Plays whiff-whaff, a parlour craze of the day. |
 | Hobbs | 1 | Doorman at Algernon's hotel. |
 | Whitby locals | 1 | An old sailor, a fishwife, a pawnbroker, a jet jeweller, a fisherman, the bridge keeper and a paperboy. A big black dog haunts the churchyard. |
+| David Lloyd George | 3 | The real politician, a minister in the new Liberal government. His stop in Hull in January 1906 is our invention. |
+| Hull locals | 3 | Mrs Hardcastle the Liberal agent, The Mighty Otto the strongman, a bookseller, a cheesemonger, the East Riding Wheelers, and Hull City's trainer and goalkeeper. |
+| The well warden | 3 | Keeps the ledger of everything hung at the Dropping Well in 1906. |
 
 ## Chapters so far
 
@@ -71,6 +84,7 @@ Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), th
 | --- | --- | --- | --- | --- | --- |
 | 0 | The Selfie | Rob | Present day, Mother Shipton's Cave | All three | The curse; the brothers vanish from the selfie spot |
 | 1 | A Young Man in Whitby | Rob | August 1890, Whitby | Phil | Phil, safe for the night at a grand hotel, wonders how Jack is getting on |
+| 3 | Deliver Us From Hull | Jack | January 1906, Hull and Knaresborough | Rob | Rob leaves word in the well and sets off for wherever is next |
 
 ## Lore established
 
@@ -86,19 +100,26 @@ Facts later chapters must respect.
 - **Phil landed in Whitby on 11 August 1890**, in St Mary's churchyard on the East Cliff. By the end of Chapter 1 he is staying at a grand hotel on the West Cliff as Algernon's guest.
 - In 1890 the Petrifying Well is already a tourist attraction, then called the Dropping Well. Algernon hung his best top hat in it that summer. It is the same top hat seen petrifying in the well in the present day. Phil has realised the well is what links the times, but not yet how to use it.
 - Bram Stoker is in Whitby in August 1890, working on the book that becomes *Dracula*.
+- **Rob landed in Hull's Market Place in January 1906**, during the general election, with Hull City in their first League season. His soapbox travelled with him and was wrecked on landing. By the end of Chapter 3 only its lid survives.
+- Later in August 1890, Phil hung a parcel at the Dropping Well, on the same day as Algernon's top hat, with a note inside for Rob. He also got Stoker to print a message to Rob at the back of one edition of *Dracula*, pointing him there. (The name Phil signed under is in the chapter file and `spoilers/`.) Phil can rework how he managed this.
+- **For later chapters:** in January 1906 Rob hung his soapbox lid at the Dropping Well, in the ledger under his full name, for any chapter set after 1906 to find. Scratched on it, in thirty words: he was in Hull in 1906, the soapbox is destroyed, Phil says he's fine, come and get him, and he has a son.
 
 ## Open threads
 
 Things a later chapter can pick up. Close them by moving them to "Closed threads" with the chapter that did it. Part of the fun is learning which to close and which to leave open.
 
-- Where and when did Jack and Rob land? (Chapter 2 is Jack's.)
-- How does Phil get by in 1890, and can he use the well to reach his brothers?
+- Where and when did Jack land? (Chapter 2 is Jack's.)
+- How does Phil get by in 1890?
+- Who finds Rob's plank in the well, and when?
+- Where does Rob go next, and will he be home for the new baby?
 - Phil's wedding, and his festival: will he make either?
 - Who finds the phone with the selfie on it, and when? Does the photo still show her face?
 - Why did the teddy bears turn their heads?
 - Does Mother Shipton want something besides being in the photo?
-- Rob's soapbox: did it travel with him?
 
 ## Closed threads
 
 - Where did Phil land? Whitby, August 1890 (Chapter 1).
+- Where did Rob land? Hull, January 1906 (Chapter 3).
+- Rob's soapbox: did it travel with him? Yes, and it didn't survive (Chapter 3).
+- Can Phil use the well to reach his brothers? Yes, forwards in time (Chapter 3).

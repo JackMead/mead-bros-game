@@ -85,8 +85,10 @@ export function evaluate(s: RunState, p: Persona): number {
   }
   const pl = s.player;
   let v = pl.carried * p.relic + pl.hearts * p.heart + pl.oil * p.oil
-    + pl.pages.filter(Boolean).length * p.page + (pl.hasRing ? p.ring : 0) - pl.corruption * p.corruption;
+    + (pl.hasRing ? p.ring : 0) - pl.corruption * p.corruption;
+  // Pages crumble when you leave the floor, so they're only worth something while you're on it.
   if (s.phase === 'stairs') return v + 1e5;
+  v += pl.pages.filter(Boolean).length * p.page;
   v -= s.floor.enemies.reduce((n, e) => n + e.hp, 0) * p.enemy;
   v -= stairsDistance(s) * p.dist;
   if (dangerSquares(s).some((d) => d.x === pl.pos.x && d.y === pl.pos.y)) v -= p.danger;

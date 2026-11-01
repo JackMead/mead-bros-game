@@ -215,3 +215,12 @@ Machine playtest of v0.3 (30 dungeons, par mean 118.6):
 | Greedy, 3 turns | 57% | 3% | 27% | 13% | 61% | 6.4 |
 
 Balanced play now beats both careful and greedy play, banking happens on floors 1 to 7, and skill shows clearly in share of par.
+
+## First v0.3 human runs (2026-11-01)
+
+Rob's three dailies: banked ◆13 on floor 2 (11% of par), died on floor 4 (6%), died on floor 5 (8%).
+
+- **Fast play is natural on a phone:** about 1 second per move, about 1 minute per run. The design assumed deliberate play. Rob: "flowed that way"; par share "about right for going fast".
+- **Threats didn't register:** 5 of 18 hits came from walking away from a winding-up goblin, and 3 of the costliest moments were attacking one enemy while standing in an archer's line. Rob didn't notice the dashed outline or the archer's line: "graphics need improving to feel like you want to work it out".
+- **Pages and the ring went unused:** 8 pages picked up, 0 used, 5 crumbled. Rob: "didn't feel powered". Machine check agrees: with no pages at all, two-turn players score 72.7 against 76.5 with them, and par is unchanged (116.3 against 115.3). Shove and Ward are the weakest.
+- Fixed a solver flaw: it valued holding pages at the stairs, where they crumble.

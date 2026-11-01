@@ -23,6 +23,7 @@ Open the URL it prints (usually http://localhost:5173) to see the landing page, 
 | `npm test`          | Run the tests                                    |
 | `npm run typecheck` | Check types without building                     |
 | `npm run build`     | Type-check and produce a static build in `dist/` |
+| `npm run preview`   | Preview the production build locally             |
 
 ## How the code is laid out
 
@@ -45,7 +46,7 @@ public/CNAME           Custom domain for GitHub Pages
 ## Adding a new game
 
 1. Copy `games/sandbox/` to `games/<your-game-id>/` (lowercase, dashes, e.g. `space-race`).
-2. Edit its `meta.json` and the `<title>` in its `index.html`.
+2. Edit its `meta.json` (`title`, `description`, and an optional `status` such as `prototype`, `playable` or `archived`) and the `<title>` in its `index.html`.
 3. Run `npm run dev`. The new game appears on the landing page automatically.
 
 Games can import from `src/engine/` but shouldn't import from each other. If two games need the same thing, move it into `src/engine/`.
@@ -57,6 +58,7 @@ Every push to `main` builds the site and publishes it to GitHub Pages via `.gith
 ## Working together
 
 - Make changes on a branch and open a pull request into `main`.
+- Before opening a PR, run `npm run typecheck && npm test` locally to catch problems early.
 - CI runs type-checking, tests and a build on every PR.
 - If you're working with an AI assistant, point it at [`CLAUDE.md`](./CLAUDE.md). It explains the conventions.
 - Ideas, decisions and game designs live in [`docs/`](./docs).

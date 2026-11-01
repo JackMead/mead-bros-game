@@ -30,6 +30,8 @@ export interface Enemy {
   intent: Intent;
   /** Turns this enemy has existed; slow enemies use it to move every other turn. */
   tick: number;
+  /** Extra enemy turns it stays dazed after the current one. */
+  daze?: number;
 }
 
 export type ItemKind = 'relic' | 'oil' | 'page' | 'ring';

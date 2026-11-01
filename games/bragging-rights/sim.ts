@@ -54,6 +54,12 @@ export function step(state: RunState, action: Action): StepResult {
 
   if (!playerAct(s, kit, action, events)) return fail;
 
+  if (action.type === 'page' && config.experiments.freePages) {
+    // A free action: no turn, no oil, enemies don't act.
+    if (same(s.player.pos, s.floor.stairs)) reachStairs(s, events);
+    return { ok: true, state: s, events };
+  }
+
   s.turn++;
   s.player.oil = Math.max(0, s.player.oil - config.player.oilPerTurn);
 
@@ -128,6 +134,31 @@ export function pageTargets(s: RunState, slot: number): Pos[] {
       if (validPageTarget(s, kind, { x, y })) out.push({ x, y });
     }
   }
+  return out;
+}
+
+export interface MoveCost {
+  /** The square you'd move to or attack; your own square means waiting. */
+  pos: Pos;
+  /** Hearts you'd lose this turn. */
+  damage: number;
+}
+
+/**
+ * What each move would cost you this turn: the 8 neighbouring squares (moves and attacks)
+ * plus waiting. Exact, because the rules are deterministic. Shown on the board as "−1♥".
+ */
+export function moveCosts(s: RunState): MoveCost[] {
+  if (s.phase !== 'play') return [];
+  const out: MoveCost[] = [];
+  const tryAction = (action: Action, pos: Pos) => {
+    const r = step(s, action);
+    if (!r.ok) return;
+    const damage = r.events.reduce((n, e) => n + (e.type === 'playerHurt' ? e.amount : 0), 0);
+    out.push({ pos, damage });
+  };
+  for (const d of DIRS) tryAction({ type: 'move', dx: d.x, dy: d.y }, add(s.player.pos, d));
+  tryAction({ type: 'wait' }, s.player.pos);
   return out;
 }
 
@@ -237,17 +268,18 @@ function usePage(s: RunState, kind: PageKind, at: Pos, events: GameEvent[]): voi
     case 'shove': {
       const enemy = enemyAt(s, at)!;
       const dir = { x: Math.sign(at.x - p.pos.x), y: Math.sign(at.y - p.pos.y) };
-      enemy.intent = { type: 'stunned' };
+      daze(enemy);
+      const impact = config.pages.shoveImpact;
       for (let i = 0; i < config.pages.shoveDistance; i++) {
         const next = add(enemy.pos, dir);
         const other = enemyAt(s, next);
         if (!inBounds(s.floor, next) || tileAt(s.floor, next) === 'wall' || same(next, s.floor.stairs)) {
-          hurtEnemy(s, enemy, 1, events);
+          hurtEnemy(s, enemy, impact, events);
           break;
         }
         if (other) {
-          hurtEnemy(s, other, 1, events);
-          hurtEnemy(s, enemy, 1, events);
+          hurtEnemy(s, other, impact, events);
+          hurtEnemy(s, enemy, impact, events);
           break;
         }
         events.push({ type: 'enemyMove', id: enemy.id, from: enemy.pos, to: next });
@@ -270,6 +302,9 @@ function usePage(s: RunState, kind: PageKind, at: Pos, events: GameEvent[]): voi
     }
     case 'ward':
       setTile(s.floor, at, 'wall');
+      if (config.experiments.wardDaze) {
+        for (const e of s.floor.enemies) if (dist(e.pos, p.pos) === 1) daze(e);
+      }
       return;
     case 'blink':
       events.push({ type: 'playerMove', from: p.pos, to: at });
@@ -277,6 +312,12 @@ function usePage(s: RunState, kind: PageKind, at: Pos, events: GameEvent[]): voi
       collect(s, events);
       return;
   }
+}
+
+/** Cancel an enemy's next action, and the ones after it if dazes last longer. */
+function daze(e: Enemy): void {
+  e.intent = { type: 'stunned' };
+  if (config.pages.dazeTurns > 1) e.daze = config.pages.dazeTurns - 1;
 }
 
 function collect(s: RunState, events: GameEvent[]): void {
@@ -376,6 +417,7 @@ function enemyPhase(s: RunState, kit: FloorKit, events: GameEvent[]): void {
     if (s.player.hearts <= 0) return;
     if (!s.floor.enemies.includes(e)) continue;
     if (charged) e.intent = { type: 'stunned' };
+    else if (e.daze) { e.daze--; e.intent = { type: 'stunned' }; }
     else decide(s, kit, e);
   }
 }

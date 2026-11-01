@@ -224,3 +224,29 @@ Rob's three dailies: banked ◆13 on floor 2 (11% of par), died on floor 4 (6%),
 - **Threats didn't register:** 5 of 18 hits came from walking away from a winding-up goblin, and 3 of the costliest moments were attacking one enemy while standing in an archer's line. Rob didn't notice the dashed outline or the archer's line: "graphics need improving to feel like you want to work it out".
 - **Pages and the ring went unused:** 8 pages picked up, 0 used, 5 crumbled. Rob: "didn't feel powered". Machine check agrees: with no pages at all, two-turn players score 72.7 against 76.5 with them, and par is unchanged (116.3 against 115.3). Shove and Ward are the weakest.
 - Fixed a solver flaw: it valued holding pages at the stairs, where they crumble.
+
+## Batch 4 (signed off 2026-11-01)
+
+Built for fast play: threats should grab your eye and tools should feel like a big swing.
+
+- **Threats on the creature:** proper creature drawings (`creatures.ts`) with idle motion. When winding up, a creature glows red underneath, leans back and its eyes turn red; the goblin raises its blade, the archer draws its bow, the wolf crouches, the troll raises its club.
+- **Archer shots as a glowing beam** from the bow along the line.
+- **Tether** instead of the dashed box: a taut line from each enemy winding up next to you.
+- **Cost badges:** each square around you shows "−N♥" if that move would cost hearts this turn (your own square means waiting). Exact, because the rules are deterministic (`moveCosts` in `sim.ts`).
+- **Pages:** one tap when there is only one target; a big visual moment when one goes off.
+- **Page power:** candidates measured by machine and brought back to Rob before shipping.
+
+### Page power experiment
+
+30 dungeons, v0.3 rules. Balanced and greedy players thinking 1 or 2 turns ahead. Mean haul.
+
+| Variant | Balanced 1 / 2 turns | Greedy 1 / 2 turns | Pages used |
+|---|---|---|---|
+| No pages | 21.2 / 63.3 | 12.6 / 40.2 | - |
+| Pages as v0.3 | 23.9 / 73.8 | 10.3 / 51.6 | 44 to 53% |
+| Free-action pages | 24.1 / 71.1 | 14.3 / 53.6 | 52 to 64% |
+| Stronger pages (shove 3 squares and 2 impact damage, 2-turn daze, ward dazes neighbours, blink 4) | 23.9 / 71.6 | 12.9 / 46.9 | 48 to 59% |
+| Free + stronger | 24.4 / 70.5 | 14.8 / 59.1 | 58 to 63% |
+| **Free + stronger + 5-turn ring** | **24.5 / 76.2** | **14.9 / 60.6** | **60 to 66%** |
+
+Under v0.3 rules pages already lift two-turn hauls by 17 to 28% over none (an earlier "no value" reading came from a solver flaw that hoarded pages). Bots plan only 1 or 2 turns ahead, so they understate combinations a person can see.

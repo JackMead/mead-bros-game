@@ -17,7 +17,7 @@ import { BEHAVIOUR_HELP } from './kit';
 import { enemyType, getKit } from './kits';
 import { PAGES } from './pages';
 import { computeLayout, render, squareAt, type Layout } from './render';
-import { canDescend, enemyAt, pageTargets, step, windingUp } from './sim';
+import { canDescend, enemyAt, moveCosts, pageTargets, step, windingUp, type MoveCost } from './sim';
 import type { Action, GameEvent, OutcomeKind, Pos, RunState } from './types';
 import { registerServiceWorker } from './pwa';
 
@@ -402,8 +402,8 @@ function updateHud(): void {
   $('hint').textContent = targeting !== null
     ? `${PAGES[p.pages[targeting]!].name}: tap a blue square, or tap the page again to cancel.`
     : windingUp(state).length
-      ? 'Winding up: step outside the dashed outline and it gets a free hit.'
-      : 'Tap a neighbouring square to move or attack. Hold an enemy to inspect it.';
+      ? 'Tethered: walk away and it gets a free hit. Kill it, sidestep, or pay the heart.'
+      : 'Tap a square next to you to move or attack. Red badges show what a move would cost.';
 }
 
 function choosePage(slot: number): void {
@@ -412,6 +412,11 @@ function choosePage(slot: number): void {
     targeting = null;
   } else if (pageTargets(state, slot).length === 0) {
     toast(`Nothing to use ${PAGES[state.player.pages[slot]!].name} on here`);
+    return;
+  } else if (pageTargets(state, slot).length === 1) {
+    // Only one place it can go: one tap is enough.
+    const [only] = pageTargets(state, slot);
+    act({ type: 'page', slot, x: only.x, y: only.y });
     return;
   } else {
     targeting = slot;
@@ -579,6 +584,10 @@ function resize(): void {
 }
 new ResizeObserver(resize).observe($('board-wrap'));
 
+/** Move costs are worked out once per turn, not every frame. */
+let costsFor: RunState | null = null;
+let costs: MoveCost[] = [];
+
 startLoop({
   step: 1 / 60,
   update: (dt) => { if (state) fx.update(dt, state); },
@@ -586,7 +595,8 @@ startLoop({
     if (!state || $('game').classList.contains('hidden')) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const targets = targeting !== null ? pageTargets(state, targeting) : null;
-    render(ctx, lightCtx, { state, kit: getKit(state.kitId), fx, layout, targets, inspect }, dpr);
+    if (costsFor !== state) { costs = moveCosts(state); costsFor = state; }
+    render(ctx, lightCtx, { state, kit: getKit(state.kitId), fx, layout, targets, inspect, costs: targeting === null ? costs : null }, dpr);
   },
 });
 

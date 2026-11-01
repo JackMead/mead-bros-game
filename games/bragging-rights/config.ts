@@ -22,6 +22,10 @@ export const config = {
   },
   pages: {
     shoveDistance: 2,
+    /** Damage when a shoved enemy hits a wall or another enemy. */
+    shoveImpact: 1,
+    /** Enemy turns a shoved (or warded) enemy loses. */
+    dazeTurns: 1,
     swapRange: 4,
     blinkRange: 3,
   },
@@ -60,5 +64,9 @@ export const config = {
     melee: 'square' as 'square' | 'lunge' | 'reach',
     /** Stepping out of reach of an enemy that is about to strike you gives it a free hit. On since v0.3. */
     disengage: true as boolean,
+    /** Using a page doesn't use up your turn: enemies don't act. */
+    freePages: false as boolean,
+    /** Ward also dazes every enemy next to you. */
+    wardDaze: false as boolean,
   },
 } as const;

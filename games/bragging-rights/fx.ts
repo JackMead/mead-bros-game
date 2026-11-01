@@ -10,6 +10,7 @@ interface Particle { x: number; y: number; vx: number; vy: number; life: number;
 interface Ghost { x: number; y: number; colour: string; behaviour: Behaviour; life: number; fall: boolean }
 interface Floater { x: number; y: number; text: string; colour: string; life: number }
 interface Bump { dx: number; dy: number; life: number }
+interface Wave { x: number; y: number; colour: string; life: number; size: number }
 
 export interface Look {
   colour(type: string): string;
@@ -29,6 +30,7 @@ export class Fx {
   particles: Particle[] = [];
   ghosts: Ghost[] = [];
   floaters: Floater[] = [];
+  waves: Wave[] = [];
   /** Small deterministic noise source so effects don't need Math.random. */
   private n = 1;
 
@@ -83,10 +85,14 @@ export class Fx {
           break;
         }
         case 'page':
-          this.burst(ev.at, '#8fc8ff', 14, 2.4);
+          this.burst(ev.at, '#8fc8ff', 26, 3.4);
+          this.waves.push({ x: ev.at.x, y: ev.at.y, colour: '#8fc8ff', life: 1, size: 1.6 });
+          this.waves.push({ x: state.player.pos.x, y: state.player.pos.y, colour: '#cfe6ff', life: 0.8, size: 1 });
+          this.shake = Math.max(this.shake, 0.22);
           break;
         case 'ring':
-          this.burst(state.player.pos, '#c7b8ff', 24, 2.8);
+          this.burst(state.player.pos, '#c7b8ff', 34, 3.2);
+          this.waves.push({ x: state.player.pos.x, y: state.player.pos.y, colour: '#c7b8ff', life: 1, size: 2.4 });
           break;
         case 'spawn':
           this.pos.set(`e${ev.id}`, { ...ev.pos });
@@ -141,6 +147,8 @@ export class Fx {
     for (const g of this.ghosts) g.life -= dt * 2.2;
     this.ghosts = this.ghosts.filter((g) => g.life > 0);
     for (const f of this.floaters) { f.life -= dt * 0.9; f.y -= dt * 0.8; }
+    for (const w of this.waves) w.life -= dt * 2.2;
+    this.waves = this.waves.filter((w) => w.life > 0);
     this.floaters = this.floaters.filter((f) => f.life > 0);
   }
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { botRun } from './bot';
 import { config } from './config';
 import { tileAt } from './grid';
-import { canDescend, newRun, pageTargets, replay, step, withFloor } from './sim';
+import { canDescend, moveCosts, newRun, pageTargets, replay, step, withFloor } from './sim';
 import type { Action, Enemy, Floor, Item, RunState, Tile } from './types';
 
 const ENEMIES: Record<string, string> = { g: 'goblin', a: 'archer', w: 'wolf', t: 'troll', h: 'wraith' };
@@ -309,3 +309,22 @@ describe('determinism', () => {
     expect(deepest).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe('move costs', () => {
+  it('shows exactly what each move would cost this turn', () => {
+    let s = setup(['...g...', '.......', '...@...', '.......']);
+    s = act(s, wait); // goblin steps in and winds up
+    const costs = moveCosts(s);
+    const g = s.floor.enemies[0].pos;
+    const at = (x: number, y: number) => costs.find((c) => c.pos.x === x && c.pos.y === y)?.damage;
+    expect(at(s.player.pos.x, s.player.pos.y)).toBe(1); // waiting: hit
+    expect(at(g.x, g.y)).toBe(0); // attacking it first: free
+    expect(at(s.player.pos.x, s.player.pos.y + 1)).toBe(1); // walking away: free hit
+    for (const c of costs) {
+      const r = step(s, c.pos.x === s.player.pos.x && c.pos.y === s.player.pos.y
+        ? { type: 'wait' } : { type: 'move', dx: c.pos.x - s.player.pos.x, dy: c.pos.y - s.player.pos.y });
+      expect(r.state.player.hearts).toBe(s.player.hearts - c.damage);
+    }
+  });
+});
+

@@ -4,8 +4,9 @@ import { alignedDir } from './grid';
 import type { FloorKit } from './kit';
 import { enemyType } from './kits';
 import { PAGES } from './pages';
-import { windingUp } from './sim';
-import type { Behaviour, Enemy, Pos, RunState } from './types';
+import { drawCreature, drawTraveller } from './creatures';
+import { windingUp, type MoveCost } from './sim';
+import type { Enemy, Pos, RunState } from './types';
 
 /** Drawing only: reads the game state and the visual effects, changes neither. */
 
@@ -26,6 +27,8 @@ export interface View {
   targets: Pos[] | null;
   /** Enemy being inspected. */
   inspect: number | null;
+  /** What each move would cost this turn, or null to hide. */
+  costs: MoveCost[] | null;
 }
 
 export function computeLayout(width: number, height: number, cols: number, rows: number): Layout {
@@ -58,17 +61,21 @@ export function render(ctx: CanvasRenderingContext2D, light: CanvasRenderingCont
   drawLight(ctx, light, view, dpr);
   drawItems(ctx, view);
   drawTelegraphs(ctx, view);
-  drawReach(ctx, view);
   if (view.targets) drawTargets(ctx, view.targets, t, fx.time);
+  drawTethers(ctx, view);
   for (const g of fx.ghosts) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, g.life);
     const scale = g.fall ? g.life : 1 + (1 - g.life) * 0.4;
-    drawEnemyShape(ctx, g.behaviour, g.colour, (g.x + 0.5) * t, (g.y + 0.5) * t, t * scale, false, { x: 0, y: 1 });
+    drawCreature(ctx, g.behaviour, (g.x + 0.5) * t, (g.y + 0.5) * t, t * scale, {
+      colour: g.colour, facing: { x: 0, y: 1 }, windup: 0, time: fx.time, seed: 0, flash: false,
+    });
     ctx.restore();
   }
   for (const e of state.floor.enemies) drawEnemy(ctx, view, e);
   drawPlayer(ctx, view);
+  drawWaves(ctx, view);
+  drawCosts(ctx, view);
   drawParticles(ctx, view);
   ctx.restore();
 
@@ -260,18 +267,42 @@ function drawItems(ctx: CanvasRenderingContext2D, { state, layout, fx }: View): 
   });
 }
 
-function drawTelegraphs(ctx: CanvasRenderingContext2D, { state, layout, fx }: View): void {
+function drawTelegraphs(ctx: CanvasRenderingContext2D, { state, kit, layout, fx }: View): void {
   const t = layout.tile;
   const pulse = 0.5 + 0.5 * Math.sin(fx.time * 6);
   for (const e of state.floor.enemies) {
     const intent = e.intent;
     if (intent.type !== 'attack' && intent.type !== 'charge') continue;
+    const archer = enemyType(kit, e.type).behaviour === 'archer';
     for (const sq of intent.squares) {
-      ctx.fillStyle = `rgba(235, 70, 55, ${0.2 + 0.1 * pulse})`;
+      ctx.fillStyle = `rgba(235, 70, 55, ${(archer ? 0.12 : 0.2) + 0.1 * pulse})`;
       ctx.fillRect(sq.x * t + 1, sq.y * t + 1, t - 2, t - 2);
-      ctx.strokeStyle = 'rgba(255, 120, 95, 0.85)';
-      ctx.lineWidth = Math.max(1.5, t * 0.035);
-      ctx.strokeRect(sq.x * t + 3, sq.y * t + 3, t - 6, t - 6);
+      if (!archer) {
+        ctx.strokeStyle = 'rgba(255, 120, 95, 0.85)';
+        ctx.lineWidth = Math.max(1.5, t * 0.035);
+        ctx.strokeRect(sq.x * t + 3, sq.y * t + 3, t - 6, t - 6);
+      }
+    }
+    if (archer && intent.squares.length > 0) {
+      // The shot as a glowing beam from the bow along its line.
+      const p = fx.pos.get(`e${e.id}`) ?? e.pos;
+      const last = intent.squares[intent.squares.length - 1];
+      const dir = alignedDir(e.pos, intent.squares[0])!;
+      const x0 = (p.x + 0.5) * t;
+      const y0 = (p.y + 0.5) * t;
+      const x1 = (last.x + 0.5 + dir.x * 0.45) * t;
+      const y1 = (last.y + 0.5 + dir.y * 0.45) * t;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = `rgba(255, 80, 55, ${0.22 + 0.18 * pulse})`;
+      ctx.lineWidth = t * 0.32;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.strokeStyle = `rgba(255, 215, 190, ${0.75 + 0.25 * pulse})`;
+      ctx.lineWidth = Math.max(2, t * 0.045);
+      ctx.shadowColor = 'rgba(255, 90, 60, 1)';
+      ctx.shadowBlur = t * 0.25;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      ctx.restore();
     }
     if (intent.type === 'charge' && intent.squares.length > 0) {
       const dir = alignedDir(e.pos, intent.squares[0])!;
@@ -281,22 +312,55 @@ function drawTelegraphs(ctx: CanvasRenderingContext2D, { state, layout, fx }: Vi
   }
 }
 
-/** Dashed outline around each enemy winding up next to you: leave it and you take a hit. */
-function drawReach(ctx: CanvasRenderingContext2D, { state, layout, fx }: View): void {
+/** A taut line from each enemy winding up next to you: walk away and it gets its hit. */
+function drawTethers(ctx: CanvasRenderingContext2D, { state, layout, fx }: View): void {
   const t = layout.tile;
-  const f = state.floor;
+  const me = fx.pos.get('p') ?? state.player.pos;
   for (const e of windingUp(state)) {
-    const x0 = Math.max(0, e.pos.x - 1);
-    const y0 = Math.max(0, e.pos.y - 1);
-    const x1 = Math.min(f.width - 1, e.pos.x + 1);
-    const y1 = Math.min(f.height - 1, e.pos.y + 1);
+    const p = fx.pos.get(`e${e.id}`) ?? e.pos;
+    const x0 = (p.x + 0.5) * t;
+    const y0 = (p.y + 0.5) * t;
+    const x1 = (me.x + 0.5) * t;
+    const y1 = (me.y + 0.5) * t;
+    const strain = Math.sin(fx.time * 14) * t * 0.03;
+    const mx = (x0 + x1) / 2 + (y1 - y0) * 0.08 + strain;
+    const my = (y0 + y1) / 2 - (x1 - x0) * 0.08 + strain;
     ctx.save();
-    ctx.setLineDash([t * 0.12, t * 0.08]);
-    ctx.lineDashOffset = -fx.time * t * 0.4;
-    ctx.strokeStyle = 'rgba(255, 176, 92, 0.95)';
-    ctx.lineWidth = Math.max(2, t * 0.045);
-    ctx.strokeRect(x0 * t + 2, y0 * t + 2, (x1 - x0 + 1) * t - 4, (y1 - y0 + 1) * t - 4);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(255, 110, 70, 0.35)';
+    ctx.lineWidth = t * 0.14;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(mx, my, x1, y1); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255, 170, 110, 0.95)';
+    ctx.lineWidth = Math.max(2, t * 0.04);
+    ctx.setLineDash([t * 0.08, t * 0.05]);
+    ctx.lineDashOffset = -fx.time * t * 0.5;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(mx, my, x1, y1); ctx.stroke();
     ctx.restore();
+  }
+}
+
+/** "−1♥" on each square around you that would cost hearts this turn (your own square = waiting). */
+function drawCosts(ctx: CanvasRenderingContext2D, { costs, state, layout }: View): void {
+  if (!costs) return;
+  const t = layout.tile;
+  for (const c of costs) {
+    if (c.damage <= 0) continue;
+    const self = c.pos.x === state.player.pos.x && c.pos.y === state.player.pos.y;
+    const label = `−${c.damage}♥`;
+    const size = t * 0.22;
+    ctx.font = `800 ${Math.round(size)}px system-ui, sans-serif`;
+    const w = ctx.measureText(label).width + t * 0.12;
+    const h = size * 1.35;
+    const x = self ? c.pos.x * t + t * 0.04 : (c.pos.x + 1) * t - w - t * 0.04;
+    const y = c.pos.y * t + t * 0.04;
+    ctx.fillStyle = 'rgba(150, 20, 15, 0.92)';
+    ctx.beginPath();
+    roundRect(ctx, x, y, w, h, h / 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffe3dc';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x + w / 2, y + h / 2 + 1);
   }
 }
 
@@ -319,100 +383,35 @@ function drawEnemy(ctx: CanvasRenderingContext2D, view: View, e: Enemy): void {
   const cx = (p.x + 0.5 + off.x) * t;
   const cy = (p.y + 0.5 + off.y) * t;
   const facing = { x: Math.sign(state.player.pos.x - e.pos.x), y: Math.sign(state.player.pos.y - e.pos.y) };
-  const flash = fx.flashes.has(`e${e.id}`);
-
-  ctx.save();
-  if (type.behaviour === 'hunter') ctx.globalAlpha = 0.7 + 0.15 * Math.sin(fx.time * 3 + e.id);
-  const size = type.behaviour === 'brute' ? t * 1.15 : t;
-  drawEnemyShape(ctx, type.behaviour, flash ? '#ffffff' : type.colour, cx, cy, size, true, facing);
-  ctx.restore();
+  const windup = e.intent.type === 'attack' || e.intent.type === 'charge' ? 1 : 0;
+  const size = type.behaviour === 'brute' ? t * 1.12 : t;
+  drawCreature(ctx, type.behaviour, cx, cy, size, {
+    colour: type.colour, facing, windup, time: fx.time, seed: e.id, flash: fx.flashes.has(`e${e.id}`),
+  });
 
   if (view.inspect === e.id) {
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(cx, cy, t * 0.44, 0, Math.PI * 2);
+    ctx.arc(cx, cy, t * 0.46, 0, Math.PI * 2);
     ctx.stroke();
   }
   if (type.hp > 1) {
     for (let i = 0; i < type.hp; i++) {
       ctx.fillStyle = i < e.hp ? '#f4eadb' : 'rgba(244, 234, 219, 0.2)';
       ctx.beginPath();
-      ctx.arc(cx + (i - (type.hp - 1) / 2) * t * 0.13, cy + t * 0.38, t * 0.045, 0, Math.PI * 2);
+      ctx.arc(cx + (i - (type.hp - 1) / 2) * t * 0.13, cy + t * 0.42, t * 0.045, 0, Math.PI * 2);
       ctx.fill();
     }
   }
-  const badge = e.intent.type === 'stunned' ? 'z' : e.intent.type === 'none' ? '?' : '';
-  if (badge) text(ctx, badge, cx + t * 0.3, cy - t * 0.3, t * 0.26, '#d9e4ff');
-}
-
-/** One silhouette per behaviour, so a new kit's enemies read at a glance. */
-function drawEnemyShape(
-  ctx: CanvasRenderingContext2D, behaviour: Behaviour, colour: string,
-  cx: number, cy: number, t: number, eyes: boolean, facing: Pos,
-): void {
-  const r = t * 0.3;
-  ctx.fillStyle = colour;
-  ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-  ctx.lineWidth = Math.max(1, t * 0.03);
-  ctx.beginPath();
-  switch (behaviour) {
-    case 'melee':
-      ctx.moveTo(cx, cy - r);
-      ctx.lineTo(cx + r * 0.95, cy + r * 0.8);
-      ctx.lineTo(cx - r * 0.95, cy + r * 0.8);
-      ctx.closePath();
-      break;
-    case 'archer':
-      ctx.moveTo(cx, cy - r);
-      ctx.lineTo(cx + r * 0.75, cy);
-      ctx.lineTo(cx, cy + r);
-      ctx.lineTo(cx - r * 0.75, cy);
-      ctx.closePath();
-      break;
-    case 'brute':
-      roundRect(ctx, cx - r, cy - r * 0.9, r * 2, r * 1.8, r * 0.45);
-      break;
-    case 'charger': {
-      const a = Math.atan2(facing.y || 0.0001, facing.x || 0.0001);
-      for (let i = 0; i < 3; i++) {
-        const ang = a + (i === 0 ? 0 : i === 1 ? 2.4 : -2.4);
-        const rr = i === 0 ? r * 1.15 : r;
-        const px = cx + Math.cos(ang) * rr;
-        const py = cy + Math.sin(ang) * rr;
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.lineTo(cx - Math.cos(a) * r * 0.35, cy - Math.sin(a) * r * 0.35);
-      ctx.closePath();
-      break;
+  if (e.intent.type === 'stunned') {
+    // Little stars circling a dazed head.
+    for (let i = 0; i < 3; i++) {
+      const a = fx.time * 4 + (i * Math.PI * 2) / 3;
+      text(ctx, '✦', cx + Math.cos(a) * t * 0.2, cy - t * 0.36 + Math.sin(a) * t * 0.06, t * 0.16, '#ffe9a8');
     }
-    case 'hunter':
-      ctx.arc(cx, cy - r * 0.15, r * 0.8, Math.PI, 0);
-      for (let i = 0; i <= 4; i++) {
-        const px = cx + r * 0.8 - (i * r * 1.6) / 4;
-        ctx.lineTo(px, cy + r * (i % 2 ? 0.55 : 0.85));
-      }
-      ctx.closePath();
-      break;
-  }
-  ctx.fill();
-  ctx.stroke();
-  if (behaviour === 'archer') {
-    ctx.strokeStyle = 'rgba(40, 28, 10, 0.8)';
-    ctx.lineWidth = Math.max(1, t * 0.04);
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * 0.45, -1.2, 1.2);
-    ctx.stroke();
-  }
-  if (eyes) {
-    const ex = facing.x * r * 0.15;
-    const ey = facing.y * r * 0.1;
-    ctx.fillStyle = '#151010';
-    ctx.beginPath();
-    ctx.arc(cx - r * 0.25 + ex, cy + ey, Math.max(1.2, t * 0.035), 0, Math.PI * 2);
-    ctx.arc(cx + r * 0.25 + ex, cy + ey, Math.max(1.2, t * 0.035), 0, Math.PI * 2);
-    ctx.fill();
+  } else if (e.intent.type === 'none') {
+    text(ctx, '?', cx + t * 0.3, cy - t * 0.3, t * 0.26, '#d9e4ff');
   }
 }
 
@@ -422,33 +421,35 @@ function drawPlayer(ctx: CanvasRenderingContext2D, { state, fx, layout }: View):
   const off = fx.offset('p');
   const cx = (p.x + 0.5 + off.x) * t;
   const cy = (p.y + 0.5 + off.y) * t;
-  const r = t * 0.28;
-  ctx.save();
   if (state.player.invisible > 0) {
-    ctx.globalAlpha = 0.45;
+    ctx.save();
     ctx.setLineDash([t * 0.06, t * 0.06]);
     ctx.strokeStyle = '#c7b8ff';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(cx, cy, r * 1.35, 0, Math.PI * 2);
+    ctx.arc(cx, cy, t * 0.4, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.restore();
   }
-  ctx.fillStyle = fx.flashes.has('p') ? '#ff7a66' : '#f2e6d0';
-  ctx.strokeStyle = '#2a2018';
-  ctx.lineWidth = Math.max(1.5, t * 0.04);
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  // The lamp.
-  ctx.fillStyle = '#ffcf7a';
-  ctx.shadowColor = 'rgba(255, 190, 90, 1)';
-  ctx.shadowBlur = t * 0.3;
-  ctx.beginPath();
-  ctx.arc(cx + r * 0.75, cy - r * 0.55, r * 0.32, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  drawTraveller(ctx, cx, cy, t, { flash: fx.flashes.has('p'), ghost: state.player.invisible > 0, time: fx.time });
+}
+
+/** Expanding rings when a page or the ring goes off: the moment should feel big. */
+function drawWaves(ctx: CanvasRenderingContext2D, { fx, layout }: View): void {
+  const t = layout.tile;
+  for (const w of fx.waves) {
+    const k = 1 - w.life;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, w.life);
+    ctx.strokeStyle = w.colour;
+    ctx.lineWidth = Math.max(2, t * 0.08 * w.life);
+    ctx.shadowColor = w.colour;
+    ctx.shadowBlur = t * 0.3;
+    ctx.beginPath();
+    ctx.arc((w.x + 0.5) * t, (w.y + 0.5) * t, t * (0.2 + k * w.size), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function drawParticles(ctx: CanvasRenderingContext2D, { fx, layout }: View): void {

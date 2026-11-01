@@ -529,7 +529,9 @@ export const whitby: Chapter = {
         {
           id: 'lady',
           name: 'Sleeping lady',
-          rect: { x: 350, y: 210, w: 82, h: 125 },
+          // Seated in the wing chair: her feet end at the table's back edge so the
+          // painted table reads in front of her, rather than her floating over it.
+          rect: { x: 332, y: 188, w: 65, h: 100 },
           colour: '#6a3a5a',
           sprite: 'lady.png',
           look: 'An elderly lady fast asleep in a wing chair, wearing most of a jet shop. Lady Cholmondeley, I assume. Of room twelve.',
@@ -960,9 +962,12 @@ export const whitby: Chapter = {
         'Five minutes pass.',
         "Me: ...and that's Dad. And then Jack. Jack doesn't really count, but I'll tell you anyway.",
         "Algernon: Brothers AND a father! Not out here, though, it's blowing a gale. The parlour! There's a proper table in the parlour!",
-        'Algy sweeps in through the French windows. Phil follows.',
+        'Algy sweeps off through the French windows to set the table up.',
+        'Me: Right. In we go, then.',
       ],
-      do: ['set:challenge_accepted', 'goto:parlour'],
+      // The move happens when Phil follows him in (tap the hotel), so the whole
+      // wager plays out here on the terrace first, not over the parlour.
+      do: ['set:challenge_accepted'],
     },
     { on: 'algernon', item: 'card_salamander', if: 'wager_asked', say: ['Algernon: Pretty. But I expect they print those by the thousand. Something RARE, old chap.'] },
     { on: 'algernon', item: 'card_crab', if: 'wager_asked', say: ['Algernon: A crab? I can get a crab at the harbour for a farthing.'] },

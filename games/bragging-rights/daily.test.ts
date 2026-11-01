@@ -3,7 +3,7 @@ import { botAction } from './bot';
 import { config } from './config';
 import {
   activeRun, compact, dailySeed, day, dayTotal, emptySave, load, persist, playsLeft,
-  recordAction, records, resume, startRun, ukDate,
+  recordAction, records, resume, startPlaytest, startRun, ukDate,
 } from './daily';
 import { step } from './sim';
 
@@ -43,7 +43,7 @@ describe('daily', () => {
     const first = startRun(save, date);
     expect(playsLeft(save, date)).toBe(config.run.playsPerDay - 1);
     expect(() => startRun(save, date)).toThrow(); // must finish the active run first
-    expect(activeRun(save)?.run).toBe(first);
+    expect(activeRun(save)).toBe(first);
     first.done = true;
     startRun(save, date).done = true;
     startRun(save, date).done = true;
@@ -64,7 +64,7 @@ describe('daily', () => {
     }
     persist(store, save);
     const reloaded = activeRun(load(store));
-    expect(resume(reloaded!.run)).toEqual(state);
+    expect(resume(reloaded!)).toEqual(state);
   });
 
   it('totals all three runs and tracks records', () => {
@@ -79,9 +79,12 @@ describe('daily', () => {
     expect(rec.bestRun?.score).toBe(Math.max(...runs.map((r) => r.score)));
   });
 
-  it('compacting keeps scores but drops old action logs', () => {
+  it('compacting keeps scores but drops old action logs once sent', () => {
     const save = emptySave();
     const run = playOut(save, '2026-11-01');
+    compact(save, '2026-11-02');
+    expect(run.actions.length).toBeGreaterThan(0); // not sent yet: keep it
+    run.submitted = true;
     compact(save, '2026-11-02');
     expect(run.actions).toEqual([]);
     expect(dayTotal(day(save, '2026-11-01'))).toBe(run.score);
@@ -91,5 +94,46 @@ describe('daily', () => {
     const store = memoryStore();
     store.setItem(config.storageKey, '{not json');
     expect(load(store)).toEqual(emptySave());
+  });
+
+  it('playtest runs are unlimited and never touch daily plays or records', () => {
+    const save = emptySave();
+    const date = '2026-11-01';
+    for (let i = 0; i < 5; i++) {
+      const r = startPlaytest(save, 1000 + i, 1_700_000_000_000 + i);
+      expect(() => startRun(save, date)).toThrow(); // still one run at a time
+      r.done = true;
+      r.score = 50;
+    }
+    expect(save.playtest).toHaveLength(5);
+    expect(playsLeft(save, date)).toBe(config.run.playsPerDay);
+    expect(records(save).bestRun).toBeNull();
+  });
+
+  it('counts active time, ignoring long breaks', () => {
+    const save = emptySave();
+    const run = startRun(save, '2026-11-01', 0);
+    let state = resume(run);
+    const times = [5_000, 10_000, 10_000 + 3_600_000, 10_000 + 3_605_000];
+    for (const t of times) {
+      const action = botAction(state);
+      state = step(state, action).state;
+      recordAction(run, action, state, t);
+    }
+    expect(run.activeMs).toBe(5_000 + 5_000 + 60_000 + 5_000);
+  });
+
+  it('upgrades saves from before run ids existed', () => {
+    const store = memoryStore();
+    store.setItem(config.storageKey, JSON.stringify({
+      version: 1, muted: false,
+      days: { '2026-10-31': { date: '2026-10-31', runs: [{ slot: 1, seed: 5, actions: [], done: true, score: 3, turns: 9, depth: 2, outcome: 'banked' }] } },
+    }));
+    const save = load(store);
+    const run = day(save, '2026-10-31').runs[0];
+    expect(run.id).toBe('d-2026-10-31-1');
+    expect(run.mode).toBe('daily');
+    expect(run.submitted).toBe(true);
+    expect(save.playtest).toEqual([]);
   });
 });

@@ -3,9 +3,11 @@ import { startLoop } from '../../src/engine/loop';
 import { Sound, type SoundName } from './audio';
 import { config } from './config';
 import {
-  SLOT_NAMES, activeRun, compact, day, dayTotal, load, persist, playsLeft, recordAction, records,
-  resume, startRun, ukDate, type KeyValueStore, type RunRecord, type SaveData,
+  SLOT_NAMES, activeRun, allRuns, compact, day, dayTotal, load, persist, playsLeft, recordAction, records,
+  resume, startPlaytest, startRun, ukDate, type KeyValueStore, type RunRecord, type SaveData,
 } from './daily';
+import { canCollect, submitRun } from './collect';
+import { runCode } from './runcode';
 import { Fx } from './fx';
 import { dist, same } from './grid';
 import { BEHAVIOUR_HELP } from './kit';
@@ -34,6 +36,8 @@ const store: KeyValueStore = (() => {
   }
 })();
 const save: SaveData = load(store);
+/** Development only: unlimited practice runs on random seeds. On in the playtest build or with #playtest. */
+const PLAYTEST = import.meta.env.VITE_PLAYTEST === '1' || location.hash === '#playtest';
 const sound = new Sound();
 sound.muted = save.muted;
 const fx = new Fx();
@@ -92,8 +96,8 @@ function showHome(): void {
   const left = playsLeft(save, today);
   play.disabled = false;
   if (active) {
-    play.textContent = `Resume dungeon ${SLOT_NAMES[active.run.slot]}`;
-    play.onclick = () => enterRun(active.run);
+    play.textContent = active.mode === 'playtest' ? 'Resume playtest run' : `Resume dungeon ${SLOT_NAMES[active.slot]}`;
+    play.onclick = () => enterRun(active);
   } else if (left > 0) {
     const slot = d.runs.length;
     play.textContent = `Start dungeon ${SLOT_NAMES[slot]}`;
@@ -116,6 +120,38 @@ function showHome(): void {
   line(rec.bestRun ? `Best run: ◆ ${rec.bestRun.score} in ${rec.bestRun.turns} turns` : 'Best run: none yet');
   line(`Days played: ${rec.daysPlayed}`);
   $('mute').textContent = save.muted ? 'Sound: off' : 'Sound: on';
+  showPlaytestPanel(!!active);
+}
+
+function showPlaytestPanel(busy: boolean): void {
+  const panel = $('playtest');
+  panel.classList.toggle('hidden', !PLAYTEST);
+  if (!PLAYTEST) return;
+  const runs = save.playtest.filter((r) => r.done);
+  const unsent = allRuns(save).filter((r) => r.done && !r.submitted).length;
+  $('playtest-info').textContent = `${runs.length} playtest run${runs.length === 1 ? '' : 's'} on this device`
+    + (unsent ? ` · ${unsent} not sent yet` : '');
+  const btn = $<HTMLButtonElement>('playtest-start');
+  btn.disabled = busy;
+  btn.onclick = () => {
+    const seed = crypto.getRandomValues(new Uint32Array(1))[0];
+    const r = startPlaytest(save, seed);
+    persist(store, save);
+    enterRun(r);
+  };
+}
+
+/** Send any finished runs that haven't reached the playtest log yet (closed early, offline). */
+async function sendPending(): Promise<void> {
+  if (!(await canCollect())) return;
+  let changed = false;
+  for (const r of allRuns(save)) {
+    if (r.done && !r.submitted && (await submitRun(r))) { r.submitted = true; changed = true; }
+  }
+  if (changed) {
+    persist(store, save);
+    if (!$('home').classList.contains('hidden')) showPlaytestPanel(!!activeRun(save));
+  }
 }
 
 const OUTCOME_SHORT: Record<OutcomeKind, string> = {
@@ -237,10 +273,13 @@ const OUTCOME_TITLE: Record<OutcomeKind, string> = {
 
 function showOver(): void {
   if (!state?.outcome || !run) return;
+  const r = run;
   const o = state.outcome;
   const lost = o.carried - o.score;
   const today = ukDate(new Date());
   const left = playsLeft(save, today);
+  const askFault = o.kind === 'died' || o.kind === 'lampOut';
+  const chip = (act: string, label: string) => `<button class="chip" data-act="${act}">${label}</button>`;
   showModal(`
     <h2>${OUTCOME_TITLE[o.kind]}</h2>
     <p class="big">◆ ${o.score}</p>
@@ -249,12 +288,55 @@ function showOver(): void {
       <div class="stat">Floor<b>${state.depth} of ${config.run.floors}</b></div>
       <div class="stat">Turns<b>${state.turn}</b></div>
     </div>
-    <p>Today's total: <b>◆ ${dayTotal(day(save, today))}</b> · ${left} play${left === 1 ? '' : 's'} left</p>
+    ${askFault ? `<p class="q">Was that your mistake?</p><div class="chips">${chip('fault:mine', 'Yes, my fault')}${chip('fault:unfair', 'No, felt unfair')}</div>` : ''}
+    <p class="q">How did that run feel?</p>
+    <div class="chips">${chip('feel:easy', 'Too easy')}${chip('feel:right', 'About right')}${chip('feel:hard', 'Too hard')}</div>
+    ${r.mode === 'daily'
+      ? `<p>Today's total: <b>◆ ${dayTotal(day(save, today))}</b> · ${left} play${left === 1 ? '' : 's'} left</p>`
+      : '<p class="muted">Playtest run: not counted towards your daily total.</p>'}
     <button class="primary" data-act="home">Done</button>
-  `, () => {
+    <button class="ghost" data-act="copy">Copy run code</button>
+    <p class="muted small" id="send-note"></p>
+  `, (act, button) => {
+    if (act.startsWith('fault:') || act.startsWith('feel:')) {
+      const [key, value] = act.split(':') as ['fault' | 'feel', string];
+      (r.feedback as Record<string, string>)[key] = value;
+      r.submitted = false;
+      persist(store, save);
+      button.parentElement?.querySelectorAll('.chip').forEach((c) => c.classList.toggle('selected', c === button));
+      return;
+    }
+    if (act === 'copy') {
+      copyText(runCode(r), button);
+      return;
+    }
     hideModal();
+    void submitRun(r).then((ok) => {
+      if (ok) { r.submitted = true; persist(store, save); }
+    });
     showHome();
   });
+  void canCollect().then((ok) => {
+    const note = document.getElementById('send-note');
+    if (note) note.textContent = ok ? 'This run is sent to the playtest log when you tap Done.' : '';
+  });
+}
+
+function copyText(text: string, button: HTMLButtonElement): void {
+  const done = () => { button.textContent = 'Copied'; };
+  const fallback = () => {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.readOnly = true;
+    area.className = 'code';
+    button.replaceWith(area);
+    area.select();
+  };
+  try {
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } catch {
+    fallback();
+  }
 }
 
 function updateHud(): void {
@@ -422,11 +504,11 @@ $('help-close').onclick = () => $('help').classList.add('hidden');
 // ---------------------------------------------------------------------------
 // Modal and toast
 
-function showModal(html: string, onChoice: (act: string) => void): void {
+function showModal(html: string, onChoice: (act: string, button: HTMLButtonElement) => void): void {
   const card = $('modal-card');
   card.innerHTML = html;
   card.querySelectorAll<HTMLButtonElement>('button[data-act]').forEach((b) => {
-    b.onclick = () => onChoice(b.dataset.act!);
+    b.onclick = () => onChoice(b.dataset.act!, b);
   });
   $('modal').classList.remove('hidden');
 }
@@ -474,3 +556,4 @@ startLoop({
 
 showHome();
 registerServiceWorker();
+void sendPending();

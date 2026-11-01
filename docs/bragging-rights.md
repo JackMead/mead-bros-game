@@ -124,3 +124,37 @@ Until the first pass arrives, the long road uses stand-ins: goblin (melee), gobl
 
 - The bot is crude (it can't handle trolls or use pages), so its numbers only show whether something is wildly off. Real tuning needs human playtests.
 - Scores and the play limit are local and on the honour system until v1.
+
+## Playtest loop (until v1)
+
+Signed off by Rob on 2026-11-01. Rob is the only tester until the game is ready to share.
+
+**Principle:** always look for the best option, not the traditional one. An AI collaborator should use what it does differently (simulating thousands of runs, replaying every move, searching for optimal play) rather than copying how human-only teams design.
+
+1. **Batch:** Claude proposes 2 or 3 changes, Rob signs off, Claude builds them. Bump `config.build` whenever rules or numbers change.
+2. **Publish:** `npm run bragging:single`, then publish `dist/bragging-rights-playtest.html` to the playtest artifact (same link every time, with the `db` capability on).
+3. **Play window:** 3 to 4 days of daily runs plus unlimited playtest runs. No changes mid-window.
+4. **Analyse:** every finished run is stored automatically in the artifact's `runs` collection (one document per run, holding its run code). Claude saves them with ArtifactData `list` and runs `npm run bragging:report -- <folder>` (set `BUILD=v0.2` to look at one build).
+5. **Decide:** the next batch targets the biggest gap. Repeat.
+
+### Targets
+
+The game is ready for v1 when these hold for two windows in a row:
+
+| Target | Goal | Source |
+|---|---|---|
+| Deaths feel fair | ≥ 80% "my fault" | Post-run question |
+| Run length | Median 5 to 10 minutes of active play | Run code |
+| Bank decision is real | Banks spread across 3+ floors | Replay |
+| Ring is tempting | Used in 20% to 80% of runs | Replay |
+| Pages get used | ≥ 70% used before they crumble | Replay |
+| Skill shows | Scores rise across a window | Replay |
+| Readability | No "couldn't tell what was happening" | Comments |
+| Comes back | Played 5+ days out of 7 unprompted | Daily runs |
+
+### Pieces
+
+- **Playtest mode:** on in the single-file build, or with `#playtest` on the URL. Unlimited runs on random seeds, kept apart from daily plays and records. Must be off before scores count (v1).
+- **Run codes** (`runcode.ts`): `BR1.` plus the run as base64 JSON, about 250 characters. Holds the seed, every action, the post-run answers, active play time and the build.
+- **Post-run questions:** "Was that your mistake?" (only after a death or lamp-out) and "How did that run feel?".
+- **Analysis** (`analyse.ts`, `tools/report.ts`): replays each code and reports stairs decisions, damage by enemy, ring and page use, and the targets above.

@@ -47,4 +47,6 @@ export const config = {
     maxDarkness: 0.5,
   },
   storageKey: 'bragging-rights:v1',
+  /** Bump when rules or numbers change, so playtest runs from different builds aren't mixed up. */
+  build: 'v0.2',
 } as const;

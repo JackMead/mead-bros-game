@@ -4,7 +4,7 @@ import { Sound, type SoundName } from './audio';
 import { config } from './config';
 import {
   SLOT_NAMES, activeRun, compact, day, dayTotal, load, persist, playsLeft, recordAction, records,
-  resume, startRun, ukDate, type RunRecord, type SaveData,
+  resume, startRun, ukDate, type KeyValueStore, type RunRecord, type SaveData,
 } from './daily';
 import { Fx } from './fx';
 import { dist, same } from './grid';
@@ -22,7 +22,17 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => {
   return el as T;
 };
 
-const store = window.localStorage;
+/** Local storage, or memory if the browser blocks it (private windows, embedded previews). */
+const store: KeyValueStore = (() => {
+  try {
+    const s = window.localStorage;
+    s.getItem(config.storageKey);
+    return s;
+  } catch {
+    const mem = new Map<string, string>();
+    return { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v) };
+  }
+})();
 const save: SaveData = load(store);
 const sound = new Sound();
 sound.muted = save.muted;

@@ -12,7 +12,8 @@
     "play": "vite-node games/three-brothers/tools/play.ts --",
     "bragging:bot": "vite-node games/bragging-rights/tools/bot-stats.ts --",
     "bragging:report": "vite-node games/bragging-rights/tools/report.ts --",
-    "bragging:single": "node games/bragging-rights/tools/build-single.mjs"
+    "bragging:single": "node games/bragging-rights/tools/build-single.mjs",
+    "bragging:machine": "vite-node games/bragging-rights/tools/machine-playtest.ts --"
   },
   "dependencies": {
     "three": "^0.170.0"

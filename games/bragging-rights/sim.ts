@@ -41,7 +41,7 @@ export function step(state: RunState, action: Action): StepResult {
   const fail: StepResult = { ok: false, state, events: [] };
   if (state.phase === 'over') return fail;
 
-  const s = structuredClone(state);
+  const s = cloneState(state);
   const kit = getKit(s.kitId);
   const events: GameEvent[] = [];
 
@@ -84,6 +84,18 @@ export function replay(seed: number, actions: readonly Action[], kitId: string =
     state = r.state;
   }
   return state;
+}
+
+/**
+ * Copy everything a step can change. Positions, intents and items are never edited in place
+ * (always replaced), so they are shared; the determinism tests guard this.
+ */
+function cloneState(s: RunState): RunState {
+  return {
+    ...s,
+    floor: { ...s.floor, tiles: s.floor.tiles.slice(), items: s.floor.items.slice(), enemies: s.floor.enemies.map((e) => ({ ...e })) },
+    player: { ...s.player, pages: s.player.pages.slice() },
+  };
 }
 
 /** A copy of `state` on a hand-built floor, with the player on its start square. For tests and tools. */

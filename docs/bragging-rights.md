@@ -158,3 +158,22 @@ The game is ready for v1 when these hold for two windows in a row:
 - **Run codes** (`runcode.ts`): `BR1.` plus the run as base64 JSON, about 250 characters. Holds the seed, every action, the post-run answers, active play time and the build.
 - **Post-run questions:** "Was that your mistake?" (only after a death or lamp-out) and "How did that run feel?".
 - **Analysis** (`analyse.ts`, `tools/report.ts`): replays each code and reports stairs decisions, damage by enemy, ring and page use, and the targets above.
+
+## Machine playtesting
+
+Signed off by Rob on 2026-11-01 (batch 2). Every batch is played by machine before a human plays it, so human plays test feel rather than arithmetic.
+
+- **Solver** (`solver.ts`): beam search over a floor. No dice means a floor is a fully known puzzle, so it can look many turns ahead. Used for par (the best haul found on a dungeon, by banking at the richest staircase any style reached). "Best found", not provably perfect.
+- **Human-like players:** `planAction` thinks only 1 to 3 turns ahead and re-plans every move, with a style (`careful`, `balanced`, `greedy`) that weights relics, hearts, oil and risk differently. They also dislike going round in circles. One turn ahead is roughly a careful new player reading the telegraphs.
+- **Tool:** `npm run bragging:machine -- --runs 40 --horizon 1,2,3 [--par] [--set player.oil=110]`. `--set` tries a number without changing the code.
+
+### First findings (build v0.2, 2026-11-01)
+
+1. **Skilled players never get hit.** Players looking 2+ turns ahead escaped 85% to 95% of runs with zero deaths. The only thing that ever ended their runs was the lamp. With 3 hearts instead of 4, the results were identical.
+2. **Melee enemies can be kited forever.** A goblin telegraphs the square you're on, so stepping away every turn means it can never land a hit. Melee enemies only cost oil.
+3. **Oil is generous.** Mean oil left at the floor 7 stairs was 77 of 150, so the lamp rarely pressures a competent player and banking almost never happens.
+4. **110 oil makes banking real.** At 110, two-turn players banked 30% of runs, spread across floors 6 and 7 (floors 4 to 7 for one-turn players), and oil at the floor 7 stairs dropped to 37.
+5. **Cave trolls** end most deaths among one-turn players.
+6. **Par** averaged 125: a full search clears all 8 floors with nearly every relic.
+
+Bot limits: they value holding pages, so page use (about 45%) understates how humans will use them. Treat page and ring numbers from bots with caution.

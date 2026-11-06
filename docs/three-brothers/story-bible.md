@@ -54,7 +54,9 @@ More about Phil, from Chapter 1 (written by Rob; Phil can rework any of it):
 More about Jack, from Rob (Jack can rework any of it):
 
 - Maths graduate from Cambridge; lives in Oxford. A software developer for a bank.
-- A classic middle child, and a chameleon: fits in anywhere, too nice to say he doesn't like a place.
+- Very clever and self-aware.
+- A classic middle child: neglected and overlooked.
+- A chameleon: fits in anywhere, too nice to say he doesn't like a place (but will tell you your argument is wrong).
 - An atheist who has read the popular books against religion (keep authors generic in the game).
 - Married; his wife stays unnamed unless Jack names her. No children; two black cats, Pan and Merlin.
 - Goes to gigs by a loud electronic post-hardcore band (keep it generic) and is in a sci-fi book club.

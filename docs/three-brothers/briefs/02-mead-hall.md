@@ -8,7 +8,7 @@ Rob and Jack are each writing a chapter (Rob writes Jack's, Jack writes Rob's). 
 
 ## What happens
 
-Jack's streak of light from the well comes down on the Wolds in 627, the year King Edwin's council debates whether to give up the old gods for the new Christian one. He finds his way to Edwin's mead hall, which a Mead brother finds hard to take seriously, and into a court split down the middle. On one side is Coifi, Edwin's pagan high priest, who is starting to doubt his own gods. On the other is Paulinus, the Roman missionary. Both want the clever stranger on their side. Jack, a classic middle child and a committed atheist, agrees with whoever spoke to him last.
+Jack's streak of light from the well comes down on the Wolds in 627, the year King Edwin's council debates whether to give up the old gods for the new Christian one. He finds his way to Edwin's mead hall, which a Mead brother finds hard to take seriously, and into a court split down the middle. On one side is Coifi, Edwin's pagan high priest, who is starting to doubt his own gods. On the other is Paulinus, the Roman missionary. Both want the clever stranger on their side. Jack, a committed atheist, disagrees with both of them, cleverly and at length. As a classic middle child he's used to being overlooked, and for once everyone wants his opinion. It's not the one they wanted.
 
 Mother Shipton won't be born for another 860 years, but she has a representative here: someone of the time who seems to know who Jack is, and who mixes things up for him. Their motive stays unclear.
 
@@ -32,9 +32,10 @@ Along the way he works out where and when he is. It ends on a real moment from h
 
 - **The mead hall:** the Mead brothers' own name over the door, more or less.
 - **Part-time vegetarian:** he loudly regrets the meat and eats loads anyway, because his wife isn't watching. Someone notices.
-- **Atheist in a holy debate:** he's read the popular books against religion (keep the author generic), and Mum is a lay preacher at her local church. The one unbeliever in the room is the man both sides want on their team, and he can't stop quoting Mum's sermons.
-- **The chameleon:** he fits in anywhere and is too nice to say he doesn't like a place. In a court split in two, he agrees with both sides.
-- **Classic middle child:** overlooked, the peacemaker, used to being stuck in the middle.
+- **Atheist in a holy debate:** he's read the popular books against religion (keep the author generic), and Mum is a lay preacher at her local church. The one unbeliever in the room is the man both sides want on their team. He disagrees with both, and still can't stop quoting Mum's sermons.
+- **Clever and self-aware:** he knows exactly what he's doing, including when he's being a hypocrite about the meat.
+- **The chameleon:** he fits in anywhere and is too nice to say he doesn't like a place. Places, not ideas: he'll happily tell both sides of a debate they're wrong.
+- **Classic middle child:** neglected and overlooked. Nobody asks what he thinks, so he's had years to work it out.
 - **Cambridge maths graduate living in Oxford.** He's stopped picking a side there too.
 - **Software developer for a bank**, among people who count on their fingers and keep a king's hoard by eye.
 - **Sci-fi book club:** he applies time-travel rules from fiction ("don't touch anything", "don't meet yourself") to a curse that follows none of them.

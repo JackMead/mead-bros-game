@@ -21,3 +21,15 @@ Wulf's gift fell to cycling the inventory (about 5 tries). The meat chain resist
 - The spearhead is loose on the bar and must be lashed with the groom's rope, which only comes free once the stallion is back (new step; ties the two late threads together).
 - Removed answer-giving lines: the cat, Osric/sparrow, the idols, "bring it him empty", the groom's "down to the river" (Ecca now carries that clue alone). Ecca and Gytha no longer repeat the "always stay" pattern; Coifi and Paulinus carry it.
 - Fixed: Gytha's repeat speech, river hotspot, wallet message, barley refusal, heron in the description, door state line, awkward line. Cat now visible from the start.
+
+## Round 2 (15 puzzles, shortest route 31 moves)
+
+### The Veteran (fresh): finished, 165 commands (about 100 of them an opening sweep), 2/5
+
+Never stuck; every obstacle fell to the first or second idea. Praised the mead chain (best escalating refusals) and the photo puzzle. Called the door rings, the barley-trail refusals and "both sides" in the bag line over-signposted. The rope appeared as a new hotspot rather than being deduced, and every wrong use of the wobbly spear gave the same generic line. Stale lines: the queen still waiting for Coifi and Paulinus after both arrived; the river description still showing Paulinus after he left. Suggested a rawhide binding (wet it, then shrink it by a fire), clued by a weapons man.
+
+### Changes after round 2
+
+- The spear binding is now a deduction across two scenes: a dry rawhide strap from the old halter must be soaked in the river, wound on, then dried at the hall's hearth so it shrinks tight. Wulf, the weapons man, gives the method only when shown the wobbly spear.
+- Removed the rings from the barred door's description (they appear once it's unbarred), cut two barley refusals that described the answer, and cut Jack's analysis when he takes a lot (the lot's own description still shows it).
+- Fixed the queen's and the river's stale lines.

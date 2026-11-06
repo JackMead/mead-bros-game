@@ -33,9 +33,9 @@ Each brother owns his entry here and in `games/three-brothers/cast.ts`. Catchphr
 | Born | London | Scarborough | Scarborough |
 | Lives | York | Oxford | Belfast |
 | Good at | Being tall; reaching things | Maths, spotting a pattern | Table tennis; reflexes, aim |
-| Weakness | Gets on his soapbox and won't get off | Vegetarian: won't touch meat | Permanently cold hands and feet |
+| Weakness | Gets on his soapbox and won't get off | Part-time vegetarian: protests at meat, eats it when his wife isn't looking | Permanently cold hands and feet |
 | Visual gag | Carries an actual soapbox, for ranting | | Blowing on his fingers |
-| Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "That doesn't add up." | "Young man", to everyone, whatever their age |
+| Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "Fair enough." | "Young man", to everyone, whatever their age |
 
 Where they're from (from Rob): the family home was in Scarborough and later moved to Filey. Joke potential for later chapters: the only brother who lives in Yorkshire wasn't born there, and the two born there both left. The curse won't let any of them out of the county.
 
@@ -51,7 +51,18 @@ More about Phil, from Chapter 1 (written by Rob; Phil can rework any of it):
 - Loves pop punk; desperate not to miss his summer festival in Leeds.
 - Supports a Manchester football team (keep it generic) but likes all sport.
 
-Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), then Jack writes Rob's.
+More about Jack, from Rob (Jack can rework any of it):
+
+- Maths graduate from Cambridge; lives in Oxford. A software developer for a bank.
+- A classic middle child, and a chameleon: fits in anywhere, too nice to say he doesn't like a place.
+- An atheist who has read the popular books against religion (keep authors generic in the game).
+- Married; his wife stays unnamed unless Jack names her. No children; two black cats, Pan and Merlin.
+- Goes to gigs by a loud electronic post-hardcore band (keep it generic) and is in a sci-fi book club.
+- Carries practical things: a battered wallet, a carabiner, a water bottle.
+
+The family: Mum is a lay preacher at her local church.
+
+Who's written for whom: Rob wrote Phil's chapter (1) and is writing Jack's; Jack is writing Rob's. Whichever is finished first becomes Chapter 2, and the other adapts around it.
 
 ## Cast (non-brothers)
 
@@ -91,7 +102,7 @@ Facts later chapters must respect.
 
 Things a later chapter can pick up. Close them by moving them to "Closed threads" with the chapter that did it. Part of the fun is learning which to close and which to leave open.
 
-- Where and when did Jack and Rob land? (Chapter 2 is Jack's.)
+- Where and when did Jack and Rob land? (Rob is writing Jack's chapter and Jack is writing Rob's; whichever is finished first is Chapter 2.)
 - How does Phil get by in 1890, and can he use the well to reach his brothers?
 - Phil's wedding, and his festival: will he make either?
 - Who finds the phone with the selfie on it, and when? Does the photo still show her face?

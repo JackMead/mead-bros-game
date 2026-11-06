@@ -49,3 +49,22 @@ Fair, logical, well clued; most steps fell on the first or second try. Estimated
 ### Where it stands
 
 Three rounds moved the Veteran from 2.5 to 2 to 2.5. Each round added steps and cut signposting, but the Veteran's main point held: almost every step has one obvious candidate, so a methodical player is never stuck. Reaching 4 would need a different structure (several plausible uses for each item, more decoys, needs that are never stated), which is a bigger rework than a polish pass.
+
+## Round 4, after the structural rework (17 puzzles, shortest route 40 moves)
+
+Reworked per `puzzle-design.md`: the council now needs both the priest and the missionary, so three threads run in parallel (the lots, getting Ecca to the river by penning his sheep, the barrow light); the carabiner is needed at the gate and again at the west door; the bone charm is a second decoy.
+
+### The Veteran (fresh): finished, 184 commands, 3/5
+
+First real movement. Estimated 25 to 30 minutes. Juggled several threads; had to realise the carabiner could be taken back from the gate; stuck for about 25 commands finding rawhide. Called the first two puzzles giveaways, the halter invisible until late, and Wulf's rawhide line too complete. Bugs: "sheep" matched the gate; stale queen and stable lines; "Still not taking shiny things" with no earlier offer; awkward bag line; charm thong needed its own refusal on the spear.
+
+### The Button-Masher: capped at 124 commands, 10 of 17, 3/5
+
+Ran out of commands at the west door and spear chain. Mead and the carabiner backtrack resisted brute force; the gate and the lot fell to it.
+
+### Changes after round 4 (not retested)
+
+- The halter is visible from the start; the groom won't let you take it until the stallion is back.
+- Wulf only says "rawhide" now; the groom explains soaking and shrinking when shown the strap; the wobbly spear's refusal changes once Wulf has spoken.
+- The gate's description and the carabiner's generic refusal no longer point at each other.
+- Fixed all the bugs above, and lined up every tappable area with the painted backgrounds; Ecca, Gytha, the cat and Wulf now use their cut-outs.

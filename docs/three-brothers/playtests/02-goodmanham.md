@@ -37,6 +37,17 @@ Fair and never unfair, but **under the Hard brief**: the Veteran estimates 15 to
 
 **On difficulty:** three rounds of changes moved the AI rating 2.5, 2, 2.5. Adding steps doesn't move it; the testers say each step still has one obvious candidate. Ready for a human playtest: Jack's time will tell us whether it needs a structural rework.
 
+## AI round 4, after a structural rework
+
+Rebuilt the middle of the chapter along the lines of `puzzle-design.md`: several threads open at once, an item needed in two places, a second decoy. 17 puzzles; fewest possible moves 40.
+
+| Tester | Finished | Commands | Brute-forced? | Difficulty (1-5) |
+| --- | --- | --- | --- | --- |
+| The Veteran (fresh) | Yes | 184 | No | 3 |
+| The Button-Masher (fresh) | No (cap) | 124 | 2 puzzles | 3 |
+
+First real rise: the Veteran estimates 25 to 30 minutes and got properly stuck once. Still a notch under the Hard target of 4. Fixed afterwards (not retested): 1 hidden thing made visible from the start, 1 hint cut back and split across two characters, 2 lines that pointed at each other, 8 small bugs. Tappable areas now match the painted backgrounds.
+
 ## Human playtests
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.

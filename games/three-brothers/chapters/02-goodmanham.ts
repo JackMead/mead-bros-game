@@ -555,6 +555,15 @@ export const goodmanham: Chapter = {
 
     // ---- The wallet and personal things ----
     {
+      look: 'wallet',
+      if: '!wallet_open',
+      say: [
+        'Jack goes through his wallet. A bank card. A library card from the Oxford one, not the Cambridge one, which he feels slightly guilty about. A two-pound coin. And a photo.',
+        'Me: I should put these somewhere I can find them.',
+      ],
+      do: ['give:coin', 'give:photo', 'set:wallet_open'],
+    },
+    {
       on: 'wallet',
       if: '!wallet_open',
       say: [

@@ -33,3 +33,19 @@ Never stuck; every obstacle fell to the first or second idea. Praised the mead c
 - The spear binding is now a deduction across two scenes: a dry rawhide strap from the old halter must be soaked in the river, wound on, then dried at the hall's hearth so it shrinks tight. Wulf, the weapons man, gives the method only when shown the wobbly spear.
 - Removed the rings from the barred door's description (they appear once it's unbarred), cut two barley refusals that described the answer, and cut Jack's analysis when he takes a lot (the lot's own description still shows it).
 - Fixed the queen's and the river's stale lines.
+
+## Round 3 (16 puzzles, shortest route 38 moves)
+
+### The Veteran (fresh): finished, 186 commands, 2.5/5
+
+Fair, logical, well clued; most steps fell on the first or second try. Estimated 15 to 20 minutes. Best puzzle: the photo and the platter. Called out: Wulf stated the whole rawhide method; the halter appeared silently; the mead source was a hunch rather than a deduction; the stallion's location was a lucky guess before asking Ecca. Bugs: Ecca's description stale after drinking; the spit gave a generic line for drying the spear; plain "use" on the barrow while holding a lit stick didn't hint.
+
+### Changes after round 3 (not retested)
+
+- Wulf now only says rawhide must be "bound on and shrunk tight"; the groom (shown the strap) explains that hide softens when soaked and shrinks by a fire. The method is now split across two characters.
+- The groom mentions the old halter on the post once the stallion is back.
+- Fixed Ecca's stale description, a specific refusal at the spit, and a hint at the barrow.
+
+### Where it stands
+
+Three rounds moved the Veteran from 2.5 to 2 to 2.5. Each round added steps and cut signposting, but the Veteran's main point held: almost every step has one obvious candidate, so a methodical player is never stuck. Reaching 4 would need a different structure (several plausible uses for each item, more decoys, needs that are never stated), which is a bigger rework than a polish pass.

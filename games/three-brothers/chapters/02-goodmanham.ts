@@ -643,6 +643,7 @@ export const goodmanham: Chapter = {
     { on: 'lot', item: 'torch', say: ["Me: Burn the evidence? I work at a bank. We keep evidence for seven years."] },
 
     // ---- Ecca ----
+    { look: 'ecca', if: 'ecca_watered', say: ["Me: Ecca. Watered, and much happier for it. He still thinks I'm an elf."] },
     {
       on: 'ecca',
       if: '!ecca_watered',
@@ -688,6 +689,7 @@ export const goodmanham: Chapter = {
 
     { on: 'sheep', say: ['Jack pats a sheep. The sheep allows it.', "Me: You're a very good sheep. Don't tell anyone I said that."] },
     { on: 'sheep', item: 'barley', say: ["Me: No. Ecca's lunch is not for the sheep. The sheep have the entire Wolds."] },
+    { on: 'barrow', if: 'has:torch !got_spearhead', say: ['Jack peers in. The stick in his hand would light the way, if he held it out in front.'] },
     { on: 'barrow', if: 'got_spearhead', say: ["Me: I've had what I came for. Sorry, whoever you are. I'll bring it back. Probably."] },
     {
       on: 'barrow',
@@ -826,8 +828,8 @@ export const goodmanham: Chapter = {
     { on: 'wulf', item: 'photo', say: ["Wulf: A painting, so small and so true! Your woman? Keep it, stranger. A man's wife is no gift for a king."] },
     { on: 'wulf', item: 'barley', say: ["Wulf: Barley. Do I look like a horse?"] },
     { on: 'wulf', item: 'lot', say: ['Wulf: One of Gytha\'s lots? Put it away, stranger. I\'ll not cross her.'] },
-    { on: 'wulf', item: 'spear_loose', say: ["Wulf: Loose in the socket. Seen it a hundred times. Tie it with anything and it'll still shake loose.", "Wulf: What you want is rawhide. Wet it through, bind it on, then let a good fire dry it. Rawhide shrinks as it dries. Tight as a drum, after."] },
-    { on: 'wulf', item: 'spear_bound', say: ["Wulf: Wet rawhide on, good. Now it wants drying by a fire, so it shrinks."] },
+    { on: 'wulf', item: 'spear_loose', say: ["Wulf: Loose in the socket. Seen it a hundred times. Tie it with string and it'll still shake loose.", "Wulf: Rawhide's what you want, bound on and shrunk tight. My father did it that way. Don't ask me how; I just hit things."] },
+    { on: 'wulf', item: 'spear_bound', say: ["Wulf: Rawhide on, good. Not shrunk yet, mind. It still moves."] },
     { on: 'wulf', item: 'strap', say: ["Wulf: Rawhide. Dry as a bone. Stiff as my axe handle."] },
     { on: 'wulf', item: 'spear', say: ["Wulf: A spear from nothing! Well, the priest must have it, not me. The king said."] },
     { on: 'wulf', item: 'spearhead', say: ["Wulf: That's an old blade. A barrow blade. On a good shaft, that'd fly true."] },
@@ -871,12 +873,17 @@ export const goodmanham: Chapter = {
     { on: 'cook', item: 'meat', say: ["Cook: That's off my spit! How did you... You said you didn't eat meat!", "Me: It's for a cat.", "Cook: Course it is."] },
     { on: 'spit', say: ['Jack reaches towards the spit.', "Cook: OI. Hands off. You don't eat meat, remember?"] },
     { on: 'spit', item: 'photo', say: ["Cook: Showing your wife my boar won't get you any of it, lad."] },
+    { on: 'spit', item: 'spear_bound', say: ['Cook: Get that out of my coals! That fire is for the boar.'] },
+    { on: 'spit', item: 'strap_wet', say: ['Cook: Not over my boar, you don\'t.'] },
     { on: 'spit', item: 'torch', say: ["Me: It's on a fire already. It's very much on a fire."] },
 
     { on: 'groom', if: '!council_decided', say: ["Groom: Don't mind the big lad. He's been daft over the mare since spring. Follows her round like a lovesick calf.", "Groom: The mare's Coifi's. Priests may ride a mare, never a stallion. And never carry a weapon. That's the law of the old gods."] },
     { on: 'groom', if: '!stallion_back', say: ["Groom: He's gone! Somebody untied him, with a knot I've never seen in my life, and off he went like the wind. I didn't see which way.", "Groom: I've tried calling him. I've tried oats. He won't come for anyone."] },
-    { on: 'groom', say: ["Groom: Back where he belongs, the big daft lump. Coifi's off up the temple on him already."] },
+    { on: 'groom', say: ["Groom: Back where he belongs, the big daft lump. Coifi's off up the temple on him already. I've put her on a proper rope; that old halter on the post is only fit for the midden."] },
     { on: 'halter', say: ['Jack unpicks one long strap from the old halter.', "Groom: Have it, lad. It's dry as a bone, that. Not much use to anyone."], do: ['give:strap', 'set:got_strap'] },
+    { on: 'groom', item: 'strap', say: ["Groom: Dry old hide. Soak it and it'll go soft as a glove. Just don't hang it by the fire after, or it shrinks up like a miser's purse. Ruined three good bridles that way."] },
+    { on: 'groom', item: 'strap_wet', say: ["Groom: That's softened up nicely. Keep it away from the fire, mind, or it'll shrink on you."] },
+    { on: 'groom', item: 'spear_loose', say: ["Groom: I'm a horse man, lad. Ask Wulf about spears."] },
     { on: 'groom', item: 'barley', say: ["Groom: Barley for the horses? I've tried oats. He'll not come for food. He's got other things on his mind."] },
     { on: 'groom', item: 'coin', say: ["Groom: What would a groom do with that? Nail it to a hoof?"] },
     { on: 'grey_mare', if: 'council_decided !stallion_back', say: ["Jack takes the mare's rope. She looks at him, sighs, and comes along.", "Groom: Where are you off with her?", "Me: I've got a theory."], do: ['give:mare', 'set:mare_taken'] },

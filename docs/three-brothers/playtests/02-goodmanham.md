@@ -25,6 +25,18 @@ Under the brief. Both found it fair and funny; the Veteran's verdict was that to
 
 Still under the brief: fair, never stuck. Changed: 1 puzzle now needs steps in two different scenes and a clue from a third, 2 puzzles lost their signposting, 3 stale lines fixed. Now 16 puzzles; fewest possible moves 38.
 
+## AI round 3
+
+16 puzzles, fewest possible moves 38.
+
+| Tester | Finished | Commands | Brute-forced? | Difficulty (1-5) |
+| --- | --- | --- | --- | --- |
+| The Veteran (fresh) | Yes | 186 | No | 2.5 |
+
+Fair and never unfair, but **under the Hard brief**: the Veteran estimates 15 to 20 minutes for an experienced human. Fixed afterwards (not retested): 1 clue split across two characters, 1 thing made easier to notice, 3 small bugs.
+
+**On difficulty:** three rounds of changes moved the AI rating 2.5, 2, 2.5. Adding steps doesn't move it; the testers say each step still has one obvious candidate. Ready for a human playtest: Jack's time will tell us whether it needs a structural rework.
+
 ## Human playtests
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.

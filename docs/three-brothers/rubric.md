@@ -87,4 +87,9 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **AI testers over-count time.** They spend most of their commands exploring. Judge length by the fewest moves and by humans, not by tester command counts.
   - **No accidental solves** (now fixed rule 1). Several answers were triggered just by talking to everyone.
   - **More inventory, more threads.** With one or two items in hand there's only ever one candidate. Medium needs several items in play, a couple of decoys, and two or three threads open at once.
+- *2026-11, Chapter 1 (human playtests of the rework):* Jack finished blind inside 15 minutes and found it too easy; Mum got stuck but loved it. The format and the jokes work; **the difficulty needs to go up from Chapter 2 on.**
+  - **Recalibrate:** what the AI testers rate 2/5 is easy for us. A brief asking for Medium should reach 3/5 with the AI testers, and Hard should reach 4/5. Don't ship below that.
+  - **Every chapter needs at least:** one puzzle that combines two items, one answer that needs clues from two different scenes, and one item that looks useful but isn't.
+  - **Fewer stated needs.** Characters said exactly what they wanted. Let the player work some of them out.
+  - **Mixed audiences are fine.** A newcomer getting stuck while a regular flies through means the spread is wide, not that it's wrong. Phil's thought line (tap his portrait) is the safety net for anyone stuck.
 

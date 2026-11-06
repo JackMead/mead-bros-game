@@ -140,7 +140,6 @@ export const whitby: Chapter = {
   era: 'August 1890',
   place: 'Whitby',
   brothers: ['phil'],
-  inDevelopment: true,
   start: {
     scene: 'east_cliff',
     brother: 'phil',

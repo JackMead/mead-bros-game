@@ -96,5 +96,5 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **More steps don't make it harder.** Going from 12 to 16 puzzles and 27 to 38 moves left the Veteran at 2 to 2.5. What it measures is whether you're ever unsure what to try.
   - **One candidate per step reads as easy**, however clever the link. Hard needs items with more than one plausible use, a couple of decoys that look right, and needs nobody says out loud.
   - **Characters keep stating the method.** Each round, a line that spelled out the answer was the main complaint. Split a method across two characters, or leave half of it for the player to infer.
-  - **Character puzzles score best.** The puzzle built on Jack's part-time vegetarianism was named the best in the chapter in every round.
+  - **Character puzzles score best.** The puzzle built on Jack's character was named the best in the chapter in every round.
 

@@ -73,6 +73,10 @@ export const goodmanham: Chapter = {
       name: 'Bottle of mead',
       look: "My water bottle, full of Hunna's mead. Clear bottle, golden mead. It looks like something out of a museum gift shop. A posh one.",
     },
+    charm: {
+      name: 'Bone charm',
+      look: "One of Gytha's bone charms: a little carved bone on a thong, scratched with runes. It's meant to ward off something. It doesn't say what. That's always the bit they leave out.",
+    },
     coin: {
       name: 'Two-pound coin',
       icon: 'coin',
@@ -155,7 +159,24 @@ export const goodmanham: Chapter = {
           name: 'Ecca, the shepherd boy',
           rect: { x: 330, y: 245, w: 70, h: 125 },
           colour: '#7a5a3a',
+          if: '!ecca_left',
           look: { any: 'A skinny shepherd boy with a crook and a sling. His lips are cracked and he keeps staring at the dry valley bottom.', },
+        },
+        {
+          id: 'fold',
+          name: 'Sheepfold gate',
+          rect: { x: 410, y: 230, w: 110, h: 75 },
+          colour: '#8a7a50',
+          if: '!gate_clipped',
+          look: "A little pen of woven hurdles. The gate's held shut with a bit of rotten twine that has clearly given up. Every time a sheep leans on it, it swings open. Ecca keeps having to chase them back in.",
+        },
+        {
+          id: 'fold_clipped',
+          name: 'Sheepfold gate',
+          rect: { x: 410, y: 230, w: 110, h: 75 },
+          colour: '#8a7a50',
+          if: 'gate_clipped',
+          look: "The sheepfold gate, clipped shut with my carabiner. The sheep lean on it. It doesn't move. The sheep look betrayed.",
         },
         {
           id: 'sheep',
@@ -170,6 +191,14 @@ export const goodmanham: Chapter = {
           rect: { x: 600, y: 110, w: 230, h: 150 },
           colour: '#5a4a35',
           look: 'A low hut made of turf, with smoke leaking out of the roof. Bunches of herbs and little bone charms hang round the door. It has big witch energy.',
+        },
+        {
+          id: 'charms',
+          name: 'Bone charms',
+          rect: { x: 610, y: 120, w: 90, h: 60 },
+          colour: '#e0d8c0',
+          if: '!got_charm',
+          look: "Little carved bones on thongs, hung round the hut door, clicking in the wind. Charms against something. Probably against people like me.",
         },
         {
           id: 'gytha',
@@ -395,7 +424,7 @@ export const goodmanham: Chapter = {
           name: 'Paulinus',
           rect: { x: 720, y: 195, w: 60, h: 130 },
           colour: '#d0d0e8',
-          if: 'lots_exposed',
+          if: 'paulinus_ready',
           look: 'Paulinus, the missionary, standing very straight and trying not to look delighted.',
         },
         {
@@ -548,7 +577,7 @@ export const goodmanham: Chapter = {
           name: 'Paulinus, the missionary',
           rect: { x: 380, y: 215, w: 70, h: 145 },
           colour: '#d0d0e8',
-          if: '!lots_exposed',
+          if: '!paulinus_ready',
           look: 'A tall, thin Roman with a hooked nose, standing in the river in his robes, waiting for converts. Nobody is coming. He is very wet.',
         },
         {
@@ -557,6 +586,14 @@ export const goodmanham: Chapter = {
           rect: { x: 470, y: 140, w: 60, h: 140 },
           colour: '#8a6a40',
           look: "A tall wooden cross stuck in the riverbank. Mum would love this. Mum would already be in the river.",
+        },
+        {
+          id: 'ecca_river',
+          name: 'Ecca',
+          rect: { x: 250, y: 250, w: 60, h: 115 },
+          colour: '#7a5a3a',
+          if: 'ecca_left',
+          look: "Ecca, dripping wet from head to foot and grinning like he's won a prize. He has a honey cake in each hand.",
         },
         {
           id: 'stallion_river',
@@ -581,8 +618,10 @@ export const goodmanham: Chapter = {
     // ---- Jack thinks (tap his portrait) ----
     { look: 'jack', if: '!ecca_watered', say: ["Me: Somewhere in Yorkshire. Some time a long time ago. That boy might know where and when, if he'd stop looking at me like I'm a ghost."] },
     { look: 'jack', if: '!in_hall', say: ["Me: The action's down in that hall, and the door-ward wants a gift for the king. Something nobody here has seen before, fit for a king's table."] },
-    { look: 'jack', if: '!got_lot', say: ["Me: Gytha's lots keep saying the same thing. I'd love a proper look at them. That cat's in the way, and it isn't moving for me."] },
+    { look: 'jack', if: '!lots_exposed !paulinus_ready', say: ["Me: Edwin won't sit his council till he has his high priest and the Roman, both. One's sulking at his temple and the other's standing in a river. Neither is budging."] },
+    { look: 'jack', if: '!got_lot', say: ["Me: The Roman's here. Now the priest. He trusts Gytha's lots, and her lots keep saying the same thing. I'd love a proper look at them."] },
     { look: 'jack', if: '!lots_exposed', say: ["Me: I've got the evidence. Now it needs to go to somebody who matters. Somebody who still believes in her."] },
+    { look: 'jack', if: '!paulinus_ready', say: ["Me: The priest's here. Now the Roman. He won't leave his river until somebody wants what he's selling. Who round here wants to see him in action?"] },
     { look: 'jack', if: '!council_decided !door_clipped', say: ["Me: Osric's lost his speech. Mum did a sermon on it, every Easter: a hall, a fire, winter outside, and something passing through. One door to the other. Only half the doors here are any use."] },
     { look: 'jack', if: '!council_decided', say: ["Me: Both doors open. Osric still needs his moment. In one door, through the warm, out the other. What comes through a hall like that?"] },
     { look: 'jack', if: '!spear_lashed !stallion_back', say: ["Me: Coifi needs a spear and a stallion. The rack's empty and the stallion's done a runner. Two jobs."] },
@@ -643,6 +682,10 @@ export const goodmanham: Chapter = {
     { on: 'lot', item: 'torch', say: ["Me: Burn the evidence? I work at a bank. We keep evidence for seven years."] },
 
     // ---- Ecca ----
+    { on: 'ecca_river', if: '!council_decided', say: ["Ecca: He dunked me, elf! Right under! And I came up new, and I got two honey cakes! The Roman's gone up to the king's hall now, all pleased with himself."] },
+    { on: 'ecca_river', say: ["Ecca: The king's stallion came past like the wind, elf, drank half the river and went off up the bank. You'll want to watch him. He's a terror for the ladies, Da says."] },
+    { on: 'ecca_river', item: 'charm', say: ["Ecca: Put that away! I've been dunked now. I'm not allowed charms. I don't think. I'll ask."] },
+    { on: 'ecca_river', item: 'coin', say: ["Ecca: Still not taking shiny things off elves. Even dunked."] },
     { look: 'ecca', if: 'ecca_watered', say: ["Me: Ecca. Watered, and much happier for it. He still thinks I'm an elf."] },
     {
       on: 'ecca',
@@ -655,14 +698,12 @@ export const goodmanham: Chapter = {
     },
     {
       on: 'ecca',
-      if: '!lots_exposed',
       say: [
         "Ecca: Stay away from Gytha, elf. She casts her lots for everyone. For the sheep, for the king, for my mam.",
         "Ecca: And don't go in the barrow. There's a dead king in there with his spear, and he don't like visitors.",
+        "Ecca: They say there's a Roman down at the river who dunks folk under the water and they come up new. And he gives them honey cakes after! I'd give anything to see it. But I can't go anywhere. These daft sheep won't stay put.",
       ],
     },
-    { on: 'ecca', if: '!council_decided', say: ["Ecca: Is it true? Coifi's turned against the old gods? My mam's going to faint."] },
-    { on: 'ecca', say: ["Ecca: The king's stallion went past like the wind, elf. Down to the river, I reckon. He always goes for a drink."] },
     {
       on: 'ecca',
       item: 'bottle',
@@ -766,6 +807,36 @@ export const goodmanham: Chapter = {
     { on: 'hut', say: ["Jack peers into the hut. Smoke, herbs, something bubbling. A bed of bracken.", "Me: Don't touch anything. That one isn't even a book club rule. It's just sense."] },
     { on: 'hut', item: 'coin', say: ["Me: I'm not leaving a two-pound coin in a witch's hut. Somebody would find it in a thousand years and the archaeologists would never sleep again."] },
 
+    { on: 'fold', say: ['Jack reties the rotten twine round the gate. A sheep leans on it. The twine gives up again.', "Me: Fair enough. I wouldn't trust that twine either."] },
+    {
+      on: 'fold',
+      item: 'carabiner',
+      if: 'ecca_watered',
+      say: [
+        'Jack swings the gate shut, threads the carabiner through the hurdle and round the post, and snaps it closed. Click.',
+        'A sheep leans on it. Nothing happens. The sheep leans harder. Nothing happens.',
+        'Ecca: An elf-ring! It holds! Elf, you\'re a wonder! Now I can go and see the Roman!',
+        'Ecca is off down the hill before Jack can say anything.',
+        "Me: I'm an atheist. I've just sent the Church its first customer in Northumbria. Mum is never, ever going to let this go.",
+      ],
+      do: ['take:carabiner', 'set:gate_clipped', 'set:ecca_left', 'set:paulinus_ready'],
+    },
+    { on: 'fold', item: 'carabiner', say: ["Ecca: Don't you put elf-magic on my sheep! Not till I know you're a good elf."] },
+    { on: 'fold', item: 'barley', say: ["Me: The sheep would eat it and then lean on the gate again, only happier."] },
+    { on: 'fold', item: 'bar', say: ["Me: Prop it with the bar? The sheep would knock it flat. It needs fastening, not leaning on."] },
+    { on: 'fold_clipped', say: ['Jack unclips the carabiner. The sheep give him a look, but stay where they are.', "Me: Ecca'll be back. Probably. With honey cakes."], do: ['clear:gate_clipped', 'give:carabiner'] },
+    { on: 'charms', if: 'in_hall', say: ['Jack unhooks one of the bone charms from the empty hut.', "Me: Book club rule: don't take anything from a witch's house. This is me breaking it. Responsibly."], do: ['give:charm', 'set:got_charm'] },
+    { on: 'charms', say: ['Gytha: Want one, Jack Mead? Take one, for luck. You\'ll need it.', 'She unhooks a charm and presses it into his hand.'], do: ['give:charm', 'set:got_charm'] },
+    { on: 'barrow', item: 'charm', say: ['Jack holds the charm out in front of him and steps into the barrow.', "Me: I feel very protected. It's still pitch black. Charms don't glow, it turns out."] },
+    { on: 'ecca', item: 'charm', say: ["Ecca: One of Gytha's charms! That'll keep the barrow-king off you, elf. Probably. Maybe."] },
+    { on: 'coifi', item: 'charm', say: ["Coifi: Gytha's charms. She hands them out like bread. Much good they've ever done me."] },
+    { on: 'gytha', item: 'charm', say: ["Gytha: Keep it, Jack Mead. Keep it close."] },
+    { on: 'gytha_hall', item: 'charm', say: ["Gytha: You're wearing my charm. Good. Then you'll stay."] },
+    { on: 'cat', item: 'charm', say: ["The cat bats the charm once, then looks at Jack as if he's an idiot."] },
+    { on: 'stallion_river', item: 'charm', say: ['The stallion snorts at the charm and turns his back.', "Me: He's not superstitious. He's just rude."] },
+    { on: 'osric', item: 'charm', say: ["Osric: A charm won't bring back my words, lad. I've tried."] },
+    { on: 'wulf', item: 'charm', say: ["Wulf: Gytha's? Keep that away from me. And from the king."] },
+    { on: 'paulinus', item: 'charm', say: ["Paulinus: A pagan charm! Cast it into the river, my son!", "Me: I'm not littering. Even in 627."] },
     exit('path_down', 'yard', 'Jack picks his way down the hill towards the hall.'),
 
     // ---- The yard ----
@@ -905,12 +976,14 @@ export const goodmanham: Chapter = {
 
     // ---- In the hall ----
     exit('door_out', 'yard', 'Jack heads back out into the yard.'),
+    { on: 'edwin', if: 'lots_exposed !paulinus_ready', say: ["Edwin: Coifi is here. Now where is the Roman? I'll hear the old gods and the new one side by side, or not at all.", 'Edwin looks through Jack again.', 'Me: Very consistent. Gytha would love him.'] },
+    { on: 'edwin', if: '!lots_exposed paulinus_ready', say: ["Edwin: The Roman is here. Now where is Coifi? I'll hear both sides together, or neither.", 'Me: Says the man who has never once heard my side.'] },
     {
       on: 'edwin',
-      if: '!lots_exposed',
+      if: '!lots_exposed !paulinus_ready',
       say: [
         "Me: Your Majesty, hi. Jack. I'm a...",
-        'Edwin: Where is Coifi? I cannot hold a council about the gods without the high priest of the gods.',
+        'Edwin: Where is Coifi? Where is the Roman? I cannot choose between the gods without the old gods\' priest and the new god\'s, both here, side by side.',
         'Me: I could go and...',
         "Edwin: Somebody fetch me Coifi. He's sulking at his temple, I'll be bound.",
         'Edwin looks straight through Jack at somebody behind him. There is nobody behind him.',
@@ -926,7 +999,7 @@ export const goodmanham: Chapter = {
     { on: 'queen', say: ['The queen carries the cup past Jack again.', "Me: I am the gap between two ranks. A very well-informed gap."] },
     { on: 'queen', item: 'coin', say: ["Queen: How strange. In Kent we have coins with kings on. Not like that one, mind. That one is a very strange king."] },
     { on: 'queen', item: 'photo', say: ['Queen: Your wife? She has a look, stranger. I know that look. I give that look.'] },
-    { on: 'osric', if: 'lots_exposed !council_decided', say: [
+    { on: 'osric', if: 'lots_exposed paulinus_ready !council_decided', say: [
       'Osric gets slowly to his feet. The hall goes quiet.',
       'Osric: My king. This life of ours is like... it is like...',
       'He stops. He looks up into the rafters. He looks at the fire. He looks at the door. He sits down again.',
@@ -941,7 +1014,9 @@ export const goodmanham: Chapter = {
     { on: 'gytha_hall', item: 'lot', say: ["Gytha: Give that BACK.", "Me: Not likely. Show your working, Gytha."] },
     { on: 'gytha_hall', item: 'coin', say: ["Gytha: A coin! Let's toss it, Jack Mead. Heads you stay. Tails you stay."] },
     { on: 'gytha_hall', item: 'photo', say: ["Gytha: Pretty wife. Pretty cats. Pity."] },
+    { on: 'coifi_hall', if: '!paulinus_ready', say: ["Coifi: Where's the Roman? The king won't hear me without him. Thirty years I've served, and I still have to wait for a man standing in a river."] },
     { on: 'coifi_hall', say: ['Coifi: Speak, Osric! Somebody speak! I have said my piece!'] },
+    { on: 'paulinus_hall', if: '!lots_exposed', say: ["Paulinus: The king won't begin without his pagan priest. So we wait. I'm used to waiting. I've been standing in a river for three days."] },
     { on: 'paulinus_hall', say: ["Paulinus: Thank you, stranger. You've done the Lord's work today.", "Me: I really haven't. I don't believe in your god either. But your arithmetic is better than hers."] },
     { on: 'hoard', say: ['Jack peers into the chest. Arm rings, brooches, a gold buckle, a heap of coins.', "Me: No ledger. If I worked here I'd have a spreadsheet up by lunchtime. They'd burn me as a witch by teatime."] },
     { on: 'hoard', item: 'coin', say: ["Me: I could add it to the pile. Then in a thousand years someone digs up the hoard of King Edwin and finds a two-pound coin in it, and the internet loses its mind. Tempting. No."] },
@@ -1010,11 +1085,12 @@ export const goodmanham: Chapter = {
     },
     { on: 'west_door_open', item: 'bar', say: ["Me: Prop it with the bar? The wind just knocks the bar over. It needs fastening to something, not leaning on."] },
     { on: 'west_door', item: 'carabiner', say: ["Me: Clip it shut? It's already barred shut. That's the opposite of what I want."] },
+    { on: 'west_door_clipped', if: '!council_decided', say: ['Jack unclips the carabiner. The wind slams the door shut again.', "Me: Fine. I'll want that back, then."], do: ['clear:door_clipped', 'give:carabiner'] },
     { on: 'west_door_clipped', say: ['Me: Clipped open. Daylight at both ends. Mum would be so proud, and so confused.'] },
     {
       on: 'rushes',
       item: 'barley',
-      if: 'lots_exposed door_clipped',
+      if: 'lots_exposed paulinus_ready door_clipped',
       say: [
         'Jack scatters barley in a line through the rushes, from the main door, past the fire, to the open west door.',
         'Outside, the sparrows notice. One drops off the thatch, hops in at the main door, pecks, and pecks, and flutters up.',
@@ -1033,7 +1109,7 @@ export const goodmanham: Chapter = {
     {
       on: 'rushes',
       item: 'barley',
-      if: 'lots_exposed',
+      if: 'lots_exposed paulinus_ready',
       say: [
         'Jack scatters a few grains. A sparrow hops in at the main door, eats them, finds the far end of the hall shut, panics round the rafters, and leaves the way it came.',
         "Me: In and out of the same door. That's not a metaphor for anything. Except my twenties.",
@@ -1109,6 +1185,7 @@ export const goodmanham: Chapter = {
         "Me: She's got me baptised, confirmed, the lot. Didn't take. Sorry.",
         "Paulinus: Then you are lost, my son. But no more lost than Edwin's court. Gytha casts her lots for the king, and every time the answer is the same: 'stay with the old gods'. Every time! The devil is very consistent.",
         "Me: Funny. That's what Coifi said about the gods.",
+        "Paulinus: The king says he'll hear me when his priest is there. Well, I will go up to that hall when Northumbria gives me one soul. One! Three days I've stood in this river, and not one soul has come down to be baptised.",
       ],
     },
     { on: 'paulinus', item: 'lot', say: ["Paulinus: Her lot! 'Stay', both sides! I knew it. But the king won't hear it from me, my son. I'm the Roman. A pagan must hear it from a pagan."] },
@@ -1146,6 +1223,7 @@ export const goodmanham: Chapter = {
     { on: 'stallion_river', item: 'photo', say: ["Me: She's not his type. He's got a type, and it's grey."] },
 
     // ---- Anything else ----
+    anywhere('charm', "Me: I'm not waving a charm at things. I'm an atheist with a charm. That's embarrassing enough."),
     anywhere('coin', "Me: Two pounds. Two whole pounds. Good for a coffee in Oxford, if you skip the oat milk. No good to anyone here."),
     anywhere('photo', "Me: I'm not just showing my wife to things. She'd hate that."),
     anywhere('wallet', "Me: It's a wallet. It's for keeping things in, not for doing things with."),
@@ -1174,16 +1252,17 @@ export const goodmanham: Chapter = {
     { id: 'p3', label: 'Puzzle 4', solved: 'cat_fed' },
     { id: 'p4', label: 'Puzzle 5', solved: 'got_lot' },
     { id: 'p5', label: 'Puzzle 6', solved: 'lots_exposed' },
-    { id: 'p6', label: 'Puzzle 7', solved: 'door_unbarred' },
-    { id: 'p7', label: 'Puzzle 8', solved: 'door_clipped' },
-    { id: 'p8', label: 'Puzzle 9', solved: 'council_decided' },
-    { id: 'p9a', label: 'Puzzle 10', solved: 'torch_relit' },
-    { id: 'p9', label: 'Puzzle 11', solved: 'got_spearhead' },
-    { id: 'p10', label: 'Puzzle 12', solved: 'spear_made' },
-    { id: 'p11', label: 'Puzzle 13', solved: 'stallion_back' },
-    { id: 'p10a', label: 'Puzzle 14', solved: 'spear_bound' },
-    { id: 'p10b', label: 'Puzzle 15', solved: 'spear_lashed' },
-    { id: 'p12', label: 'Puzzle 16', solved: 'spear_thrown' },
+    { id: 'p5b', label: 'Puzzle 7', solved: 'paulinus_ready' },
+    { id: 'p6', label: 'Puzzle 8', solved: 'door_unbarred' },
+    { id: 'p7', label: 'Puzzle 9', solved: 'door_clipped' },
+    { id: 'p8', label: 'Puzzle 10', solved: 'council_decided' },
+    { id: 'p9a', label: 'Puzzle 11', solved: 'torch_relit' },
+    { id: 'p9', label: 'Puzzle 12', solved: 'got_spearhead' },
+    { id: 'p10', label: 'Puzzle 13', solved: 'spear_made' },
+    { id: 'p11', label: 'Puzzle 14', solved: 'stallion_back' },
+    { id: 'p10a', label: 'Puzzle 15', solved: 'spear_bound' },
+    { id: 'p10b', label: 'Puzzle 16', solved: 'spear_lashed' },
+    { id: 'p12', label: 'Puzzle 17', solved: 'spear_thrown' },
   ],
   goal: 'spear_thrown',
   ending: [

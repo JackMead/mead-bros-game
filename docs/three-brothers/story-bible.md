@@ -33,9 +33,9 @@ Each brother owns his entry here and in `games/three-brothers/cast.ts`. Catchphr
 | Born | London | Scarborough | Scarborough |
 | Lives | York | Oxford | Belfast |
 | Good at | Being tall; reaching things | Maths, spotting a pattern | Table tennis; reflexes, aim |
-| Weakness | Gets on his soapbox and won't get off | Vegetarian: won't touch meat | Permanently cold hands and feet |
+| Weakness | Gets on his soapbox and won't get off | Part-time vegetarian: protests at meat, eats it when his wife isn't looking | Permanently cold hands and feet |
 | Visual gag | Carries an actual soapbox, for ranting | | Blowing on his fingers |
-| Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "That doesn't add up." | "Young man", to everyone, whatever their age |
+| Catchphrase | *(placeholder)* "Don't get me started." | *(placeholder)* "Fair enough." | "Young man", to everyone, whatever their age |
 
 Where they're from (from Rob): the family home was in Scarborough and later moved to Filey. Joke potential for later chapters: the only brother who lives in Yorkshire wasn't born there, and the two born there both left. The curse won't let any of them out of the county.
 
@@ -51,7 +51,20 @@ More about Phil, from Chapter 1 (written by Rob; Phil can rework any of it):
 - Loves pop punk; desperate not to miss his summer festival in Leeds.
 - Supports a Manchester football team (keep it generic) but likes all sport.
 
-Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), then Jack writes Rob's.
+More about Jack, from Rob (Jack can rework any of it):
+
+- Maths graduate from Cambridge; lives in Oxford. A software developer for a bank.
+- Very clever and self-aware.
+- A classic middle child: neglected and overlooked.
+- A chameleon: fits in anywhere, too nice to say he doesn't like a place (but will tell you your argument is wrong).
+- An atheist who has read the popular books against religion (keep authors generic in the game).
+- Married; his wife stays unnamed unless Jack names her. No children; two black cats, Pan and Merlin.
+- Goes to gigs by a loud electronic post-hardcore band (keep it generic) and is in a sci-fi book club.
+- Carries practical things: a battered wallet, a carabiner, a water bottle.
+
+The family: Mum is a lay preacher at her local church.
+
+Who's written for whom: Rob wrote Phil's chapter (1) and is writing Jack's; Jack is writing Rob's. Whichever is finished first becomes Chapter 2, and the other adapts around it.
 
 ## Cast (non-brothers)
 
@@ -64,6 +77,13 @@ Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), th
 | Algernon | 1 | A wealthy young gentleman staying at a grand hotel on Whitby's West Cliff. Talks a lot. Plays whiff-whaff, a parlour craze of the day. |
 | Hobbs | 1 | Doorman at Algernon's hotel. |
 | Whitby locals | 1 | An old sailor, a fishwife, a pawnbroker, a jet jeweller, a fisherman, the bridge keeper and a paperboy. A big black dog haunts the churchyard. |
+| King Edwin | 2 | The real king of Northumbria, AD 627, deciding whether to give up the old gods for the Christian one. |
+| Queen Æthelburh | 2 | Edwin's queen, from Kent, a Christian. Carries the mead cup round the hall in order of rank. |
+| Coifi | 2 | The real high priest of the old gods, who turned against them at Edwin's council. |
+| Paulinus | 2 | The real Roman missionary who came north with the queen. |
+| Osric | 2 | Edwin's oldest counsellor. Bede's sparrow speech is his (Bede doesn't name the speaker). |
+| Gytha | 2 | A wise woman on the Wolds with a black cat that looks exactly like Merlin. Mother Shipton's representative in 627. |
+| Ecca, Wulf, Hunna, the groom | 2 | A shepherd boy who thinks Jack is an elf; the hall's door-ward; the cook; the king's groom. |
 
 ## Chapters so far
 
@@ -71,6 +91,7 @@ Who's written for whom: Rob wrote Phil's chapter (1). Phil writes Jack's (2), th
 | --- | --- | --- | --- | --- | --- |
 | 0 | The Selfie | Rob | Present day, Mother Shipton's Cave | All three | The curse; the brothers vanish from the selfie spot |
 | 1 | A Young Man in Whitby | Rob | August 1890, Whitby | Phil | Phil, safe for the night at a grand hotel, wonders how Jack is getting on |
+| 2 | The Mead Hall | Rob | AD 627, Goodmanham on the Yorkshire Wolds | Jack | Jack, fed and warm in King Edwin's mead hall, wonders where Rob has ended up |
 
 ## Lore established
 
@@ -86,12 +107,17 @@ Facts later chapters must respect.
 - **Phil landed in Whitby on 11 August 1890**, in St Mary's churchyard on the East Cliff. By the end of Chapter 1 he is staying at a grand hotel on the West Cliff as Algernon's guest.
 - In 1890 the Petrifying Well is already a tourist attraction, then called the Dropping Well. Algernon hung his best top hat in it that summer. It is the same top hat seen petrifying in the well in the present day. Phil has realised the well is what links the times, but not yet how to use it.
 - Bram Stoker is in Whitby in August 1890, working on the book that becomes *Dracula*.
+- **Jack landed on the Wolds above Goodmanham in AD 627**, the year King Edwin's council chose Christianity. He was there when Coifi rode out and threw a spear into his own temple, as Bede tells it. Jack sided with neither the old gods nor the new one, and said so.
+- **Mother Shipton has representatives.** She reaches across time through people of each era, not in person. In 627 it was Gytha, a wise woman who knew Jack's name, spoke of Shipton as a friend from a cave who is not yet born, and wanted Jack to stay out of the king's business. When he didn't, she vanished in a flicker of purple light. What Shipton wants is still unknown.
+- Gytha's black cat stayed behind in 627.
 
 ## Open threads
 
 Things a later chapter can pick up. Close them by moving them to "Closed threads" with the chapter that did it. Part of the fun is learning which to close and which to leave open.
 
-- Where and when did Jack and Rob land? (Chapter 2 is Jack's.)
+- Where and when did Rob land? (Jack is writing Rob's chapter. Rob's chapter for Jack is in as Chapter 2 for now; whichever is finished first keeps that number.)
+- Mother Shipton's representatives: who else works for her, and in which eras? What does she want?
+- How does Jack get by in 627, and does he stay?
 - How does Phil get by in 1890, and can he use the well to reach his brothers?
 - Phil's wedding, and his festival: will he make either?
 - Who finds the phone with the selfie on it, and when? Does the photo still show her face?
@@ -102,3 +128,4 @@ Things a later chapter can pick up. Close them by moving them to "Closed threads
 ## Closed threads
 
 - Where did Phil land? Whitby, August 1890 (Chapter 1).
+- Where did Jack land? Goodmanham, AD 627 (Chapter 2).

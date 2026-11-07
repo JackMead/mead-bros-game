@@ -92,4 +92,9 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **Every chapter needs at least:** one puzzle that combines two items, one answer that needs clues from two different scenes, and one item that looks useful but isn't.
   - **Fewer stated needs.** Characters said exactly what they wanted. Let the player work some of them out.
   - **Mixed audiences are fine.** A newcomer getting stuck while a regular flies through means the spread is wide, not that it's wrong. Phil's thought line (tap his portrait) is the safety net for anyone stuck.
+- *2026-11-06, Chapter 2 (AI rounds 1 to 3):* aimed at Hard (4/5); landed at 2.5.
+  - **More steps don't make it harder.** Going from 12 to 16 puzzles and 27 to 38 moves left the Veteran at 2 to 2.5. What it measures is whether you're ever unsure what to try.
+  - **One candidate per step reads as easy**, however clever the link. Hard needs items with more than one plausible use, a couple of decoys that look right, and needs nobody says out loud.
+  - **Characters keep stating the method.** Each round, a line that spelled out the answer was the main complaint. Split a method across two characters, or leave half of it for the player to infer.
+  - **Character puzzles score best.** The puzzle built on Jack's character was named the best in the chapter in every round.
 

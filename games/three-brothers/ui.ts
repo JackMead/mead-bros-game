@@ -17,6 +17,8 @@ export interface Store {
   load(chapterId: string): Action[] | null;
   save(chapterId: string, history: Action[]): void;
   clear(chapterId: string): void;
+  /** Send every chapter's progress to another device (a link; see savelink.ts). Browser only. */
+  share?(): void;
 }
 
 export interface Ui {
@@ -26,6 +28,15 @@ export interface Ui {
   progress: Progress[];
   chapter: Chapter | null;
   game: State | null;
+  /**
+   * What the screen shows while lines are still being read: the scene as it was before the
+   * last action, so nobody vanishes mid-sentence. Null once the lines are done.
+   */
+  view: State | null;
+  /** Seconds left of "Show": every tappable thing glints and shows its name. */
+  reveal: number;
+  /** A short message on the title screen (e.g. "Link copied"), and how long it stays. */
+  notice: { text: string; t: number } | null;
   /** Every action so far this chapter. Saved, and replayed to resume. */
   history: Action[];
   /** Lines waiting to be read, one at a time. */
@@ -71,6 +82,8 @@ export type Target =
   | { kind: 'brother'; id: BrotherId; where: 'portrait' | 'scene' }
   | { kind: 'item'; id: string }
   | { kind: 'look' }
+  | { kind: 'show' }
+  | { kind: 'share' }
   | { kind: 'menu' }
   | { kind: 'skip' }
   | { kind: 'chapter'; index: number }
@@ -83,6 +96,9 @@ export function createUi(chapters: Chapter[]): Ui {
     progress: chapters.map(() => 'new'),
     chapter: null,
     game: null,
+    view: null,
+    reveal: 0,
+    notice: null,
     history: [],
     queue: [],
     choices: [],
@@ -110,6 +126,8 @@ export const layout = {
     return { x: x0 + i * (bar.slot + bar.gap), y: barTop + (bar.portrait - bar.slot) / 2, w: bar.slot, h: bar.slot };
   },
   menuButton: (): Rect => ({ x: width - 52, y: 10, w: 42, h: 42 }),
+  showButton: (): Rect => ({ x: width - 122, y: 10, w: 62, h: 42 }),
+  shareButton: (): Rect => ({ x: 620, y: 190, w: 300, h: 56 }),
   skipButton: (): Rect => ({ x: width - 150, y: 10, w: 88, h: 42 }),
   chapterCard: (i: number): Rect => ({ x: 40, y: 190 + i * 96, w: 540, h: 84 }),
   restartButton: (i: number): Rect => ({ x: 456, y: 190 + i * 96 + 24, w: 108, h: 36 }),
@@ -141,6 +159,7 @@ export function figureRect(chapter: Chapter, state: State, b: BrotherId): Rect |
 
 export function hitTest(ui: Ui, x: number, y: number): Target | null {
   if (ui.screen === 'title') {
+    if (inside(layout.shareButton(), x, y)) return { kind: 'share' };
     for (let i = 0; i < ui.chapters.length; i++) {
       if (ui.progress[i] === 'started' && inside(layout.restartButton(i), x, y)) return { kind: 'restart', index: i };
       if (inside(layout.chapterCard(i), x, y)) return { kind: 'chapter', index: i };
@@ -151,6 +170,7 @@ export function hitTest(ui: Ui, x: number, y: number): Target | null {
   if (!chapter || !game) return null;
   if (inside(layout.menuButton(), x, y)) return { kind: 'menu' };
   if (inCinematic(ui) && inside(layout.skipButton(), x, y)) return { kind: 'skip' };
+  if (!inCinematic(ui) && inside(layout.showButton(), x, y)) return { kind: 'show' };
   if (inside(layout.lookButton(), x, y)) return { kind: 'look' };
   for (const [i, b] of BROTHERS.entries()) {
     if (chapter.brothers.includes(b) && inside(layout.portrait(i), x, y)) {
@@ -192,6 +212,8 @@ export function startChapter(ui: Ui, index: number, store: Store, fresh = false)
   ui.chapter = chapter;
   ui.fade = 1;
   ui.cinema = noCinema();
+  ui.view = null;
+  ui.reveal = 0;
   ui.selected = null;
   ui.lookMode = false;
   ui.choices = [];
@@ -220,6 +242,7 @@ export function tap(ui: Ui, x: number, y: number, store: Store): void {
   if (ui.screen === 'end') return showTitle(ui, store);
   const t = hitTest(ui, x, y);
   if (ui.screen === 'title') {
+    if (t?.kind === 'share') store.share?.();
     if (t?.kind === 'chapter') startChapter(ui, t.index, store, ui.progress[t.index] === 'done');
     if (t?.kind === 'restart') startChapter(ui, t.index, store, true);
     return;
@@ -252,6 +275,10 @@ export function tap(ui: Ui, x: number, y: number, store: Store): void {
     ui.selected = null;
     return;
   }
+  if (t.kind === 'show') {
+    ui.reveal = config.revealSeconds;
+    return;
+  }
 
   const game = ui.game!;
   flash(ui, t, x, y);
@@ -263,7 +290,8 @@ export function tap(ui: Ui, x: number, y: number, store: Store): void {
   if (ui.selected) {
     const item = ui.selected;
     ui.selected = null;
-    if (t.kind === 'item' && t.id === item) return; // tapped it again: put it back
+    // Tapped it again: look at it (phones can't hover or right-click easily).
+    if (t.kind === 'item' && t.id === item) return perform(ui, { type: 'look', target: item }, store);
     if (t.kind === 'hotspot' || t.kind === 'brother' || t.kind === 'item') {
       perform(ui, { type: 'item', item, target: t.id }, store);
     }
@@ -316,6 +344,12 @@ export function status(ui: Ui): string {
 
 export function update(ui: Ui, dt: number): void {
   ui.time += dt;
+  ui.reveal = Math.max(0, ui.reveal - dt);
+  if (ui.notice) {
+    ui.notice.t -= dt;
+    if (ui.notice.t <= 0) ui.notice = null;
+  }
+  if (!ui.queue.length) ui.view = null;
   ui.fade = Math.max(0, ui.fade - dt / config.fadeSeconds);
   playCues(ui);
   if (ui.label) {
@@ -324,11 +358,18 @@ export function update(ui: Ui, dt: number): void {
   }
 }
 
+/** The state the scene is drawn from: as it was until the current lines have been read. */
+export function shown(ui: Ui): State {
+  return ui.queue.length && ui.view ? ui.view : ui.game!;
+}
+
 function perform(ui: Ui, action: Action, store: Store): void {
+  if (!ui.queue.length) ui.view = ui.game;
   const result = act(ui.chapter!, ui.game!, action);
   ui.game = result.state;
   ui.history.push(action);
   ui.queue.push(...result.lines);
+  if (!ui.queue.length) ui.view = null;
   ui.choices = result.choices;
   store.save(ui.chapter!.id, ui.history);
   if (result.state.done && !ui.queue.length) ui.screen = 'end';
@@ -383,6 +424,7 @@ export function inCinematic(ui: Ui): boolean {
 
 export function skipCinematic(ui: Ui): void {
   ui.queue = [];
+  ui.view = null;
   ui.cinema = noCinema();
   if (ui.game?.done) ui.screen = 'end';
 }

@@ -49,7 +49,7 @@ export const goodmanham: Chapter = {
     'Jack Mead sits up and does what he always does in a crisis: he counts. Two arms. Two legs. Zero brothers.',
     "Me: Right. Rule one of time travel, from every book we've ever done at book club: don't touch anything.",
     "Me: Rule two: don't panic. Rule three... we never agreed on rule three. Fair enough.",
-    "Tap a thing to use it, or a person to talk to them. Hold (or right-click) to look. Tap an item, then a thing, to use them together; an item on another item puts them together. Tap a way out to go somewhere else. Tap Jack's portrait to hear what he's thinking.",
+    "Tap a thing to use it, or a person to talk to them. Hold (or right-click) to look, or tap an item twice to look at it. Tap Show (top right) to see everything you can tap. Tap an item, then a thing, to use them together; an item on another item puts them together. Tap a way out to go somewhere else. Tap Jack's portrait to hear what he's thinking.",
   ],
   items: {
     wallet: {
@@ -229,6 +229,7 @@ export const goodmanham: Chapter = {
         },
         {
           id: 'path_down',
+          exit: 'right',
           name: 'Path down to the hall',
           rect: { x: 830, y: 250, w: 130, h: 120 },
           colour: '#b8a070',
@@ -246,6 +247,7 @@ export const goodmanham: Chapter = {
       hotspots: [
         {
           id: 'path_wolds',
+          exit: 'left',
           name: 'Path up to the Wolds',
           rect: { x: 0, y: 360, w: 60, h: 96 },
           colour: '#b8a070',
@@ -319,6 +321,7 @@ export const goodmanham: Chapter = {
         },
         {
           id: 'hall_door',
+          exit: 'up',
           name: 'Hall door',
           rect: { x: 350, y: 143, w: 155, h: 184 },
           colour: '#4a3020',
@@ -349,6 +352,7 @@ export const goodmanham: Chapter = {
         },
         {
           id: 'path_temple',
+          exit: 'up',
           name: 'Path to the temple',
           rect: { x: 790, y: 140, w: 170, h: 100 },
           colour: '#9a8a60',
@@ -356,6 +360,7 @@ export const goodmanham: Chapter = {
         },
         {
           id: 'path_river',
+          exit: 'right',
           name: 'Path to the river',
           rect: { x: 830, y: 250, w: 130, h: 150 },
           colour: '#6a8a9a',
@@ -380,6 +385,7 @@ export const goodmanham: Chapter = {
         },
         {
           id: 'door_out',
+          exit: 'left',
           name: 'Door to the yard',
           rect: { x: 0, y: 75, w: 138, h: 304 },
           colour: '#6b4a2b',
@@ -499,6 +505,7 @@ export const goodmanham: Chapter = {
       hotspots: [
         {
           id: 'temple_path',
+          exit: 'left',
           name: 'Track back to the yard',
           rect: { x: 0, y: 300, w: 100, h: 136 },
           colour: '#9a8a60',
@@ -571,6 +578,7 @@ export const goodmanham: Chapter = {
       hotspots: [
         {
           id: 'river_path',
+          exit: 'left',
           name: 'Track back to the yard',
           rect: { x: 0, y: 160, w: 90, h: 280 },
           colour: '#9a8a60',

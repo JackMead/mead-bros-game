@@ -62,6 +62,11 @@ Plan:
 - Claude crops just the door from each and draws it over the painting as the door's picture for that state. The same trick works for any other changing detail.
 - Audit every chapter for painted things whose state changes, and list what needs a variant.
 
+### Chapter 2 fixes from Rob's playtest (details in the spoilers file)
+
+- The hall floor's tappable area is a small patch in one corner, though the painting shows the whole floor strewn. Make it cover the whole floor, and accept the same action anywhere sensible on the floor. Also covered by the "Show" button above.
+- Show the key moment in the hall as an animation, not just text: a new cinematic cue, `fly`, that sends a small sprite along a path across the scene (start, end, a little wobble). Sparrow drawn in code or cut out from a ChatGPT image. Reusable in any chapter (bats, gulls, a thrown hat).
+
 ### A clue gives a later step away too early (from Rob, Chapter 2)
 
 Rob met text naming something before he'd found it himself. Details and the candidate lines are in `spoilers/02-goodmanham-ai-playtest.md` (Rob's playtest section). Fix: audit every line that names it and make sure none fires before the player could have discovered it.

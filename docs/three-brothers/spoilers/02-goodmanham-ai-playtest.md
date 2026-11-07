@@ -83,3 +83,6 @@ Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishin
 ## Rob's human playtest (in progress)
 
 - Text mentioned a sparrow before Rob had found one. Candidates to audit: Jack's thought lines (which name what passes through the hall), the yard's "Sparrows in the thatch" hotspot, the barley's look and generic refusal ("small birds would follow this anywhere"), the rafters' look, and Osric's lines. Rule for the fix: nothing names the bird before the player has seen the sparrows in the thatch for themselves.
+- The barley trail: Rob didn't know the rushes were tappable (small rect in one corner of a painted floor). Fix: rushes rect over the whole floor; accept barley on the floor generally. Then animate the sparrow's flight through the hall with a new `fly` cue (main door to west door, through the firelight) as part of Osric's moment.
+- Coifi vanished from the temple before finishing his lines (engine bug, see backlog).
+- The west door stays painted shut and barred after it opens (needs door variants, see backlog).

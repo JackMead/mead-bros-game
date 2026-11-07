@@ -300,11 +300,12 @@ function drawFlights(ui: Ui, ctx: CanvasRenderingContext2D): void {
     const bird = what === 'sparrow';
     const y = y1 + (y2 - y1) * p + (bird ? Math.sin(p * Math.PI * 6) * 12 - Math.sin(p * Math.PI) * 40 : -Math.abs(Math.sin(p * Math.PI * 8)) * 4);
     const facing = x2 < x1 ? -1 : 1;
-    if (bird) {
+    const frame = bird ? art(Math.floor(ui.time * 12) % 2 ? 'sparrow-up.png' : 'sparrow-down.png') : null;
+    if (bird && !frame) {
       drawSparrow(ctx, x, y, size, facing, ui.time);
       continue;
     }
-    const img = art(what);
+    const img = frame ?? art(what);
     if (!img) continue;
     const ww = (img.naturalWidth / img.naturalHeight) * size;
     ctx.save();

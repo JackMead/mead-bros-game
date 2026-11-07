@@ -569,7 +569,8 @@ export const whitby: Chapter = {
         {
           id: 'net_up',
           name: 'Newspaper net',
-          rect: { x: 497, y: 262, w: 60, h: 30 },
+          rect: { x: 487, y: 268, w: 80, h: 26 },
+          sprite: 'newspaper-net.png',
           prop: 'newspaper',
           colour: '#e8e2d0',
           if: 'net_up',

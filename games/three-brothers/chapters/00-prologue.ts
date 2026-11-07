@@ -184,6 +184,7 @@ export const prologue: Chapter = {
           id: 'soapbox_spot',
           name: "Rob's soapbox",
           rect: { x: 500, y: 322, w: 60, h: 36 },
+          sprite: 'soapbox.png',
           colour: '#8a6a3f',
           prop: 'soapbox',
           if: 'soapbox_placed',

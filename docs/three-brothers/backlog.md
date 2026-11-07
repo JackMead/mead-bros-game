@@ -2,14 +2,9 @@
 
 Spoiler-free. Work waiting to be done, with plans. Nothing here is started until a brother says go.
 
-## Waiting on art from Rob
-
-- **The hall's far door:** two edits of `goodmanham-hall.webp` in the same ChatGPT chat, everything else identical: (1) the small far door unbarred but shut, (2) the same door wide open onto daylight. Claude crops the door from each and swaps it in as the story moves on.
-- **Optional:** a painted boar on the spit to replace the code-drawn stopgap ("a whole roast boar on an iron spit, golden and dripping, side view, plain light grey background").
-
 ## Done (PR after Rob's playtest)
 
-Show button; exit arrows on every way out (now checked automatically); tap an item twice to look at it; the scene waits for the dialogue so nobody vanishes mid-sentence; save link with share sheet; new `fly` and `vanish` cues; items that walk beside you; Chapter 2 item icons, halter and boar drawn in code; all Chapter 2 fixes from Rob's playtest (early clue, floor, early line, missing sprite, ending staging, cook and horse placement, animations).
+Show button; exit arrows on every way out (now checked automatically); tap an item twice to look at it; the scene waits for the dialogue so nobody vanishes mid-sentence; save link with share sheet; new `fly` and `vanish` cues; items that walk beside you; Chapter 2 item icons drawn in code; painted props from Rob (soapbox, newspaper net, Chapter 2 props, door states, sparrow); all Chapter 2 fixes from Rob's playtest (early clue, floor, early line, missing sprite, ending staging, cook and horse placement, animations).
 
 ## Earlier plans (kept for reference)
 

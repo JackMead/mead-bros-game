@@ -78,3 +78,8 @@ Estimated 20 to 25 minutes. Never genuinely stuck; the closest was the barrow li
 ### Where it stands
 
 Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishing clues since then hasn't. Shipping for a human playtest: Jack's time decides whether the opening and the lots need another pass.
+
+
+## Rob's human playtest (in progress)
+
+- Text mentioned a sparrow before Rob had found one. Candidates to audit: Jack's thought lines (which name what passes through the hall), the yard's "Sparrows in the thatch" hotspot, the barley's look and generic refusal ("small birds would follow this anywhere"), the rafters' look, and Osric's lines. Rule for the fix: nothing names the bird before the player has seen the sparrows in the thatch for themselves.

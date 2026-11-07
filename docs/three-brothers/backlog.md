@@ -35,6 +35,10 @@ Plan (engine-wide, so every chapter benefits):
 - Give each painted scene a believable way out where the painting lacks one, or move the exit to where a path is painted.
 - Check Chapter 1 and the prologue too.
 
+### A clue gives a later step away too early (from Rob, Chapter 2)
+
+Rob met text naming something before he'd found it himself. Details and the candidate lines are in `spoilers/02-goodmanham-ai-playtest.md` (Rob's playtest section). Fix: audit every line that names it and make sure none fires before the player could have discovered it.
+
 ### Chapter 2 playtest (Rob)
 
 Rob's notes go in `playtests/02-goodmanham.md` under his name. Fixes that come out of them get listed here first.

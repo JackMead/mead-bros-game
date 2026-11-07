@@ -23,6 +23,7 @@ Items without an icon show their name as text in the inventory. Draw each one in
 
 - The cook is placed oddly in the yard.
 - The grey mare overlaps one of the stable's posts.
+- The yard's text says the cook is roasting a boar on the spit, but the painted spit is empty (the art prompt asked for an empty spit, so the boar could be drawn over it). Fix: a boar-on-the-spit cut-out over the spit, ideally slowly turning. Either Rob makes one in ChatGPT ("a whole roast boar on an iron spit, golden and dripping, side view, plain light grey background", same style) or Claude draws it in code as a stopgap.
 
 ### Chapter 2 playtest (Rob)
 

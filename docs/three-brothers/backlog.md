@@ -45,6 +45,10 @@ Plan (engine-wide):
 - No change to the puzzles: knowing what's tappable isn't the challenge, knowing what to do with it is.
 - Test on a real phone in landscape.
 
+### Looking at items isn't discoverable on phones (from Rob)
+
+Tapping an item in your pockets only selects it; looking at it needs a press-and-hold, which isn't obvious. In Chapter 2 that hides something you need. Plan: tapping an item that's already selected looks at it (instead of putting it back), the intro and the first item you pick up both say so, and anything that only comes out of an item on looking also comes out when you use it.
+
 ### A clue gives a later step away too early (from Rob, Chapter 2)
 
 Rob met text naming something before he'd found it himself. Details and the candidate lines are in `spoilers/02-goodmanham-ai-playtest.md` (Rob's playtest section). Fix: audit every line that names it and make sure none fires before the player could have discovered it.

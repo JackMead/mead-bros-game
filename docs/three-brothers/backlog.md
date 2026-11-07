@@ -25,6 +25,16 @@ Items without an icon show their name as text in the inventory. Draw each one in
 - The grey mare overlaps one of the stable's posts.
 - The yard's text says the cook is roasting a boar on the spit, but the painted spit is empty (the art prompt asked for an empty spit, so the boar could be drawn over it). Fix: a boar-on-the-spit cut-out over the spit, ideally slowly turning. Either Rob makes one in ChatGPT ("a whole roast boar on an iron spit, golden and dripping, side view, plain light grey background", same style) or Claude draws it in code as a stopgap.
 
+### Ways out of a scene aren't clear enough (from Rob, Chapter 2)
+
+On painted backgrounds, exits are invisible tappable areas, so it isn't obvious where you can go. Worst case: the yard's way back up to the Wolds has no path painted at all.
+
+Plan (engine-wide, so every chapter benefits):
+- Mark exits in the chapter format (an `exit` direction on a hotspot: left, right, up, down), checked by `validate.ts`.
+- Draw a small, softly pulsing arrow at each exit, pointing the way, with the place's name under it (phones have no hover).
+- Give each painted scene a believable way out where the painting lacks one, or move the exit to where a path is painted.
+- Check Chapter 1 and the prologue too.
+
 ### Chapter 2 playtest (Rob)
 
 Rob's notes go in `playtests/02-goodmanham.md` under his name. Fixes that come out of them get listed here first.

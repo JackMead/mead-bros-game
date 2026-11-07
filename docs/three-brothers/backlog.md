@@ -66,6 +66,7 @@ Plan:
 
 - The hall floor's tappable area is a small patch in one corner, though the painting shows the whole floor strewn. Make it cover the whole floor, and accept the same action anywhere sensible on the floor. Also covered by the "Show" button above.
 - One character's line in the hall congratulates Jack too early, before the moment it's about. Give them a waiting line until then.
+- Something that comes back to the stable isn't drawn back in its place. Check every come-and-go sprite in the chapter for its full round trip.
 - One item should be shown on screen beside Jack while he has it, walking along with him, not just sitting in the inventory. Engine-wide: an item can name a `follower` sprite drawn next to whoever carries it, with a little walk-bob.
 - Show the key moment in the hall as an animation, not just text: a new cinematic cue, `fly`, that sends a small sprite along a path across the scene (start, end, a little wobble). Sparrow drawn in code or cut out from a ChatGPT image. Reusable in any chapter (bats, gulls, a thrown hat).
 

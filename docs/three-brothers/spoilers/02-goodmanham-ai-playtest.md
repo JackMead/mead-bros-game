@@ -89,3 +89,4 @@ Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishin
 - Paulinus in the hall says "You've done the Lord's work today" once both priests are there but before Osric's speech. Gate that line on council_decided; before it, a waiting line (e.g. waiting for the old counsellor to find his words).
 - The mare: while Jack holds her, draw mare.png beside him in every scene (follower sprite, walk bob). At the river, animate the stallion trotting after them as they leave (reuse the `fly`-style path cue with the stallion sprite, or a `follow` cue).
 - On the way back, the stallion follows the mare (and Jack) on screen into the yard, as a second follower, until he's tied up in the stable.
+- Bug: the grey_mare hotspot is gated on !mare_taken, and mare_taken is never cleared, so after the stallion returns the mare is missing from the stable. Add a second hotspot (or clear mare_taken in the return rule) with mare.png, visible on stallion_back.

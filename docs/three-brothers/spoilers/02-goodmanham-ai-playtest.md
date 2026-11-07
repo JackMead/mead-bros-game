@@ -86,3 +86,4 @@ Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishin
 - The barley trail: Rob didn't know the rushes were tappable (small rect in one corner of a painted floor). Fix: rushes rect over the whole floor; accept barley on the floor generally. Then animate the sparrow's flight through the hall with a new `fly` cue (main door to west door, through the firelight) as part of Osric's moment.
 - Coifi vanished from the temple before finishing his lines (engine bug, see backlog).
 - The west door stays painted shut and barred after it opens (needs door variants, see backlog).
+- Paulinus in the hall says "You've done the Lord's work today" once both priests are there but before Osric's speech. Gate that line on council_decided; before it, a waiting line (e.g. waiting for the old counsellor to find his words).

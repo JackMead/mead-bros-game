@@ -48,6 +48,14 @@ Rebuilt the middle of the chapter along the lines of `puzzle-design.md`: several
 
 First real rise: the Veteran estimates 25 to 30 minutes and got properly stuck once. Still a notch under the Hard target of 4. Fixed afterwards (not retested): 1 hidden thing made visible from the start, 1 hint cut back and split across two characters, 2 lines that pointed at each other, 8 small bugs. Tappable areas now match the painted backgrounds.
 
+## AI round 5
+
+| Tester | Finished | Commands | Brute-forced? | Difficulty (1-5) |
+| --- | --- | --- | --- | --- |
+| The Veteran (fresh) | Yes | 180 | No | 3 |
+
+Steady at 3: fair throughout, never stuck, about 20 to 25 minutes for an experienced player, under the Hard target. The opening is the easiest stretch. **Ready for a human playtest.**
+
 ## Human playtests
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.

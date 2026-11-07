@@ -68,3 +68,13 @@ Ran out of commands at the west door and spear chain. Mead and the carabiner bac
 - Wulf only says "rawhide" now; the groom explains soaking and shrinking when shown the strap; the wobbly spear's refusal changes once Wulf has spoken.
 - The gate's description and the carabiner's generic refusal no longer point at each other.
 - Fixed all the bugs above, and lined up every tappable area with the painted backgrounds; Ecca, Gytha, the cat and Wulf now use their cut-outs.
+
+## Round 5 (after round 4 fixes; 17 puzzles, shortest route 40 moves)
+
+### The Veteran (fresh): finished, 180 commands (about 70 of them looking and walking), 3/5
+
+Estimated 20 to 25 minutes. Never genuinely stuck; the closest was the barrow light (three failed ideas). Every step explainable before it worked. Praised the mead chain, the photo, the carabiner reuse and the rawhide sequence ("real rawhide hafting logic"). Called the opening (Ecca's water, the gate) and the lot's own description too giving. Suggested: make the lot show only one side so the player has to test it, and make the barrow light a two-item combination rather than a relight.
+
+### Where it stands
+
+Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishing clues since then hasn't. Shipping for a human playtest: Jack's time decides whether the opening and the lots need another pass.

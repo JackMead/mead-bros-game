@@ -530,8 +530,8 @@ export const goodmanham: Chapter = {
         {
           id: 'coifi_mounted',
           name: 'Coifi, on the stallion',
-          rect: { x: 380, y: 220, w: 192, h: 170 },
-          sprite: 'stallion.png',
+          rect: { x: 380, y: 220, w: 189, h: 170 },
+          sprite: 'coifi-mounted.png',
           colour: '#b85a2a',
           if: 'coifi_rode',
           look: 'Coifi, sitting on the black stallion at the temple gate, sword-less, spear-less, and very much ready.',

@@ -78,3 +78,17 @@ Estimated 20 to 25 minutes. Never genuinely stuck; the closest was the barrow li
 ### Where it stands
 
 Five rounds: 2.5, 2, 2.5, 3, 3. The structural rework is what moved it; polishing clues since then hasn't. Shipping for a human playtest: Jack's time decides whether the opening and the lots need another pass.
+
+
+## Rob's human playtest (in progress)
+
+- Text mentioned a sparrow before Rob had found one. Candidates to audit: Jack's thought lines (which name what passes through the hall), the yard's "Sparrows in the thatch" hotspot, the barley's look and generic refusal ("small birds would follow this anywhere"), the rafters' look, and Osric's lines. Rule for the fix: nothing names the bird before the player has seen the sparrows in the thatch for themselves.
+- The barley trail: Rob didn't know the rushes were tappable (small rect in one corner of a painted floor). Fix: rushes rect over the whole floor; accept barley on the floor generally. Then animate the sparrow's flight through the hall with a new `fly` cue (main door to west door, through the firelight) as part of Osric's moment.
+- Coifi vanished from the temple before finishing his lines (engine bug, see backlog).
+- The west door stays painted shut and barred after it opens (needs door variants, see backlog).
+- Paulinus in the hall says "You've done the Lord's work today" once both priests are there but before Osric's speech. Gate that line on council_decided; before it, a waiting line (e.g. waiting for the old counsellor to find his words).
+- The mare: while Jack holds her, draw mare.png beside him in every scene (follower sprite, walk bob). At the river, animate the stallion trotting after them as they leave (reuse the `fly`-style path cue with the stallion sprite, or a `follow` cue).
+- On the way back, the stallion follows the mare (and Jack) on screen into the yard, as a second follower, until he's tied up in the stable.
+- Bug: the grey_mare hotspot is gated on !mare_taken, and mare_taken is never cleared, so after the stallion returns the mare is missing from the stable. Add a second hotspot (or clear mare_taken in the return rule) with mare.png, visible on stallion_back.
+- The halter on the stable post has no art: invisible on the painted yard. Rob found the right idea and still couldn't see it. Fix: code-drawn halter prop (coiled rawhide straps on a peg) over the post, or a ChatGPT cut-out.
+- Ending: Gytha stays visible after her purple vanish (needs a hide cue, e.g. [vanish gytha_temple], and gytha_temple gated !spear_thrown); Paulinus speaks in the ending but isn't in the temple scene (add paulinus_temple, visible once coifi_rode, using paulinus.png). Add a validate.ts check: ending speakers must be visible in the final scene.

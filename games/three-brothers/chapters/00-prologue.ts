@@ -67,7 +67,7 @@ export const prologue: Chapter = {
     'The three Mead brothers are having a day out.',
     'Mum has asked for one thing: a photo of all three of them in front of the Petrifying Well.',
     'How hard can it be?',
-    'Tap a thing to use it, or a brother to talk to him. Hold (or right-click) to look. Tap a portrait at the bottom to play as that brother. Tap an item, then a thing, to use them together.',
+    'Tap a thing to use it, or a brother to talk to him. Hold (or right-click) to look, or tap an item twice to look at it. Tap Show (top right) to see everything you can tap. Tap a portrait at the bottom to play as that brother. Tap an item, then a thing, to use them together.',
   ],
   items: {
     soapbox: {
@@ -184,6 +184,7 @@ export const prologue: Chapter = {
           id: 'soapbox_spot',
           name: "Rob's soapbox",
           rect: { x: 500, y: 322, w: 60, h: 36 },
+          sprite: 'soapbox.png',
           colour: '#8a6a3f',
           prop: 'soapbox',
           if: 'soapbox_placed',

@@ -9,6 +9,8 @@ export const config = {
   fixedStep: 1 / 60,
   /** Hold this long on a touch screen to look instead of use. */
   longPressSeconds: 0.45,
+  /** How long "Show" lights up every tappable thing. */
+  revealSeconds: 2.5,
   /** How long a tapped thing's name stays on screen. */
   labelSeconds: 1.6,
   /** Brother figures, in game pixels. Rob is taller (see cast.ts). */

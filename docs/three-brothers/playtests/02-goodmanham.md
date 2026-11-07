@@ -60,6 +60,10 @@ Steady at 3: fair throughout, never stuck, about 20 to 25 minutes for an experie
 
 Add your notes under your name after playing. Short is fine: where you got stuck, what felt cheap, what made you laugh, what you expected to work.
 
+### Rob
+
+Played blind on his phone (2026-11-07), about 20 minutes in bursts. Couldn't judge difficulty, because a lot of the stuck time came from the screen rather than the puzzles: things you need that aren't painted, no way to tell what's tappable without hover, unclear ways out, and looking at items being hidden behind a press-and-hold. Used hints in a few places. The jokes landed, nothing felt cheap. Verdict: fix what you can and can't see first, then let Jack judge the puzzles. Fixes are listed in `backlog.md`.
+
 ### Jack
 
 Not played yet.

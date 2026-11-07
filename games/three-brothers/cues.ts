@@ -29,6 +29,12 @@ export const CUES: Record<string, CueDef> = {
   pull: { usage: 'pull <brother>: a brother is sucked into the vortex', arity: 1, seconds: () => 1.3 },
   streaks: { usage: 'streaks: one streak of light per vanished brother shoots off from the vortex', arity: 0, seconds: () => 1.5 },
   place: { usage: 'place <icon> <x> <y> <size>: leave an item icon lying in the scene', arity: 4, seconds: () => 0 },
+  fly: {
+    usage: 'fly <what> <height> <x1> <y1> <x2> <y2> <seconds>: something flies or walks from one point to another. <what> is "sparrow" (drawn in code) or a picture in art/, drawn <height> pixels tall',
+    arity: 7,
+    seconds: (a) => Number(a[6]),
+  },
+  vanish: { usage: 'vanish <hotspot>: a hotspot disappears on the spot, for the rest of the scene', arity: 1, seconds: () => 0.3 },
   clear: { usage: 'clear: end the effects (vortex, spirit, frozen time); vanished brothers stay gone', arity: 0, seconds: () => 0 },
 };
 

@@ -3,6 +3,7 @@ import { config } from './config';
 import { startLoop } from '../../src/engine/loop';
 import type { Action } from './engine';
 import { render } from './render';
+import { decodeSaves, encodeSaves, usableSaves, type Saves } from './savelink';
 import { createUi, hold, hoverAt, showTitle, tap, update, type Store } from './ui';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#game');
@@ -39,6 +40,45 @@ const store: Store = {
 
 const ui = createUi(chapters);
 showTitle(ui, store);
+
+const say = (text: string) => (ui.notice = { text, t: 3 });
+
+// "Continue on another device": a link with every chapter's progress in it.
+store.share = async () => {
+  const saves: Saves = {};
+  for (const c of chapters) {
+    const h = store.load(c.id);
+    if (h?.length) saves[c.id] = h;
+  }
+  if (!Object.keys(saves).length) return say('Nothing to send yet: play a bit first.');
+  const url = `${location.origin}${location.pathname}${await encodeSaves(saves)}`;
+  const title = 'The Three Brothers of Yorkshire: my saved game';
+  try {
+    if (navigator.share) {
+      await navigator.share({ title, text: 'Open this to carry on where I left off.', url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    say('Link copied. Open it on your other device.');
+  } catch {
+    // Share sheet closed, or clipboard blocked: show the link so it can be copied by hand.
+    window.prompt('Copy this link and open it on your other device:', url);
+  }
+};
+
+// Opened from a save link: offer to load it, then tidy the address bar.
+void (async () => {
+  const saves = await decodeSaves(location.hash);
+  if (!saves) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  const ok = usableSaves(chapters, saves);
+  if (!Object.keys(ok).length) return say("That link's save doesn't fit this version of the game.");
+  const clash = Object.keys(ok).some((id) => store.load(id)?.length);
+  if (clash && !window.confirm("Load the saved game from the link? It replaces this browser's progress on those chapters.")) return;
+  for (const [id, h] of Object.entries(ok)) store.save(id, h);
+  showTitle(ui, store);
+  say('Saved game loaded. Tap a chapter to carry on.');
+})();
 
 // Fit the 16:9 game into the window, drawn sharply at the screen's real resolution.
 let scale = 1;

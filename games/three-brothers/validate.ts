@@ -97,6 +97,14 @@ export function validate(chapter: Chapter): string[] {
     }
   }
 
+  // Every way out you tap must show an arrow, so players can see where they can go.
+  for (const scene of Object.values(chapter.scenes)) {
+    for (const h of scene.hotspots) {
+      const leaves = chapter.rules.some((r) => r.on === h.id && !r.item && (r.do ?? []).some((e) => e.startsWith('goto:')));
+      if (leaves && !h.exit) say(`hotspot ${h.id}`, 'goes to another scene, so it needs an `exit` direction');
+    }
+  }
+
   for (const [id, item] of Object.entries(chapter.items)) {
     if (item.icon && !ICONS[item.icon]) say(`item ${id}`, `unknown icon "${item.icon}" (see props.ts)`);
   }
@@ -121,5 +129,7 @@ function checkCue(chapter: Chapter, where: string, line: string): string[] {
   }
   if (cue.name === 'pull' && !chapter.brothers.includes(cue.args[0] as BrotherId)) return [`${where}: can't pull "${cue.args[0]}"`];
   if (cue.name === 'place' && !ICONS[cue.args[0]]) return [`${where}: unknown icon "${cue.args[0]}"`];
+  if (cue.name === 'vanish' && !hotspots.some((h) => h.id === cue.args[0])) return [`${where}: can't vanish unknown hotspot "${cue.args[0]}"`];
+  if (cue.name === 'fly' && cue.args.slice(1).some((a) => !Number.isFinite(Number(a)))) return [`${where}: fly needs numbers after <what>`];
   return [];
 }

@@ -41,6 +41,8 @@ export interface ItemDef {
   look: ByBrother;
   /** A built-in icon from `props.ts` (e.g. "tea"), until there's an `item-<id>.png` in art/. */
   icon?: string;
+  /** A picture in art/ drawn walking beside whoever carries this item (a horse on a rope, say). */
+  follower?: string;
 }
 
 export interface Hotspot {
@@ -70,6 +72,11 @@ export interface Hotspot {
    * cues that lift it out of the painting (e.g. "[awaken statue 50 40]").
    */
   outline?: number[];
+  /**
+   * A way out of the scene. The screen draws an arrow pointing this way, so players can
+   * see where they can go. `validate.ts` insists every scene change from tapping has one.
+   */
+  exit?: 'left' | 'right' | 'up' | 'down';
   /** Placeholder drawing until there's art. */
   colour?: string;
   shape?: 'rect' | 'ellipse';

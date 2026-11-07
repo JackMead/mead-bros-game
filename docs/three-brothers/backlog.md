@@ -66,6 +66,7 @@ Plan:
 
 - The hall floor's tappable area is a small patch in one corner, though the painting shows the whole floor strewn. Make it cover the whole floor, and accept the same action anywhere sensible on the floor. Also covered by the "Show" button above.
 - One character's line in the hall congratulates Jack too early, before the moment it's about. Give them a waiting line until then.
+- The ending: one character should vanish on screen when the story says so (a new cue that hides a hotspot mid-cinematic), and another speaks without being in the scene. Put them there, and add an automatic check that every speaker in an ending is present in the final scene.
 - A needed thing in the yard has a tappable spot but nothing painted there, so it's invisible. Rule for every chapter: anything the player needs must be visible in the picture (painted, a cut-out, or drawn in code). Audit all chapters.
 - Something that comes back to the stable isn't drawn back in its place. Check every come-and-go sprite in the chapter for its full round trip.
 - One item should be shown on screen beside Jack while he has it, walking along with him, not just sitting in the inventory. Engine-wide: an item can name a `follower` sprite drawn next to whoever carries it, with a little walk-bob.

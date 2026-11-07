@@ -293,7 +293,8 @@ export const goodmanham: Chapter = {
         {
           id: 'groom',
           name: 'Groom',
-          rect: { x: 300, y: 320, w: 50, h: 125 },
+          rect: { x: 305, y: 315, w: 45, h: 130 },
+          sprite: 'groom.png',
           colour: '#7a6a40',
           look: 'A wiry groom with straw in his hair and hoofprints on his tunic. He talks to the horses more than to people.',
         },
@@ -330,7 +331,8 @@ export const goodmanham: Chapter = {
         {
           id: 'cook',
           name: 'Hunna, the cook',
-          rect: { x: 690, y: 150, w: 70, h: 100 },
+          rect: { x: 680, y: 140, w: 87, h: 120 },
+          sprite: 'cook.png',
           colour: '#8a4a3a',
           look: 'A red-faced cook with forearms like hams, turning a whole boar on a spit. She looks like she has never once been argued with.',
         },

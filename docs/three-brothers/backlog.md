@@ -53,6 +53,15 @@ Tapping an item in your pockets only selects it; looking at it needs a press-and
 
 When an action makes a character leave, the screen updates the moment you act, so they disappear while their lines are still playing and the speech floats over nothing. Plan (engine-wide, in `ui.ts`): keep drawing the scene as it was until the dialogue queue is empty, then switch to the new state. Add a test in `ui.test.ts`.
 
+### Painted things that should change don't (from Rob, Chapter 2)
+
+The hall's far door is painted shut and barred, so it still looks that way after the story says it's changed. Same risk anywhere the painting shows something that later changes (the hurdle gate, the bag by the hut).
+
+Plan:
+- Rob asks ChatGPT, in the same chat, for edits of the hall background: one with the far door unbarred but shut, one with it wide open onto daylight. Everything else identical.
+- Claude crops just the door from each and draws it over the painting as the door's picture for that state. The same trick works for any other changing detail.
+- Audit every chapter for painted things whose state changes, and list what needs a variant.
+
 ### A clue gives a later step away too early (from Rob, Chapter 2)
 
 Rob met text naming something before he'd found it himself. Details and the candidate lines are in `spoilers/02-goodmanham-ai-playtest.md` (Rob's playtest section). Fix: audit every line that names it and make sure none fires before the player could have discovered it.

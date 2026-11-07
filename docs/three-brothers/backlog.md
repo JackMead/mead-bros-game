@@ -35,6 +35,16 @@ Plan (engine-wide, so every chapter benefits):
 - Give each painted scene a believable way out where the painting lacks one, or move the exit to where a path is painted.
 - Check Chapter 1 and the prologue too.
 
+### On phones you can't tell what's tappable (from Rob)
+
+With no hover on a touchscreen, painted scenery and tappable things look the same, so you end up tapping everywhere. Monkey Island had hover labels; phones need something else.
+
+Plan (engine-wide):
+- A "Show" button in the bottom bar (or press-and-hold on empty scenery): every tappable thing glints and shows its name for a couple of seconds, exits included.
+- Optional, as a setting: a faint sparkle on things you haven't looked at yet, which stops once you have.
+- No change to the puzzles: knowing what's tappable isn't the challenge, knowing what to do with it is.
+- Test on a real phone in landscape.
+
 ### A clue gives a later step away too early (from Rob, Chapter 2)
 
 Rob met text naming something before he'd found it himself. Details and the candidate lines are in `spoilers/02-goodmanham-ai-playtest.md` (Rob's playtest section). Fix: audit every line that names it and make sure none fires before the player could have discovered it.

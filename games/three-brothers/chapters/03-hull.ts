@@ -82,7 +82,7 @@ const ticketChoices: Choice[] = [
       "Clerk: Then you'll want to hurry, sir, before it burns.",
       'Me: Not that sort of bun.',
       'Clerk: I know, sir. I was being kind.',
-      'He takes both half crowns, slides back a sixpence and a stiff little card ticket, and Rob counts the change twice as if it might be wrong.',
+      'He takes both half crowns and slides back a stiff little card ticket and a sixpence, which would have got Rob into the match.',
     ],
     do: ['take:halfcrown_pub', 'take:halfcrown_paper', 'give:ticket', 'set:ticket'],
   },
@@ -211,12 +211,12 @@ export const hull: Chapter = {
       hotspots: [
         { id: 'to_station', name: 'Paragon Station road', exit: 'left', rect: { x: 0, y: 100, w: 70, h: 280 }, colour: '#6f7f8f', look: 'The road to Paragon Station. Trains. Out of Hull, if you can pay for it.' },
         { id: 'to_pub', name: 'Ye Olde White Harte', exit: 'up', rect: { x: 90, y: 60, w: 160, h: 270 }, colour: '#6a4a2a', look: 'Ye Olde White Harte, down a little alley. Very old, very crooked, and very proud of it.' },
-        { id: 'wreck', name: 'Wrecked soapbox', if: '!got_wreck', prop: 'soapbox', rect: { x: 260, y: 350, w: 120, h: 60 }, colour: '#7a5a3a', look: "My soapbox. What's left of it. We've been through a lot together, that box and me. Mostly councils. Not all of it's matchwood." },
+        { id: 'wreck', name: 'Wrecked soapbox', if: '!got_wreck', prop: 'soapbox', rect: { x: 260, y: 350, w: 120, h: 60 }, colour: '#7a5a3a', look: "My soapbox. What's left of it. We've been through a lot together, that box and me. Mostly council meetings." },
         { id: 'statue', name: 'King William statue', rect: { x: 400, y: 10, w: 160, h: 170 }, colour: '#d9b53a', look: 'King Billy, gilded from crown to hoof, on a golden horse. Hull is very proud of him. I could tell you why. I would love to.' },
         { id: 'to_office', name: 'Hull Daily Mail office', exit: 'up', rect: { x: 400, y: 200, w: 140, h: 150 }, colour: '#4a4a5a', look: 'The offices of the Hull Daily Mail. A sign in the window: CORRESPONDENTS WANTED. Bring your own pencil.' },
         { id: 'reader', name: 'Woman on the bench', if: '!got_book', rect: { x: 600, y: 240, w: 80, h: 140 }, colour: '#7a3a5a', look: "A woman reading on a bench, in this cold, so gripped that she hasn't noticed her tea has gone cold. Dracula, the yellow cover. About two-thirds in. I'm trying very hard not to say anything." },
         { id: 'bicycle_tidy', name: 'Bicycle', if: 'bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: "A bicycle, propped neatly against the wall. My work. Nobody's noticed." },
-        { id: 'bicycle', name: 'Bicycle', if: '!bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: 'A bicycle, propped across the pavement.' },
+        { id: 'bicycle', name: 'Bicycle', if: '!bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: 'A bicycle, parked across the whole pavement. Even in 1906.' },
         { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door. I have thought about this a lot.' },
         { id: 'to_boulevard', name: 'Hessle Road', exit: 'right', rect: { x: 880, y: 240, w: 80, h: 160 }, colour: '#8a8a70', look: 'The road out along Hessle Road, towards the football ground. You can hear the crowd from here.' },
       ],
@@ -229,7 +229,7 @@ export const hull: Chapter = {
       placeholder: { top: '#5a3a24', bottom: '#4a3020' },
       hotspots: [
         { id: 'pub_door', name: 'Market Place', exit: 'left', rect: { x: 0, y: 40, w: 90, h: 330 }, colour: '#8a7a60', look: 'The way back out to the cold.' },
-        { id: 'photo', name: 'Team photograph', rect: { x: 140, y: 50, w: 150, h: 110 }, colour: '#b0a080', look: 'Hull City, this season, in a frame.' },
+        { id: 'photo', name: 'Team photograph', rect: { x: 140, y: 50, w: 150, h: 110 }, colour: '#b0a080', look: 'Hull City, this season, arms folded. Names underneath, if anybody cares to read them out. I care to.' },
         { id: 'landlord', name: 'Landlord', rect: { x: 380, y: 170, w: 75, h: 200 }, colour: '#5a3a2a', look: "The landlord, polishing a glass he hasn't got anything to put in." },
         { id: 'trapdoor', name: 'Trapdoor', if: '!trapdoor_open', rect: { x: 520, y: 370, w: 160, h: 60 }, colour: '#4a3a28', look: 'A trapdoor to the cellar. The iron ring has snapped clean off. All that\'s left is a hairline crack round the edge.' },
         { id: 'to_cellar', name: 'Open trapdoor', exit: 'down', if: 'trapdoor_open', rect: { x: 520, y: 370, w: 160, h: 60 }, colour: '#1a1410', look: 'Stone steps going down into the dark.' },
@@ -245,7 +245,7 @@ export const hull: Chapter = {
         { id: 'cellar_steps', name: 'Cellar steps', exit: 'up', rect: { x: 0, y: 30, w: 120, h: 350 }, colour: '#4a3a28', look: 'The steps back up to the bar, and the light.' },
         { id: 'dark', name: 'The dark', if: '!lit', rect: { x: 140, y: 10, w: 810, h: 400 }, colour: '#050404', look: "Black. Properly black. Like the inside of a goalkeeper's glove." },
         { id: 'barrel', name: 'Fallen barrel', if: 'lit !barrel_moved', rect: { x: 380, y: 250, w: 220, h: 130 }, colour: '#6a4a2a', look: 'A full barrel of beer, off its rack and lying right across the floor. Eighteen gallons. You could get it back up there with a block and tackle and three men.' },
-        { id: 'racks', name: 'Barrel racks', if: 'lit', rect: { x: 640, y: 40, w: 300, h: 240 }, colour: '#5a4030', look: 'Racks of barrels, all waiting their turn.' },
+        { id: 'racks', name: 'Barrel racks', if: 'lit', rect: { x: 640, y: 40, w: 300, h: 240 }, colour: '#5a4030', look: 'Racks of barrels, all full, all out of reach of a thirsty town. Well. Out of reach of most people.' },
         { id: 'cat', name: 'Cat', if: 'lit', rect: { x: 820, y: 300, w: 70, h: 60 }, colour: '#222222', look: 'A large black cat, sitting on an empty barrel, looking at me as if I owe it money.' },
         { id: 'cobwebs', name: 'Cobwebs', if: 'lit', rect: { x: 160, y: 20, w: 200, h: 120 }, colour: '#7a7a7a', look: 'Cobwebs. A lot of them. Some of them are older than the pub.' },
       ],
@@ -266,7 +266,7 @@ export const hull: Chapter = {
     boulevard: {
       name: 'Outside the Boulevard',
       description:
-        'Outside the Boulevard, where Hull City play. A high brick wall, a gate with a gateman, the roar of the crowd on the other side, and a few boys hanging about.',
+        'Outside the Boulevard, where Hull City play. A high brick wall, a gate with a gateman, and a few boys hanging about.',
       placeholder: { top: '#8aa0b0', bottom: '#5a5048' },
       hotspots: [
         { id: 'boulevard_back', name: 'Market Place', exit: 'left', rect: { x: 0, y: 100, w: 80, h: 300 }, colour: '#8a8a70', look: 'Back to the Market Place.' },
@@ -283,9 +283,9 @@ export const hull: Chapter = {
       placeholder: { top: '#5a6068', bottom: '#4a4640' },
       hotspots: [
         { id: 'station_back', name: 'Market Place', exit: 'left', rect: { x: 0, y: 80, w: 80, h: 300 }, colour: '#6f7f8f', look: 'Back to the Market Place.' },
-        { id: 'clerk', name: 'Ticket window', rect: { x: 180, y: 120, w: 170, h: 190 }, colour: '#7a5a3a', look: 'A ticket clerk behind a brass grille.' },
+        { id: 'clerk', name: 'Ticket window', rect: { x: 180, y: 120, w: 170, h: 190 }, colour: '#7a5a3a', look: 'A ticket clerk behind a brass grille, with the calm of a man who has heard every destination there is.' },
         { id: 'fares', name: 'Board of fares', rect: { x: 400, y: 60, w: 140, h: 210 }, colour: '#e8e2d0', look: 'Third class from Hull. York, 2s 9d. Leeds, 3s. Scarborough, 3s 9d. Knaresborough, 4s 6d. Whitby, 5s 3d. Everything goes by way of York. Everything always goes by way of York.' },
-        { id: 'train', name: 'Waiting train', rect: { x: 600, y: 120, w: 350, h: 240 }, colour: '#3a3a42', look: 'A big green engine, breathing steam.' },
+        { id: 'train', name: 'Waiting train', rect: { x: 600, y: 120, w: 350, h: 240 }, colour: '#3a3a42', look: "A big green engine, breathing steam. It's going to York. Everything is." },
       ],
       stand: { rob: [{ x: 300, y: 440 }] },
     },
@@ -303,12 +303,12 @@ export const hull: Chapter = {
     // ---- Getting about ----
     { on: 'to_station', say: ['Rob walks up to Paragon Station.'], do: ['goto:station'] },
     { on: 'station_back', say: ['Rob heads back to the Market Place.'], do: ['goto:market'] },
-    { on: 'to_pub', if: 'been_in_pub', say: ['Rob ducks under the beam. The door frame, which he had forgotten about, gets him instead.'], do: ['goto:pub'] },
+    { on: 'to_pub', if: 'been_in_pub', say: ['Rob goes into the pub bent nearly double, like a man expecting an ambush.'], do: ['goto:pub'] },
     { on: 'to_pub', say: ['Rob ducks down the alley and into the pub. He ducks under the door frame. He forgets to duck under the beam.'], do: ['goto:pub', 'set:been_in_pub'] },
     { on: 'pub_door', say: ['Rob goes back out to the Market Place.'], do: ['goto:market'] },
     { on: 'to_office', say: ['Rob goes into the newspaper office.'], do: ['goto:office'] },
     { on: 'office_door', say: ['Rob steps back out into the cold.'], do: ['goto:market'] },
-    { on: 'to_boulevard', say: ['Rob walks out along Hessle Road, towards the noise.'], do: ['goto:boulevard'] },
+    { on: 'to_boulevard', say: ['Rob walks out along Hessle Road, towards the football ground.'], do: ['goto:boulevard'] },
     { on: 'boulevard_back', say: ['Rob walks back into town.'], do: ['goto:market'] },
     { on: 'to_cellar', say: ['Rob goes down the cellar steps, one at a time.'], do: ['goto:cellar'] },
     { on: 'cellar_steps', say: ['Rob climbs back up into the bar.'], do: ['goto:pub'] },
@@ -320,7 +320,7 @@ export const hull: Chapter = {
       do: ['give:lid', 'give:strap', 'set:got_wreck'],
     },
     { on: 'statue', say: ['Rob explains the Glorious Revolution to the statue. It takes eleven minutes.', 'The statue takes it well.'] },
-    { on: 'statue', item: 'strap', say: ["Me: I'm not hitting a king with a bit of iron. There's a whole chapter of history about that, and it doesn't end well."] },
+    { on: 'statue', item: 'strap', say: ["Me: Not King Billy. He's had enough people trying to get rid of him, and he's got a horse."] },
     { on: 'statue', item: 'phone', say: ['Me: I could take a photo of him. One per cent, though. One per cent is for my son.'] },
 
     { on: 'bicycle', say: ['Rob picks the bicycle up and moves it off the pavement, properly, square against the wall.', 'Then he stands next to it for a while, in case anybody wants to thank him.', 'Nobody does.'], do: ['set:bike_moved'] },
@@ -413,6 +413,7 @@ export const hull: Chapter = {
     { on: 'landlord', item: 'strap', say: ["Landlord: What do I want with that? I want a drink in my pumps, lad, not scrap."] },
     { on: 'landlord', item: 'strap_flat', say: ["Landlord: What do I want with that? I want a drink in my pumps, lad, not scrap."] },
     { on: 'landlord', item: 'dollies', say: ['Landlord: Very small. Very bright. No thank you.'] },
+    { on: 'landlord', item: 'dracula', say: ['Landlord: Is it about a pub?', "Me: It's about a man who never drinks... wine.", 'Landlord: Get out.'] },
     leafletTo('landlord', "Landlord: Read it. The Liberals are going to shut the pubs at ten. I'm voting for the other lot."),
 
     { on: 'trapdoor', item: 'strap_flat', say: ['Rob slides the flattened strap into the crack, leans on it, and the trapdoor comes up with a groan.', 'Landlord: Well, I never.', 'Me: Leverage.', "Landlord: Don't. You'll tell me how."], do: ['set:trapdoor_open'] },
@@ -423,7 +424,7 @@ export const hull: Chapter = {
 
     { on: 'strap', item: 'lid', say: ['Rob lays the strap on the plank and stands on it. Then he jumps on it. Then, because somebody is watching, once more with a little twist at the end.', 'Me: Good as new. Better.'], do: ['take:strap', 'give:strap_flat', 'set:strap_flat'] },
     { on: 'lid', item: 'strap', say: ['Rob lays the strap on the plank and stands on it. Then he jumps on it. Then, because somebody is watching, once more with a little twist at the end.', 'Me: Good as new. Better.'], do: ['take:strap', 'give:strap_flat', 'set:strap_flat'] },
-    { on: 'rob', item: 'strap', say: ["Rob grips the strap in both hands and pulls.", "Me: I could straighten it. With my hands. I definitely could. I'm choosing not to, so I don't hurt my wrists. I need my wrists for the baby."] },
+    { on: 'rob', item: 'strap', say: ["Rob grips the strap in both hands and pulls.", "Me: I could straighten it. With my hands. I definitely could. I'm choosing not to, so I don't hurt my wrists. I need my wrists for the baby. My feet, on the other hand, are expendable."] },
 
     { on: 'photo', say: ['Rob reads the names under the photograph, out loud, to the whole pub.', 'Me: Back row: W. Robinson, goal. A. Hirst, left back. J. Wright, centre half. Front row: T. Spicer, outside right. A. Coultas, centre forward. G. Leaper, inside left.', "Me: Arms folded, every one of them. Moustaches you could hang a coat on. And the goalkeeper's the only one smiling, because he knows."], do: ['set:seen_photo'] },
     { on: 'photo', item: 'phone', say: ['Me: I could take a photo of a photo. That\'s about the saddest use of one per cent I can think of.'] },
@@ -503,7 +504,6 @@ export const hull: Chapter = {
         'Me: I\'m the press.',
         "Gateman: Press pays sixpence an' all. And you lads can stop standing on boxes at that wall. It's a by-law now. I've had the police round.",
       ],
-      do: ['set:heard_bylaw'],
     },
     { on: 'gateman', item: 'notebook', say: ["Gateman: Lovely notebook. Sixpence."] },
     { on: 'gateman', item: 'phone', say: ['Rob shows the gateman his son.', 'Gateman: Is he sixpence?'] },
@@ -514,6 +514,7 @@ export const hull: Chapter = {
 
     { on: 'wall', item: 'lid', if: '!plank_on_wall', say: ['Rob lays his plank along the top of the wall, over the glass.', 'Gateman: Oi! No boxes at that wall!', "Me: It's a plank.", 'Gateman: ...By-law says boxes.'], do: ['take:lid', 'set:plank_on_wall'] },
     { on: 'wall', if: 'plank_on_wall !watched', say: ['Rob leans his elbows on the plank and looks over. Lovely. Steady as a desk.', 'Me: Shocking positioning. Look at the left-back.'] },
+    { on: 'plank_on_wall', item: 'strap', say: ["Me: Not while it's up there. I'd want it down on the ground, to stamp on."] },
     { on: 'plank_on_wall', say: ['Rob takes his plank back down off the wall.'], do: ['give:lid', 'clear:plank_on_wall'] },
     { on: 'wall', item: 'notebook', if: '!plank_on_wall', say: ['Rob rests his notebook on top of the wall. The glass goes straight through the first three pages.', 'Me: Right.'] },
     {
@@ -601,7 +602,7 @@ export const hull: Chapter = {
     // ---- Anywhere else ----
     { on: '*', item: 'phone', say: ['Me: No signal. No signal since 1906.'] },
     { on: '*', item: 'dollies', say: ['Me: These are not for sharing. They are barely for me.'] },
-    { on: '*', item: 'strap', say: ["Me: It's bent double. It isn't much use for anything like this."] },
+    { on: '*', item: 'strap', say: ["Me: It's bent double. It's not much use for anything till it isn't."] },
     { on: '*', item: 'strap_flat', say: ["Me: I'm not prising that open. There are laws. I helped draft some. Not these ones."] },
     { on: '*', item: 'lid', say: ["Me: That's my good plank. It's for something better than that."] },
     { on: '*', item: 'leaflet', say: ["Me: Nobody wants a leaflet. Nobody has ever wanted a leaflet."] },

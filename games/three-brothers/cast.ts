@@ -123,11 +123,11 @@ export const cast: Record<BrotherId, Brother> = {
       },
     },
     height: 1.09,
-    look: 'Jack. Does sums for fun. Vegetarian, and will mention it.',
+    look: 'Jack. The middle one. Does sums for fun. Part-time vegetarian, and will mention it.',
     fallback: [
       "Me: The odds of that working are roughly zero. I've checked.",
       "Me: That doesn't add up.",
-      "Me: No. Show your working, Jack. Fine: no.",
+      "Me: Fair enough. No.",
     ],
   },
   phil: {

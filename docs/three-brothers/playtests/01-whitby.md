@@ -77,8 +77,19 @@ Add your notes under your name after playing. Short is fine: where you got stuck
 
 ### Rob
 
+Replayed the reworked chapter: about 8 minutes, but not blind (knew the old version).
+
+
 Played 2026-10-30, about 5 minutes. Far too easy for the brief: answers can be fallen into rather than worked out. Monkey Island's lesson: you should never solve something by accident; every answer needs specific, deliberate steps. Decision: rework the chapter with more and harder puzzles (8 to 10, Medium to Hard, 30 to 40 minutes, 1 to 2 new scenes) before moving on to Chapter 2.
 
 ### Jack
 
+Played the reworked chapter blind (2026-11). Really impressed: the jokes landed and it was fun. Finished inside 15 minutes; the puzzles were too easy.
+
+### Mum (guest tester)
+
+Played the reworked chapter blind. Got stuck, but really enjoyed it.
+
 ### Phil
+
+Not played yet.

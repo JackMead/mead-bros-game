@@ -4,8 +4,8 @@ import { drawCinemaBack, drawCinemaFront, pulled, sceneryTime, shakeOffset } fro
 import { config } from './config';
 import { speakerInfo, visibleHotspots, type Line } from './engine';
 import { ICONS, PROPS } from './props';
-import { BROTHERS, type BrotherId, type Rect } from './types';
-import { inCinematic, layout, standFor, status, type Ui } from './ui';
+import { BROTHERS, type BrotherId, type Hotspot, type Rect } from './types';
+import { inCinematic, layout, shown, standFor, status, type Ui } from './ui';
 
 /** Drawing only: reads the UI and game state, never changes them. */
 
@@ -104,6 +104,17 @@ function drawTitle(ui: Ui, ctx: CanvasRenderingContext2D): void {
     });
   }
 
+  // Carry on in another browser.
+  const sb = layout.shareButton();
+  roundRect(ctx, sb, 12, 'rgba(20,14,10,0.72)', 'rgba(127,200,248,0.7)', 2);
+  text(ctx, 'Continue on another device', sb.x + sb.w / 2, sb.y + 24, { size: 17, colour: colours.text, align: 'center', bold: true });
+  text(ctx, 'Sends a link with your progress', sb.x + sb.w / 2, sb.y + 44, { size: 12, colour: colours.narration, align: 'center' });
+  if (ui.notice) {
+    ctx.globalAlpha = Math.min(1, ui.notice.t * 2);
+    outlined(ctx, ui.notice.text, sb.x + sb.w / 2, sb.y + sb.h + 26, { size: 16, colour: colours.highlight, align: 'center' });
+    ctx.globalAlpha = 1;
+  }
+
   // The three of them, posing.
   const feet = 500;
   const pose = { time: ui.time, talking: false };
@@ -121,9 +132,15 @@ function hill(ctx: CanvasRenderingContext2D, y: number, colour: string, freq: nu
   ctx.fill();
 }
 
+/** Hotspots on screen now: as of the scene being shown, minus any a cue has made vanish. */
+function onScreen(ui: Ui): Hotspot[] {
+  const gone = new Set(ui.cinema.effects.filter((e) => e.name === 'vanish').map((e) => e.args[0]));
+  return visibleHotspots(ui.chapter!, shown(ui)).filter((h) => !gone.has(h.id));
+}
+
 function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
   const chapter = ui.chapter!;
-  const game = ui.game!;
+  const game = shown(ui);
   const scene = chapter.scenes[game.scene];
   const bg = art(scene.background);
   if (bg) {
@@ -137,7 +154,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     ctx.fillRect(0, 0, width, sceneHeight);
   }
 
-  for (const h of visibleHotspots(chapter, game)) {
+  for (const h of onScreen(ui)) {
     const sprite = art(h.sprite);
     const prop = h.prop ? PROPS[h.prop] : undefined;
     if (sprite) ctx.drawImage(sprite, h.rect.x, h.rect.y, h.rect.w, h.rect.h);
@@ -151,6 +168,7 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
   }
 
   drawCinemaBack(ctx, ui, bg);
+  drawFollowers(ui, ctx);
 
   // Brothers, back to front.
   const talker = speaking(ui);
@@ -186,7 +204,10 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
     }
   }
 
+  drawFlights(ui, ctx);
   drawCinemaFront(ctx, ui);
+  if (!ui.queue.length) drawExits(ui, ctx);
+  if (ui.reveal > 0 && !ui.queue.length) drawReveal(ui, ctx);
 
   if (ui.label) {
     ctx.globalAlpha = Math.min(1, ui.label.t * 2);
@@ -195,11 +216,159 @@ function drawScene(ui: Ui, ctx: CanvasRenderingContext2D): void {
   }
 }
 
+/** Arrows at each way out, so you can see where you can go without hovering. */
+function drawExits(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  const pulse = 0.65 + 0.35 * Math.sin(ui.time * 3);
+  for (const h of onScreen(ui)) {
+    if (!h.exit) continue;
+    const { x, y, w, h: hh } = h.rect;
+    const d = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] }[h.exit];
+    const cx = Math.min(width - 22, Math.max(22, x + w / 2 + d[0] * w * 0.25));
+    const cy = Math.min(sceneHeight - 30, Math.max(22, y + hh / 2 + d[1] * hh * 0.2));
+    const nudge = Math.sin(ui.time * 3) * 3;
+    ctx.save();
+    ctx.translate(cx + d[0] * nudge, cy + d[1] * nudge);
+    ctx.rotate(Math.atan2(d[1], d[0]));
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = colours.highlight;
+    ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(14, 0);
+    ctx.lineTo(-6, -12);
+    ctx.lineTo(-6, -5);
+    ctx.lineTo(-16, -5);
+    ctx.lineTo(-16, 5);
+    ctx.lineTo(-6, 5);
+    ctx.lineTo(-6, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+/** "Show": every tappable thing glints, with its name. */
+function drawReveal(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  const a = Math.min(1, ui.reveal * 2);
+  ctx.save();
+  ctx.globalAlpha = a;
+  for (const h of onScreen(ui)) {
+    const { x, y, w, h: hh } = h.rect;
+    roundRect(ctx, { x, y, w, h: hh }, 8, 'rgba(244,197,66,0.12)', 'rgba(244,197,66,0.9)', 2);
+  }
+  for (const h of onScreen(ui)) {
+    const { x, y, w, h: hh } = h.rect;
+    outlined(ctx, h.name, Math.min(width - 60, Math.max(60, x + w / 2)), Math.min(sceneHeight - 10, Math.max(22, y + hh / 2 + 6)), {
+      size: 14,
+      colour: colours.text,
+      align: 'center',
+    });
+  }
+  ctx.restore();
+}
+
+/** Items that walk beside whoever carries them (a horse on a rope). */
+function drawFollowers(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  const chapter = ui.chapter!;
+  const game = shown(ui);
+  for (const b of BROTHERS) {
+    const s = standFor(chapter, game, b);
+    if (!s) continue;
+    let side = 0;
+    for (const item of game.inventory[b]) {
+      const img = art(chapter.items[item]?.follower);
+      if (!img) continue;
+      const hh = config.figure.height * 0.85;
+      const ww = (img.naturalWidth / img.naturalHeight) * hh;
+      const bob = Math.abs(Math.sin(ui.time * 2.2)) * 3;
+      const x = s.x - 40 - ww - side;
+      ctx.drawImage(img, x, s.y - hh - bob, ww, hh);
+      side += ww * 0.6;
+    }
+  }
+}
+
+/** The `fly` cue: a sparrow (or any picture in art/) crossing the scene. */
+function drawFlights(ui: Ui, ctx: CanvasRenderingContext2D): void {
+  for (const e of ui.cinema.effects) {
+    if (e.name !== 'fly') continue;
+    const [what, size, x1, y1, x2, y2, secs] = [e.args[0], ...e.args.slice(1).map(Number)];
+    const p = (ui.time - e.start) / secs;
+    if (p < 0 || p > 1) continue;
+    const x = x1 + (x2 - x1) * p;
+    const bird = what === 'sparrow';
+    const y = y1 + (y2 - y1) * p + (bird ? Math.sin(p * Math.PI * 6) * 12 - Math.sin(p * Math.PI) * 40 : -Math.abs(Math.sin(p * Math.PI * 8)) * 4);
+    const facing = x2 < x1 ? -1 : 1;
+    const frame = bird ? art(Math.floor(ui.time * 12) % 2 ? 'sparrow-up.png' : 'sparrow-down.png') : null;
+    if (bird && !frame) {
+      drawSparrow(ctx, x, y, size, facing, ui.time);
+      continue;
+    }
+    const img = frame ?? art(what);
+    if (!img) continue;
+    const ww = (img.naturalWidth / img.naturalHeight) * size;
+    ctx.save();
+    ctx.translate(x, y);
+    if (facing < 0) ctx.scale(-1, 1);
+    ctx.drawImage(img, -ww / 2, -size, ww, size);
+    ctx.restore();
+  }
+}
+
+/** A little brown sparrow, wings flapping, centred on (x, y). */
+function drawSparrow(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, facing: number, time: number): void {
+  const s = size / 20;
+  const flap = Math.sin(time * 28);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(facing * s, s);
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = '#2b1e16';
+  ctx.fillStyle = '#8a5a34';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 9, 5.5, -0.15, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#a07048';
+  ctx.beginPath();
+  ctx.arc(8, -3, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#e8c070';
+  ctx.beginPath();
+  ctx.moveTo(11.5, -3);
+  ctx.lineTo(15, -2);
+  ctx.lineTo(11.5, -1);
+  ctx.fill();
+  ctx.fillStyle = '#2b1e16';
+  ctx.fillRect(8.5, -4.5, 1.4, 1.4);
+  ctx.fillStyle = '#6b4424';
+  ctx.beginPath();
+  ctx.moveTo(-8, 0);
+  ctx.lineTo(-15, -3);
+  ctx.lineTo(-14, 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-2, -2);
+  ctx.quadraticCurveTo(-4, -2 - 12 * flap, 4, -3 - 10 * flap);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
 function drawButtons(ui: Ui, ctx: CanvasRenderingContext2D): void {
   const m = layout.menuButton();
   roundRect(ctx, m, 8, 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
   ctx.fillStyle = colours.text;
   for (let i = 0; i < 3; i++) ctx.fillRect(m.x + 11, m.y + 13 + i * 7, m.w - 22, 3);
+  if (!inCinematic(ui)) {
+    const sh = layout.showButton();
+    roundRect(ctx, sh, 8, ui.reveal > 0 ? 'rgba(244,197,66,0.5)' : 'rgba(0,0,0,0.4)', 'rgba(255,255,255,0.25)');
+    text(ctx, 'Show', sh.x + sh.w / 2, sh.y + 27, { size: 15, colour: colours.text, align: 'center', bold: true });
+  }
   if (inCinematic(ui)) {
     const k = layout.skipButton();
     roundRect(ctx, k, 8, 'rgba(0,0,0,0.45)', 'rgba(255,255,255,0.3)');
@@ -349,9 +518,12 @@ function drawLine(ui: Ui, line: Line, ctx: CanvasRenderingContext2D): void {
 function speechAnchor(ui: Ui, speaker: string): { x: number; y: number } {
   const chapter = ui.chapter!;
   if (speaker in cast) {
-    const s = standFor(chapter, ui.game!, speaker as BrotherId);
+    const s = standFor(chapter, shown(ui), speaker as BrotherId);
     if (s) return { x: s.x, y: s.y - config.figure.height * cast[speaker as BrotherId].height - 22 };
   }
+  // Over their head, if they're standing in the scene (a hotspot named after them).
+  const here = onScreen(ui).find((h) => h.id === speaker || h.id.startsWith(`${speaker}_`));
+  if (here) return { x: here.rect.x + here.rect.w / 2, y: here.rect.y - 10 };
   return chapter.extras?.[speaker]?.at ?? { x: width / 2, y: 150 };
 }
 

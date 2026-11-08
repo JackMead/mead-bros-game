@@ -140,7 +140,6 @@ export const whitby: Chapter = {
   era: 'August 1890',
   place: 'Whitby',
   brothers: ['phil'],
-  inDevelopment: true,
   start: {
     scene: 'east_cliff',
     brother: 'phil',
@@ -168,7 +167,7 @@ export const whitby: Chapter = {
     'Phil Mead gets up, brushes himself down, and looks around.',
     'Me: Right. Fine. This is all completely fine.',
     'Me: Rob? Jack? ...Anyone?',
-    "Tap a thing to use it, or a person to talk to them. Hold (or right-click) to look. Tap an item, then a thing, to use them together. Tap a way out, like the steps, to go somewhere else. Tap Phil's portrait to hear what he's thinking.",
+    "Tap a thing to use it, or a person to talk to them. Hold (or right-click) to look, or tap an item twice to look at it. Tap Show (top right) to see everything you can tap. Tap an item, then a thing, to use them together. Tap a way out, like the steps, to go somewhere else. Tap Phil's portrait to hear what he's thinking.",
   ],
   items: {
     card_salamander: {
@@ -287,6 +286,7 @@ export const whitby: Chapter = {
         },
         {
           id: 'steps',
+          exit: 'right',
           name: 'Steps down to the old town',
           rect: { x: 660, y: 250, w: 260, h: 150 },
           colour: '#9a8a70',
@@ -304,6 +304,7 @@ export const whitby: Chapter = {
       hotspots: [
         {
           id: 'steps_up',
+          exit: 'left',
           name: 'Steps up to the churchyard',
           rect: { x: 0, y: 60, w: 160, h: 300 },
           colour: '#9a8a70',
@@ -335,6 +336,7 @@ export const whitby: Chapter = {
         },
         {
           id: 'smokehouse',
+          exit: 'up',
           name: 'Smokehouse',
           rect: { x: 650, y: 20, w: 150, h: 330 },
           colour: '#5a3a2a',
@@ -350,6 +352,7 @@ export const whitby: Chapter = {
         },
         {
           id: 'to_bridge',
+          exit: 'right',
           name: 'Way to the swing bridge',
           rect: { x: 810, y: 140, w: 145, h: 250 },
           colour: '#4f6a7a',
@@ -367,6 +370,7 @@ export const whitby: Chapter = {
       hotspots: [
         {
           id: 'smoke_door',
+          exit: 'left',
           name: 'Door to Church Street',
           rect: { x: 0, y: 20, w: 170, h: 340 },
           colour: '#8a6a50',
@@ -405,6 +409,7 @@ export const whitby: Chapter = {
       hotspots: [
         {
           id: 'to_old_town',
+          exit: 'left',
           name: 'Back to the old town',
           rect: { x: 10, y: 40, w: 80, h: 150 },
           colour: '#8a6a50',
@@ -449,6 +454,7 @@ export const whitby: Chapter = {
         },
         {
           id: 'to_west',
+          exit: 'right',
           name: 'Road up to the West Cliff',
           rect: { x: 860, y: 120, w: 95, h: 170 },
           colour: '#a08a6a',
@@ -466,6 +472,7 @@ export const whitby: Chapter = {
       hotspots: [
         {
           id: 'to_bridge2',
+          exit: 'left',
           name: 'Road down to the bridge',
           rect: { x: 0, y: 230, w: 62, h: 150 },
           colour: '#a08a6a',
@@ -480,6 +487,7 @@ export const whitby: Chapter = {
         },
         {
           id: 'hotel',
+          exit: 'up',
           name: 'Grand hotel',
           rect: { x: 255, y: 20, w: 375, h: 250 },
           colour: '#c8b89a',
@@ -521,6 +529,7 @@ export const whitby: Chapter = {
       hotspots: [
         {
           id: 'parlour_door',
+          exit: 'left',
           name: 'French windows',
           rect: { x: 20, y: 20, w: 165, h: 320 },
           colour: '#9ab0c0',
@@ -560,7 +569,8 @@ export const whitby: Chapter = {
         {
           id: 'net_up',
           name: 'Newspaper net',
-          rect: { x: 497, y: 262, w: 60, h: 30 },
+          rect: { x: 487, y: 268, w: 80, h: 26 },
+          sprite: 'newspaper-net.png',
           prop: 'newspaper',
           colour: '#e8e2d0',
           if: 'net_up',

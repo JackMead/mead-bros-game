@@ -1,18 +1,18 @@
 # Chapter 3: Deliver Us From Hull
 
 **Author:** Jack
-**Era and place:** January 1906, Hull, with the Dropping Well at Knaresborough near the end
+**Era and place:** January 1906, Hull
 **Spotlight brother(s):** Rob, alone
 
 ## What happens
 
-Rob lands in Hull in the middle of winter, during the general election of January 1906. He has no idea what's happened, and his way of coping is to moan about it. The Liberals are on their way to a landslide, which ought to delight a former Lib Dem staffer, but he knows how that story ends and stays gloomy.
+Rob lands in Hull in the middle of winter, during the general election of January 1906. He has no idea what's happened, and his way of coping is to have opinions about it.
 
-Hull City are in their first Football League season, playing at the Boulevard. Rob supports them to some degree, was a goalkeeper and fancies himself a football analyst, so he has opinions about a team nobody else in the game has heard him discuss.
+He has a young son at home and a second child on the way, and he needs to get back. He has no money and nowhere obvious to go. Along the way he works out where and when he is, and finds a sign that Phil has been through history before him. That sign should be something the player works out, not something a character explains.
 
-He has a young son at home and a second child on the way, and he needs to get back. Along the way he works out where and when he is, finds a sign that Phil has been through history before him, and gets himself to the Dropping Well.
+**It ends when Rob has a train ticket**, and knows where he's going.
 
-It ends with Rob adding something concrete to the well, for a later chapter to find, and turning his thoughts to what comes next.
+**Revised 2026-11-08, after Jack's playtest:** fewer of Rob's interests crammed in. Politics, football and cyclists are seasoning, not the main course. The humour should gently poke fun at Rob, through situations and other people's reactions, rather than have him restate his traits.
 
 ## Picks up from
 
@@ -25,7 +25,7 @@ It ends with Rob adding something concrete to the well, for a later chapter to f
 ## Leaves open
 
 - **More chapters follow.** This isn't the finale.
-- Whatever Rob puts in the well, which a chapter set after 1906 can use. Claude chooses it. Record it in the story bible when the chapter is built, so later authors can find it after playing.
+- Where Rob's ticket takes him.
 - Rob's situation in 1906: he's getting by, but he isn't home.
 
 ## Jokes, people, things to include
@@ -36,18 +36,18 @@ It ends with Rob adding something concrete to the well, for a later chapter to f
 - **Cyclists:** rants that they're dangerous on the road. Early motoring is fair game too.
 - **Moaning about the state of things:** the rants stay on this and on cyclists. Keep his politics in the background.
 - **Politics background:** studied politics in Nottingham and worked for the Lib Dems (named). Now a doomer who thinks the general public are morons. The Liberals (named) and the election are scenery: posters and canvassers, not the plot.
-- **Reader:** he's read more books than you this year. He has read *Dracula*, and can muse that he doesn't remember Jonathan Harker addressing everyone the way Phil does. It's also a chance for a subtle clue from Phil to reach him through the book.
+- **Reader:** he's read more books than you this year, including *Dracula*, more than once. Any link to Phil through a book should be left for the player to spot.
 - **Goalkeeper and armchair analyst:** Hull City is the football team to use.
 - **Food:** loves dolly mixture and cheese, and loves cooking a curry.
 - **Brands:** no takeaway pizza and no boy wizard references.
 
 ## Puzzle settings
 
-- **Number of puzzles:** 5 to 6
-- **Difficulty:** Medium, with several items and threads on the go at once
+- **Number of puzzles:** 6 to 8
+- **Difficulty:** Medium (3 out of 5 with the AI testers), with several threads on the go at once
 - **Length:** 20 to 30 minutes
 - **Types you'd like:** a mix, including an across-time puzzle linking to Phil's era if one fits.
-- **Must use:** at least one of Rob's traits. The well, with something concrete left in it.
+- **Must use:** at least one of Rob's traits. Part of the soapbox wreckage in a puzzle.
 - **Avoid:** the Dogger Bank incident, unless there's a good reason: players won't know the reference and it needs respect. Politics in the foreground.
-- **Historical figure:** David Lloyd George, a minister in the new Liberal government, on an election stop in Hull. The visit is our invention: we found no record of him in Hull that January. Rob can't resist telling him what the government should do differently. A comic cameo, so it doesn't bring politics to the foreground.
-- **Scenes (four or five, one painted background each):** Claude chooses them from Hull in 1906, with the Boulevard ground and the Dropping Well among them.
+- **Historical figure:** not required. Lloyd George can appear in passing.
+- **Scenes:** Claude chooses them from Hull in 1906.

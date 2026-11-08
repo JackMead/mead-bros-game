@@ -38,4 +38,6 @@ Add your notes under your name after playing. Short is fine: where you got stuck
 
 ### Jack
 
+Played 2026-11-08, about 10 minutes, most of it learning what could be tapped. Too easy for the brief. The humour was too blunt and literal: jokes restated Rob's traits instead of letting them play out, and a reference should be left for the player to spot rather than explained. One clue didn't fit what earlier chapters established. Decision: rewrite the chapter. It now ends once Rob has his train ticket, packs in fewer of Rob's interests, and the humour should gently poke fun at Rob rather than repeat his traits back. Then six rounds of AI playtests, judging difficulty, whether answers are inferred rather than stated, and whether the jokes land.
+
 ### Phil

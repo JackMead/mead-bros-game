@@ -5,8 +5,8 @@ import { hull } from './03-hull';
 // Deliberately prints no solutions: the output is safe for authors to read.
 describe('hull', () => {
   it('takes more than a stroll to finish', () => {
-    expect(analyse(hull).shortest).toBeGreaterThanOrEqual(25);
-  });
+    expect(analyse(hull).shortest).toBeGreaterThanOrEqual(28);
+  }, 60_000);
 
   it('is marked in development until a brother has played it', () => {
     expect(hull.inDevelopment).toBe(true);

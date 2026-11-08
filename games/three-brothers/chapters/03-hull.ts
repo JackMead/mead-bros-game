@@ -28,7 +28,11 @@ function nameChoice(name: string): Choice {
 
 const scorerChoices: Choice[] = [
   nameChoice('Hirst'),
-  nameChoice('Robinson'),
+  {
+    label: 'It was Robinson.',
+    if: 'seen_photo',
+    say: ["Editor: Robinson's the goalkeeper.", 'Me: Exactly. Nobody ever gives them the credit.', 'Editor: Out.'],
+  },
   nameChoice('Leaper'),
   {
     label: 'It was Coultas.',
@@ -210,10 +214,10 @@ export const hull: Chapter = {
         { id: 'wreck', name: 'Wrecked soapbox', if: '!got_wreck', prop: 'soapbox', rect: { x: 260, y: 350, w: 120, h: 60 }, colour: '#7a5a3a', look: "My soapbox. What's left of it. We've been through a lot together, that box and me. Mostly councils. Not all of it's matchwood." },
         { id: 'statue', name: 'King William statue', rect: { x: 400, y: 10, w: 160, h: 170 }, colour: '#d9b53a', look: 'King Billy, gilded from crown to hoof, on a golden horse. Hull is very proud of him. I could tell you why. I would love to.' },
         { id: 'to_office', name: 'Hull Daily Mail office', exit: 'up', rect: { x: 400, y: 200, w: 140, h: 150 }, colour: '#4a4a5a', look: 'The offices of the Hull Daily Mail. A sign in the window: CORRESPONDENTS WANTED. Bring your own pencil.' },
-        { id: 'reader', name: 'Woman on the bench', if: '!got_book', rect: { x: 600, y: 240, w: 80, h: 140 }, colour: '#7a3a5a', look: "A woman reading on a bench, in this cold, so gripped that she hasn't noticed her tea has gone cold. It's Dracula. I'd know that yellow cover anywhere. I've read it twice." },
+        { id: 'reader', name: 'Woman on the bench', if: '!got_book', rect: { x: 600, y: 240, w: 80, h: 140 }, colour: '#7a3a5a', look: "A woman reading on a bench, in this cold, so gripped that she hasn't noticed her tea has gone cold. Dracula, the yellow cover. About two-thirds in. I'm trying very hard not to say anything." },
         { id: 'bicycle_tidy', name: 'Bicycle', if: 'bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: "A bicycle, propped neatly against the wall. My work. Nobody's noticed." },
         { id: 'bicycle', name: 'Bicycle', if: '!bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: 'A bicycle, propped across the pavement.' },
-        { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door. I have notes for Mr Lloyd George.' },
+        { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door. I have thought about this a lot.' },
         { id: 'to_boulevard', name: 'Hessle Road', exit: 'right', rect: { x: 880, y: 240, w: 80, h: 160 }, colour: '#8a8a70', look: 'The road out along Hessle Road, towards the football ground. You can hear the crowd from here.' },
       ],
       stand: { rob: [{ x: 560, y: 440 }] },
@@ -243,7 +247,7 @@ export const hull: Chapter = {
         { id: 'barrel', name: 'Fallen barrel', if: 'lit !barrel_moved', rect: { x: 380, y: 250, w: 220, h: 130 }, colour: '#6a4a2a', look: 'A full barrel of beer, off its rack and lying right across the floor. Eighteen gallons. You could get it back up there with a block and tackle and three men.' },
         { id: 'racks', name: 'Barrel racks', if: 'lit', rect: { x: 640, y: 40, w: 300, h: 240 }, colour: '#5a4030', look: 'Racks of barrels, all waiting their turn.' },
         { id: 'cat', name: 'Cat', if: 'lit', rect: { x: 820, y: 300, w: 70, h: 60 }, colour: '#222222', look: 'A large black cat, sitting on an empty barrel, looking at me as if I owe it money.' },
-        { id: 'cobwebs', name: 'Cobwebs', if: 'lit', rect: { x: 160, y: 20, w: 200, h: 120 }, colour: '#7a7a7a', look: 'Cobwebs. A lot of them. Some of them are older than the King. Not that one. The previous one.' },
+        { id: 'cobwebs', name: 'Cobwebs', if: 'lit', rect: { x: 160, y: 20, w: 200, h: 120 }, colour: '#7a7a7a', look: 'Cobwebs. A lot of them. Some of them are older than the pub.' },
       ],
       stand: { rob: [{ x: 220, y: 440 }] },
     },
@@ -299,7 +303,8 @@ export const hull: Chapter = {
     // ---- Getting about ----
     { on: 'to_station', say: ['Rob walks up to Paragon Station.'], do: ['goto:station'] },
     { on: 'station_back', say: ['Rob heads back to the Market Place.'], do: ['goto:market'] },
-    { on: 'to_pub', say: ['Rob ducks down the alley and into the pub. He ducks under the door frame. He forgets to duck under the beam.'], do: ['goto:pub'] },
+    { on: 'to_pub', if: 'been_in_pub', say: ['Rob ducks under the beam. The door frame, which he had forgotten about, gets him instead.'], do: ['goto:pub'] },
+    { on: 'to_pub', say: ['Rob ducks down the alley and into the pub. He ducks under the door frame. He forgets to duck under the beam.'], do: ['goto:pub', 'set:been_in_pub'] },
     { on: 'pub_door', say: ['Rob goes back out to the Market Place.'], do: ['goto:market'] },
     { on: 'to_office', say: ['Rob goes into the newspaper office.'], do: ['goto:office'] },
     { on: 'office_door', say: ['Rob steps back out into the cold.'], do: ['goto:market'] },
@@ -371,7 +376,7 @@ export const hull: Chapter = {
     },
     { on: 'reader', item: 'phone', say: ['Rob shows her his son.', 'Reader: Oh, he\'s a bonny lad. What\'s he in, a little window?', 'Me: Sort of.'] },
     { on: 'reader', item: 'notebook', say: ["Reader: I don't want your notebook, love. I want to know if my Albert's done owt."] },
-    { on: 'reader', item: 'draft', say: ['Rob offers her his fourteen pages.', 'Reader: Is there owt in there about Albert?', 'Me: There\'s a lot about the left-back.', 'Reader: Then I\'ll wait for the paper, love.'] },
+    { on: 'reader', item: 'draft', say: ['Rob offers her his fourteen pages.', 'Reader: Is there owt in there about Albert?', "Me: There's a diagram.", 'Reader: Of Albert?', 'Me: Of where Albert should have been.'] },
     leafletTo('reader', "Reader: I've read it, love. It's all promises. Give me vampires any day. At least they mean it."),
 
     // ---- The pub ----
@@ -395,10 +400,16 @@ export const hull: Chapter = {
       ],
       do: ['give:halfcrown_pub', 'set:paid_pub'],
     },
-    { on: 'landlord', if: 'paid_pub', say: ['Me: Could I just ask... could I bench press you?', 'Landlord: No.'] },
+    { on: 'landlord', if: 'paid_pub', say: ["Landlord: First pint's on the house. Second's fourpence. If you're stopping, mind the beam.", "Me: I've met the beam."] },
     { on: 'landlord', if: 'trapdoor_open', say: ["Landlord: Well, go on, then. I'm not going down there. I've heard it moving about."] },
     { on: 'landlord', say: ["Landlord: Nowt to drink till somebody sorts that cellar. Not me. I've heard it moving."] },
     { on: 'landlord', item: 'phone', say: ['Rob shows the landlord his son.', "Landlord: What's he made of, glass?", "Me: He's ADVANCED."] },
+    { on: 'gateman', item: 'strap', say: ["Gateman: That's not sixpence."] },
+    { on: 'gateman', item: 'strap_flat', say: ["Gateman: That's not sixpence either."] },
+    { on: 'boy', item: 'strap', say: ['Boy: Is it a sword?', "Me: It's a strap.", 'Boy: Can it be a sword?'] },
+    { on: 'editor', item: 'strap', say: ['Editor: (without looking up) Not on my desk.'] },
+    { on: 'editor', item: 'strap_flat', say: ['Editor: (without looking up) Not on my desk.'] },
+    { on: 'clerk', item: 'strap', say: ['Clerk: We take money, sir. Not scrap.'] },
     { on: 'landlord', item: 'strap', say: ["Landlord: What do I want with that? I want a drink in my pumps, lad, not scrap."] },
     { on: 'landlord', item: 'strap_flat', say: ["Landlord: What do I want with that? I want a drink in my pumps, lad, not scrap."] },
     { on: 'landlord', item: 'dollies', say: ['Landlord: Very small. Very bright. No thank you.'] },
@@ -417,7 +428,8 @@ export const hull: Chapter = {
     { on: 'photo', say: ['Rob reads the names under the photograph, out loud, to the whole pub.', 'Me: Back row: W. Robinson, goal. A. Hirst, left back. J. Wright, centre half. Front row: T. Spicer, outside right. A. Coultas, centre forward. G. Leaper, inside left.', "Me: Arms folded, every one of them. Moustaches you could hang a coat on. And the goalkeeper's the only one smiling, because he knows."], do: ['set:seen_photo'] },
     { on: 'photo', item: 'phone', say: ['Me: I could take a photo of a photo. That\'s about the saddest use of one per cent I can think of.'] },
 
-    { on: 'parlour', say: ['Me: This is it. The very room where the governor decided to shut the gates on Charles the First, and started the Civil War. Right here.', 'Landlord: I know. It\'s on the sign.', 'Me: In this room.', 'Landlord: It\'s also on the door, the menu and the outside of the building.'] },
+    { on: 'parlour', if: 'heard_parlour', say: ['Me: In this room, though.', 'Landlord: Still on the sign.'] },
+    { on: 'parlour', do: ['set:heard_parlour'], say: ['Me: This is it. The very room where the governor decided to shut the gates on Charles the First, and started the Civil War. Right here.', 'Landlord: I know. It\'s on the sign.', 'Me: In this room.', 'Landlord: It\'s also on the door, the menu and the outside of the building.'] },
 
     // ---- The cellar ----
     {
@@ -449,6 +461,7 @@ export const hull: Chapter = {
     { on: 'barrel', item: 'strap_flat', say: ["Me: I'm not levering it. I don't lever things. I LIFT things."] },
     { on: 'cat', say: ['Me: Something moving about down there. A cat. It was a cat. I knew it was a cat.', 'The cat says nothing. It saw him on the steps.'] },
     { on: 'cat', item: 'phone', say: ['Rob shows the cat his son.', 'The cat leaves.', 'Me: Fine.'] },
+    { on: 'cat', item: 'dollies', say: ['The cat looks at the dolly mixture, then at Rob, then away.', 'Me: Fine. More for me.'] },
     { on: 'racks', say: ['Me: All present and correct. Thanks to nobody but me.'] },
     { on: 'cobwebs', say: ["Me: I'm not touching those. The spider's been here longer than the pub."] },
 
@@ -472,7 +485,7 @@ export const hull: Chapter = {
     { on: 'editor', if: 'has:draft', say: ['Editor: Who scored?'], choices: scorerChoices },
     { on: 'editor', if: 'report_paid', say: ["Editor: Page six. Don't let it go to your head. Coultas is the only one round here allowed a head."] },
     { on: 'editor', say: ["Editor: Match report. What happened, and who scored. I'll know if you make it up. I always know."] },
-    { on: 'editor', item: 'phone', say: ['Rob shows the editor his son.', 'Editor: Is that a photograph? Why is it so bright? Who printed it?', "Me: He's a very bright child."] },
+    { on: 'editor', item: 'phone', say: ['Rob shows the editor his son.', 'Editor: Is that a photograph? Why is it so bright? Who printed it?', 'Me: He gets that from me.'] },
     { on: 'editor', item: 'dollies', say: ['Editor: I don\'t eat sweets. Sweets are for people who enjoy things.'] },
     leafletTo('editor', 'Editor: We printed that. Nobody read it then, either.'),
     { on: 'editor', item: 'notebook', say: ["Editor: It's empty. I don't pay by the blank page. Go and watch the match."] },
@@ -573,7 +586,7 @@ export const hull: Chapter = {
     { on: 'clerk', item: 'phone', say: ['Rob shows the clerk his son.', 'Clerk: Child fare is half, sir.', "Me: He's in 2026.", 'Clerk: Then he travels free.'] },
     leafletTo('clerk', 'Clerk: The railway is not a political organisation, sir. Where to?'),
     { on: 'train', say: ["Guard: Ticket, sir?", "Me: It's a long story.", 'Guard: It always is, sir. Ticket window\'s behind you.'] },
-    { on: 'fares', say: ['Rob reads the whole board, top to bottom.', "Me: Four and six. Two and nine. I did politics, not sums."] },
+    { on: 'fares', say: ['Rob reads the whole board, top to bottom.', 'He nods slowly, as if he understands it.'] },
 
     // ---- The book ----
     { look: 'dracula', say: READ_PASSAGE, do: ['set:read_passage'] },
@@ -586,13 +599,13 @@ export const hull: Chapter = {
     { on: 'rob', item: 'draft', say: ['Rob reads his notes back to himself.', 'Me: Superb. Every word. Couldn\'t cut a thing.'] },
 
     // ---- Anywhere else ----
-    { on: '*', item: 'phone', say: ["Me: You'd like him. Everybody does. ...One per cent. I'll show you later."] },
+    { on: '*', item: 'phone', say: ['Me: No signal. No signal since 1906.'] },
     { on: '*', item: 'dollies', say: ['Me: These are not for sharing. They are barely for me.'] },
     { on: '*', item: 'strap', say: ["Me: It's bent double. It isn't much use for anything like this."] },
     { on: '*', item: 'strap_flat', say: ["Me: I'm not prising that open. There are laws. I helped draft some. Not these ones."] },
     { on: '*', item: 'lid', say: ["Me: That's my good plank. It's for something better than that."] },
     { on: '*', item: 'leaflet', say: ["Me: Nobody wants a leaflet. Nobody has ever wanted a leaflet."] },
-    { on: '*', item: 'notebook', say: ["Me: It's for the match. You don't write about that."] },
+    { on: '*', item: 'notebook', say: ["Me: The notebook's for the match. Facts only. Mostly."] },
     { on: '*', item: 'draft', say: ["Me: Fourteen pages of the finest football writing in Yorkshire, and you want me to waste it on that?"] },
     { on: '*', item: 'halfcrown_pub', say: ["Me: Not on that. That's half my money. Half of not much."] },
     { on: '*', item: 'halfcrown_paper', say: ["Me: Not on that. That's half my money. Half of not much."] },

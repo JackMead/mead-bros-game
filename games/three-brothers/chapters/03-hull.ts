@@ -71,7 +71,7 @@ const ticketChoices: Choice[] = [
   {
     label: 'Knaresborough.',
     if: '!read_passage',
-    say: ['Me: Back to the well. Back to HER.', 'Me: ...No. Not without a very good reason. I watch horror films. I know how that goes.'],
+    say: ['Me: Back to the well. Back to HER.', "Me: ...No. You don't go back to the well. Nobody who goes back to the well is in the sequel."],
   },
   {
     label: 'Knaresborough.',
@@ -212,12 +212,12 @@ export const hull: Chapter = {
         { id: 'to_station', name: 'Paragon Station road', exit: 'left', rect: { x: 0, y: 100, w: 70, h: 280 }, colour: '#6f7f8f', look: 'The road to Paragon Station. Trains. Out of Hull, if you can pay for it.' },
         { id: 'to_pub', name: 'Ye Olde White Harte', exit: 'up', rect: { x: 90, y: 60, w: 160, h: 270 }, colour: '#6a4a2a', look: 'Ye Olde White Harte, down a little alley. Very old, very crooked, and very proud of it.' },
         { id: 'wreck', name: 'Wrecked soapbox', if: '!got_wreck', prop: 'soapbox', rect: { x: 260, y: 350, w: 120, h: 60 }, colour: '#7a5a3a', look: "My soapbox. What's left of it. We've been through a lot together, that box and me. Mostly council meetings." },
-        { id: 'statue', name: 'King William statue', rect: { x: 400, y: 10, w: 160, h: 170 }, colour: '#d9b53a', look: 'King Billy, gilded from crown to hoof, on a golden horse. Hull is very proud of him. I could tell you why. I would love to.' },
+        { id: 'statue', name: 'King William statue', rect: { x: 400, y: 10, w: 160, h: 170 }, colour: '#d9b53a', look: 'King Billy, gilded from crown to hoof, on a golden horse. Somebody has polished him this morning. In January.' },
         { id: 'to_office', name: 'Hull Daily Mail office', exit: 'up', rect: { x: 400, y: 200, w: 140, h: 150 }, colour: '#4a4a5a', look: 'The offices of the Hull Daily Mail. A sign in the window: CORRESPONDENTS WANTED. Bring your own pencil.' },
         { id: 'reader', name: 'Woman on the bench', if: '!got_book', rect: { x: 600, y: 240, w: 80, h: 140 }, colour: '#7a3a5a', look: "A woman reading on a bench, in this cold, so gripped that she hasn't noticed her tea has gone cold. Dracula, the yellow cover. About two-thirds in. I'm trying very hard not to say anything." },
         { id: 'bicycle_tidy', name: 'Bicycle', if: 'bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: "A bicycle, propped neatly against the wall. My work. Nobody's noticed." },
         { id: 'bicycle', name: 'Bicycle', if: '!bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: 'A bicycle, parked across the whole pavement. Even in 1906.' },
-        { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door. I have thought about this a lot.' },
+        { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door like it is the last seat on earth.' },
         { id: 'to_boulevard', name: 'Hessle Road', exit: 'right', rect: { x: 880, y: 240, w: 80, h: 160 }, colour: '#8a8a70', look: 'The road out along Hessle Road, towards the football ground. You can hear the crowd from here.' },
       ],
       stand: { rob: [{ x: 560, y: 440 }] },
@@ -233,7 +233,7 @@ export const hull: Chapter = {
         { id: 'landlord', name: 'Landlord', rect: { x: 380, y: 170, w: 75, h: 200 }, colour: '#5a3a2a', look: "The landlord, polishing a glass he hasn't got anything to put in." },
         { id: 'trapdoor', name: 'Trapdoor', if: '!trapdoor_open', rect: { x: 520, y: 370, w: 160, h: 60 }, colour: '#4a3a28', look: 'A trapdoor to the cellar. The iron ring has snapped clean off. All that\'s left is a hairline crack round the edge.' },
         { id: 'to_cellar', name: 'Open trapdoor', exit: 'down', if: 'trapdoor_open', rect: { x: 520, y: 370, w: 160, h: 60 }, colour: '#1a1410', look: 'Stone steps going down into the dark.' },
-        { id: 'parlour', name: 'Plotting Parlour', rect: { x: 760, y: 60, w: 180, h: 280 }, colour: '#6a4a3a', look: 'A low door with a painted sign: THE PLOTTING PARLOUR. 1642. Oh, I know all about this room.' },
+        { id: 'parlour', name: 'Plotting Parlour', rect: { x: 760, y: 60, w: 180, h: 280 }, colour: '#6a4a3a', look: "A low door with a painted sign: THE PLOTTING PARLOUR. 1642. I stand up straight to read it. In here, that's a mistake." },
       ],
       stand: { rob: [{ x: 300, y: 440 }] },
     },
@@ -293,7 +293,7 @@ export const hull: Chapter = {
   rules: [
     // ---- What Rob's thinking (tap his portrait) ----
     { look: 'rob', if: '!got_wreck', say: ['Me: Rob Mead. Dad. Reader. Former goalkeeper. Currently on the floor of a market. First things first: the box.'] },
-    { look: 'rob', if: 'read_passage !ticket', say: ["Me: That's not how Swales talks. I'd know. I've read it twice. Somebody has been at that book."] },
+    { look: 'rob', if: 'read_passage !ticket', say: ['Me: I could get a train. I could get a train to anywhere. Well. Anywhere with a reason.'] },
     { look: 'rob', if: 'watched !report_paid', say: ['Me: Fourteen pages of first-class analysis, and he wants one name. Somebody in this town saw that goal. Somebody who was actually looking.'] },
     { look: 'rob', if: 'trapdoor_open !lit', say: ["Me: I'm not going down there in the dark. I'm a grown man. A grown man with a lot to lose."] },
     { look: 'rob', if: 'heard_cellar !trapdoor_open', say: ['Me: A dry pub on election night. That is not a crisis, that is a scandal. All that stands in the way is a crack in a floor, and nothing I own is the right shape for it. Yet.'] },
@@ -368,9 +368,8 @@ export const hull: Chapter = {
         "Reader: COULTAS! A header! With his stitches in! Oh, the daft lump, his head!",
         "Reader: Here, love, have this. I'll not have the head for vampires now. I'm off to find him and kill him.",
         'She pushes the book into Rob\'s hands and is gone, paper and all.',
-        "Me: You haven't finished it.",
-        "Me: She hasn't finished it. Should I... No. No. You don't run after people to tell them the ending.",
-        'Me: I would quite like to, though.',
+        "Me: She's eighty pages from the end.",
+        'He looks down the street after her for quite a long time.',
       ],
       do: ['take:late_edition', 'give:dracula', 'set:got_book'],
     },
@@ -424,7 +423,7 @@ export const hull: Chapter = {
 
     { on: 'strap', item: 'lid', say: ['Rob lays the strap on the plank and stands on it. Then he jumps on it. Then, because somebody is watching, once more with a little twist at the end.', 'Me: Good as new. Better.'], do: ['take:strap', 'give:strap_flat', 'set:strap_flat'] },
     { on: 'lid', item: 'strap', say: ['Rob lays the strap on the plank and stands on it. Then he jumps on it. Then, because somebody is watching, once more with a little twist at the end.', 'Me: Good as new. Better.'], do: ['take:strap', 'give:strap_flat', 'set:strap_flat'] },
-    { on: 'rob', item: 'strap', say: ["Rob grips the strap in both hands and pulls.", "Me: I could straighten it. With my hands. I definitely could. I'm choosing not to, so I don't hurt my wrists. I need my wrists for the baby. My feet, on the other hand, are expendable."] },
+    { on: 'rob', item: 'strap', say: ['Rob grips the strap in both hands and pulls. Then he stops, as if he has just remembered an appointment.', "Me: Could. Obviously. But I've got a baby to lift later."] },
 
     { on: 'photo', say: ['Rob reads the names under the photograph, out loud, to the whole pub.', 'Me: Back row: W. Robinson, goal. A. Hirst, left back. J. Wright, centre half. Front row: T. Spicer, outside right. A. Coultas, centre forward. G. Leaper, inside left.', "Me: Arms folded, every one of them. Moustaches you could hang a coat on. And the goalkeeper's the only one smiling, because he knows."], do: ['set:seen_photo'] },
     { on: 'photo', item: 'phone', say: ['Me: I could take a photo of a photo. That\'s about the saddest use of one per cent I can think of.'] },
@@ -463,8 +462,8 @@ export const hull: Chapter = {
     { on: 'cat', say: ['Me: Something moving about down there. A cat. It was a cat. I knew it was a cat.', 'The cat says nothing. It saw him on the steps.'] },
     { on: 'cat', item: 'phone', say: ['Rob shows the cat his son.', 'The cat leaves.', 'Me: Fine.'] },
     { on: 'cat', item: 'dollies', say: ['The cat looks at the dolly mixture, then at Rob, then away.', 'Me: Fine. More for me.'] },
-    { on: 'racks', say: ['Me: All present and correct. Thanks to nobody but me.'] },
-    { on: 'cobwebs', say: ["Me: I'm not touching those. The spider's been here longer than the pub."] },
+    { on: 'racks', say: ['Me: All present and correct.'] },
+    { on: 'cobwebs', say: ['Rob reaches for them, and the cat looks at him. He stops reaching.'] },
 
     // ---- The newspaper office ----
     {
@@ -484,7 +483,7 @@ export const hull: Chapter = {
     { on: 'editor', item: 'draft', if: '!seen_photo', say: ['Editor: Right. Fourteen pages. Who scored?', 'Me: One of ours.', 'Editor: A name.', "Me: ...I'll come back."] },
     { on: 'editor', item: 'draft', say: ['Editor: Who scored?'], choices: scorerChoices },
     { on: 'editor', if: 'has:draft', say: ['Editor: Who scored?'], choices: scorerChoices },
-    { on: 'editor', if: 'report_paid', say: ["Editor: Page six. Don't let it go to your head. Coultas is the only one round here allowed a head."] },
+    { on: 'editor', if: 'report_paid', say: ["Editor: Page six. Don't let it go to your head. Coultas has used up all the heads in Hull for today."] },
     { on: 'editor', say: ["Editor: Match report. What happened, and who scored. I'll know if you make it up. I always know."] },
     { on: 'editor', item: 'phone', say: ['Rob shows the editor his son.', 'Editor: Is that a photograph? Why is it so bright? Who printed it?', 'Me: He gets that from me.'] },
     { on: 'editor', item: 'dollies', say: ['Editor: I don\'t eat sweets. Sweets are for people who enjoy things.'] },
@@ -577,8 +576,8 @@ export const hull: Chapter = {
     },
     { on: 'boy', item: 'dollies', say: ['Boy: Is that sweets? What are they for?', 'Me: For later. For a very good reason.'] },
     { on: 'boy', item: 'phone', say: ['Rob shows the boy his son.', 'Boy: Is that a baby in a mirror?', 'Me: He\'s in the future.', 'Boy: Can I have a go?', 'Me: No. One per cent.'] },
-    { on: 'boy', item: 'halfcrown_pub', say: ['Me: Half a crown, to a boy, for a name? I\'m not made of money. I\'m barely made of anything.'] },
-    { on: 'boy', item: 'halfcrown_paper', say: ['Me: Half a crown, to a boy, for a name? I\'m not made of money. I\'m barely made of anything.'] },
+    { on: 'boy', item: 'halfcrown_pub', say: ["Me: Half a crown, for one name? That's Lloyd George money."] },
+    { on: 'boy', item: 'halfcrown_paper', say: ["Me: Half a crown, for one name? That's Lloyd George money."] },
     leafletTo('boy', "Boy: Can't eat that."),
 
     // ---- The station ----
@@ -600,7 +599,7 @@ export const hull: Chapter = {
     { on: 'rob', item: 'draft', say: ['Rob reads his notes back to himself.', 'Me: Superb. Every word. Couldn\'t cut a thing.'] },
 
     // ---- Anywhere else ----
-    { on: '*', item: 'phone', say: ['Me: No signal. No signal since 1906.'] },
+    { on: '*', item: 'phone', say: ['Rob holds the phone up, then higher. Nothing. Then higher still, which is quite high.'] },
     { on: '*', item: 'dollies', say: ['Me: These are not for sharing. They are barely for me.'] },
     { on: '*', item: 'strap', say: ["Me: It's bent double. It's not much use for anything till it isn't."] },
     { on: '*', item: 'strap_flat', say: ["Me: I'm not prising that open. There are laws. I helped draft some. Not these ones."] },

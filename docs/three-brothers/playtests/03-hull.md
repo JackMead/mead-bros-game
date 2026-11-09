@@ -2,7 +2,7 @@
 
 Spoiler-free. Full AI walkthroughs are in `spoilers/03-hull-ai-playtest.md`: don't open it until you've played.
 
-Brief asked for: 5 to 6 puzzles, Medium, 20 to 30 minutes. Built with 6 puzzles across 5 scenes. Fewest possible moves: 25.
+First version: brief asked for 5 to 6 puzzles, Medium, 20 to 30 minutes. Built with 6 puzzles across 5 scenes. Fewest possible moves: 25. Rounds 1 and 2 below are for that version.
 
 ## AI round 1 (2026-11-01)
 
@@ -29,6 +29,21 @@ No puzzle flagged as unfair. Too many clues stated the answer outright, so sever
 **On difficulty:** the testers land it at 2.5 out of 5, the easy end of Medium. Nobody got stuck and nothing was unfair. Fixed afterwards: 3 lines flagged by testers and 2 clues softened, not retested by the AI testers. Human times will tell us whether it needs more teeth, as Chapter 1 showed.
 
 Checked on the real screen: the chapter opens, and every tap on the shortest route lands on the right thing. All five scenes still use placeholder shapes.
+
+## The rewrite (2026-11-08 to 2026-11-09)
+
+After Jack's playtest (below) the chapter was rewritten: it now ends once Rob has his ticket, and has 8 puzzles across 6 scenes. Fewest possible moves: 30. Then six rounds of AI playtests, two fresh testers per round, with fixes between rounds. Difficulty target: 3 out of 5 (Medium).
+
+| Round | Testers | Difficulty (1-5) | Humour (1-10) | Main changes after |
+| --- | --- | --- | --- | --- |
+| 1 | Veteran (one run spoiled by a tester mix-up) | 2.5 | Not scored | 4 clues that named the answer cut back; the deduction now needs every clue; 6 lines that stated Rob's traits rewritten |
+| 2 | Button-Masher, Overthinker | 2 to 2.5 | Not scored | 1 step made harder, with an item to fetch back; 1 plot hole and 1 duplicated line fixed |
+| 3 | Veteran, Newcomer | 3 to 3.5 | Not scored | 1 setup line added for a later joke; 2 contradictions and 1 stale line fixed |
+| 4 | Button-Masher, Comedy Editor | 3 | 7.5 | Repeat visits got their own lines; refusals varied per person; 8 rewrites from the Comedy Editor |
+| 5 | Veteran, Overthinker | 2.5 to 3 | 7.5 to 8 | 1 stuck point got targeted nudges; 6 flat descriptions rewritten |
+| 6 | Comedy Editor, Newcomer | 3 to 3.5 | 7.5 | 9 rewrites from the Comedy Editor; Rob's thoughts now keep up with what he's found |
+
+**On difficulty:** every tester finished except two Button-Mashers who hit their command caps, and nothing was found unfair after round 5. The hardest step is the one combining two items. Testers consistently named the same deduction the best puzzle, and the chapter's jokes land best when other people deflate Rob.
 
 ## Human playtests
 

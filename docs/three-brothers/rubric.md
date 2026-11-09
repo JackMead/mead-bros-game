@@ -97,4 +97,10 @@ Add a dated line after each chapter's playtests: what worked, what didn't, what 
   - **One candidate per step reads as easy**, however clever the link. Hard needs items with more than one plausible use, a couple of decoys that look right, and needs nobody says out loud.
   - **Characters keep stating the method.** Each round, a line that spelled out the answer was the main complaint. Split a method across two characters, or leave half of it for the player to infer.
   - **Character puzzles score best.** The puzzle built on Jack's character was named the best in the chapter in every round.
-
+- *2026-11-09, Chapter 3 (Jack's playtest, then six AI rounds):* Jack finished the first version in about 10 minutes and found the jokes too blunt. Rewritten; the AI testers then went from 2.5 to 3 out of 5 on difficulty and from 7.5 to 8 out of 10 on humour.
+  - **Poke fun at the brother through other people.** The jokes that landed every round were someone else deflating him: a reply, a refusal, a straight man. The ones that failed were the brother announcing his own trait. If a line says what he's like, cut it and give someone a reaction instead.
+  - **Don't explain the joke, or the clue.** Leave a reference for the player to spot. The best moment in the chapter is a clue nobody spells out.
+  - **A refusal names the symptom, not the cure.** "It skids off" works; "it needs to be flat" gives it away. When testers stalled, a refusal pointing at the right *place* fixed it better than one naming the answer.
+  - **An item you have to fetch back hides itself.** Testers stalled when a needed item was sitting in the world after an earlier use. Make the item there react when the player tries the right thing near it.
+  - **Vary repeat lines.** A joke that's perfect once is stale by the third visit. Give a second visit its own line, or drop the joke.
+  - **Seasoning, not the main course.** A brother's interests work best one or two at a time, woven into the puzzles, not a checklist of all of them.

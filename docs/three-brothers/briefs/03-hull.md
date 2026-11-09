@@ -12,6 +12,8 @@ He has a young son at home and a second child on the way, and he needs to get ba
 
 **It ends when Rob has a train ticket**, and knows where he's going.
 
+**How it was tested:** six rounds of AI playtests after the rewrite, two fresh testers per round, including a Comedy Editor profile (now in `playtesting.md`) to judge whether the jokes land.
+
 **Revised 2026-11-08, after Jack's playtest:** fewer of Rob's interests crammed in. Politics, football and cyclists are seasoning, not the main course. The humour should gently poke fun at Rob, through situations and other people's reactions, rather than have him restate his traits.
 
 ## Picks up from

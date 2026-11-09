@@ -215,7 +215,6 @@ export const hull: Chapter = {
         { id: 'statue', name: 'King William statue', rect: { x: 400, y: 10, w: 160, h: 170 }, colour: '#d9b53a', look: 'King Billy, gilded from crown to hoof, on a golden horse. Somebody has polished him this morning. In January.' },
         { id: 'to_office', name: 'Hull Daily Mail office', exit: 'up', rect: { x: 400, y: 200, w: 140, h: 150 }, colour: '#4a4a5a', look: 'The offices of the Hull Daily Mail. A sign in the window: CORRESPONDENTS WANTED. Bring your own pencil.' },
         { id: 'reader', name: 'Woman on the bench', if: '!got_book', rect: { x: 600, y: 240, w: 80, h: 140 }, colour: '#7a3a5a', look: "A woman reading on a bench, in this cold, so gripped that she hasn't noticed her tea has gone cold. Dracula, the yellow cover. About two-thirds in. I'm trying very hard not to say anything." },
-        { id: 'bicycle_tidy', name: 'Bicycle', if: 'bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: "A bicycle, propped neatly against the wall. My work. Nobody's noticed." },
         { id: 'bicycle', name: 'Bicycle', if: '!bike_moved', rect: { x: 695, y: 300, w: 65, h: 80 }, colour: '#3f7a6a', look: 'A bicycle, parked across the whole pavement. Even in 1906.' },
         { id: 'hall', name: 'Liberal hall', rect: { x: 770, y: 30, w: 180, h: 190 }, colour: '#a08a4a', look: 'The Liberal hall, with a poster: MR LLOYD GEORGE SPEAKS TONIGHT, 8 O\'CLOCK. A steward is guarding the door like it is the last seat on earth.' },
         { id: 'to_boulevard', name: 'Hessle Road', exit: 'right', rect: { x: 880, y: 240, w: 80, h: 160 }, colour: '#8a8a70', look: 'The road out along Hessle Road, towards the football ground. You can hear the crowd from here.' },
@@ -294,10 +293,13 @@ export const hull: Chapter = {
     // ---- What Rob's thinking (tap his portrait) ----
     { look: 'rob', if: '!got_wreck', say: ['Me: Rob Mead. Dad. Reader. Former goalkeeper. Currently on the floor of a market. First things first: the box.'] },
     { look: 'rob', if: 'read_passage !ticket', say: ['Me: I could get a train. I could get a train to anywhere. Well. Anywhere with a reason.'] },
+    { look: 'rob', if: 'heard_bandage !report_paid', say: ["Me: A bandage. Lovely. That's a head, not a name. Somebody must write their names down somewhere."] },
     { look: 'rob', if: 'watched !report_paid', say: ['Me: Fourteen pages of first-class analysis, and he wants one name. Somebody in this town saw that goal. Somebody who was actually looking.'] },
-    { look: 'rob', if: 'trapdoor_open !lit', say: ["Me: I'm not going down there in the dark. I'm a grown man. A grown man with a lot to lose."] },
+    { look: 'rob', if: 'trapdoor_open !lit', say: ["Me: It's very dark down those steps. A grown man needs to see what he's lifting."] },
     { look: 'rob', if: 'heard_cellar !trapdoor_open', say: ['Me: A dry pub on election night. That is not a crisis, that is a scandal. All that stands in the way is a crack in a floor, and nothing I own is the right shape for it. Yet.'] },
     { look: 'rob', if: 'has:notebook !watched', say: ["Me: Paid by the line to watch City. I've been training for this my whole life. Sixpence to get in, mind, and I haven't got sixpence."] },
+    { look: 'rob', if: 'has:halfcrown_pub has:halfcrown_paper has:dracula', say: ['Me: Five shillings, and a book I have read twice. Nobody needs to read a book three times. Do they?'] },
+    { look: 'rob', if: 'has:halfcrown_pub has:halfcrown_paper', say: ["Me: Five shillings. I could go almost anywhere. I've just no idea where."] },
     { look: 'rob', say: ["Me: I need to get out of Hull. I don't know where to, and I couldn't pay for it if I did. And I've got a bun in the oven at home."] },
 
     // ---- Getting about ----
@@ -319,12 +321,11 @@ export const hull: Chapter = {
       say: ['Rob kneels by the wreck, the way you would for an old friend. Most of it comes apart in his hands.', 'Me: One good plank. One iron strap, bent double. The rest was only ever there to hold me up.'],
       do: ['give:lid', 'give:strap', 'set:got_wreck'],
     },
-    { on: 'statue', say: ['Rob explains the Glorious Revolution to the statue. It takes eleven minutes.', 'The statue takes it well.'] },
+    { on: 'statue', say: ["Rob explains to the statue that it hasn't got any stirrups, and what that says about Hull. It takes eleven minutes.", 'The statue takes it well.'] },
     { on: 'statue', item: 'strap', say: ["Me: Not King Billy. He's had enough people trying to get rid of him, and he's got a horse."] },
     { on: 'statue', item: 'phone', say: ['Me: I could take a photo of him. One per cent, though. One per cent is for my son.'] },
 
-    { on: 'bicycle', say: ['Rob picks the bicycle up and moves it off the pavement, properly, square against the wall.', 'Then he stands next to it for a while, in case anybody wants to thank him.', 'Nobody does.'], do: ['set:bike_moved'] },
-    { on: 'bicycle_tidy', say: ['Rob straightens the bicycle by about a quarter of an inch.', 'Me: There.'] },
+    { on: 'bicycle', say: ['Rob picks the bicycle up and moves it off the pavement, properly, square against the wall.', 'A man in cycle clips appears from nowhere.', '"Oh, thank you!"', 'He gets on, and rides it away along the pavement.'], do: ['set:bike_moved'] },
     { on: 'bicycle', item: 'strap', say: ['Me: Tempting. Very tempting. No.'] },
     { on: 'bicycle', item: 'strap_flat', say: ['Me: Tempting. Very tempting. No.'] },
     { on: 'bicycle', item: 'lid', say: ["Me: I'm not giving it a ramp. It'll only get ideas."] },
@@ -495,7 +496,7 @@ export const hull: Chapter = {
     { on: 'presses', say: ['Me: Imagine that. Everything I say, printed, every day, for everyone.', 'Editor: (without looking up) No.'] },
 
     // ---- The Boulevard ----
-    { on: 'gateman', if: 'watched', say: ["Gateman: I'm writing to the council about you. There'll be a by-law by Easter."] },
+    { on: 'gateman', if: 'watched', say: ["Gateman: I'm writing to the council about you. There'll be a by-law by Easter.", "Me: Write to your councillor, not the council. I'll draft it for you."] },
     {
       on: 'gateman',
       say: [

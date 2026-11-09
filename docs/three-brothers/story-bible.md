@@ -64,7 +64,17 @@ More about Jack, from Rob (Jack can rework any of it):
 
 The family: Mum is a lay preacher at her local church.
 
-Who's written for whom: Rob wrote Phil's chapter (1) and is writing Jack's; Jack is writing Rob's. Whichever is finished first becomes Chapter 2, and the other adapts around it.
+More about Rob, from Jack (Rob can rework any of it):
+
+- A recent dad, inordinately proud of his son, with a second child on the way. The son stays unnamed unless Rob names him.
+- A keen weightlifter, very tall, and would like someone to be watching when he lifts something.
+- A big reader: has always read more books this year than you.
+- An ex-goalkeeper and armchair football analyst. Supports Hull City, to a degree.
+- Studied politics in Nottingham and worked for the Lib Dems; now gloomy about all of it.
+- Doesn't think much of cyclists. Loves dolly mixture, cheese and cooking a curry.
+- Keep these as seasoning: one or two per scene, shown through situations and other people's reactions.
+
+Who's written for whom: Rob wrote Phil's chapter (1) and Jack's (2). Jack wrote Rob's (3). More chapters follow.
 
 ## Cast (non-brothers)
 
@@ -83,6 +93,7 @@ Who's written for whom: Rob wrote Phil's chapter (1) and is writing Jack's; Jack
 | Paulinus | 2 | The real Roman missionary who came north with the queen. |
 | Osric | 2 | Edwin's oldest counsellor. Bede's sparrow speech is his (Bede doesn't name the speaker). |
 | Gytha | 2 | A wise woman on the Wolds with a black cat that looks exactly like Merlin. Mother Shipton's representative in 627. |
+| Hull locals | 3 | A woman reading on a bench whose son plays for Hull City, the landlord of Ye Olde White Harte, the editor of the Hull Daily Mail, a gateman at the Boulevard, a boy, a Liberal steward, and a ticket clerk at Paragon Station. Lloyd George is speaking in town that night, but never appears. |
 | Ecca, Wulf, Hunna, the groom | 2 | A shepherd boy who thinks Jack is an elf; the hall's door-ward; the cook; the king's groom. |
 
 ## Chapters so far
@@ -92,6 +103,7 @@ Who's written for whom: Rob wrote Phil's chapter (1) and is writing Jack's; Jack
 | 0 | The Selfie | Rob | Present day, Mother Shipton's Cave | All three | The curse; the brothers vanish from the selfie spot |
 | 1 | A Young Man in Whitby | Rob | August 1890, Whitby | Phil | Phil, safe for the night at a grand hotel, wonders how Jack is getting on |
 | 2 | The Mead Hall | Rob | AD 627, Goodmanham on the Yorkshire Wolds | Jack | Jack, fed and warm in King Edwin's mead hall, wonders where Rob has ended up |
+| 3 | Deliver Us From Hull | Jack | January 1906, Hull | Rob | Rob, ticket in hand at Paragon Station, sets off by train, by way of York |
 
 ## Lore established
 
@@ -110,22 +122,25 @@ Facts later chapters must respect.
 - **Jack landed on the Wolds above Goodmanham in AD 627**, the year King Edwin's council chose Christianity. He was there when Coifi rode out and threw a spear into his own temple, as Bede tells it. Jack sided with neither the old gods nor the new one, and said so.
 - **Mother Shipton has representatives.** She reaches across time through people of each era, not in person. In 627 it was Gytha, a wise woman who knew Jack's name, spoke of Shipton as a friend from a cave who is not yet born, and wanted Jack to stay out of the king's business. When he didn't, she vanished in a flicker of purple light. What Shipton wants is still unknown.
 - Gytha's black cat stayed behind in 627.
+- **Rob landed in Hull's Market Place in January 1906**, during the general election. His soapbox came with him and was wrecked on landing; he still has a plank of it.
+- **Phil left Rob a sign.** Something Phil did in 1890 reached Rob in 1906 and told him where to go next. The details (how, and where Rob is heading) are in `spoilers/03-hull-ai-playtest.md`: play Chapter 3 first. How Phil managed it is for Phil's next chapter.
 
 ## Open threads
 
 Things a later chapter can pick up. Close them by moving them to "Closed threads" with the chapter that did it. Part of the fun is learning which to close and which to leave open.
 
-- Where and when did Rob land? (Jack is writing Rob's chapter. Rob's chapter for Jack is in as Chapter 2 for now; whichever is finished first keeps that number.)
+- Where is Rob heading in 1906, and what does he find there?
 - Mother Shipton's representatives: who else works for her, and in which eras? What does she want?
 - How does Jack get by in 627, and does he stay?
-- How does Phil get by in 1890, and can he use the well to reach his brothers?
+- How does Phil get by in 1890, and how did he get his sign to Rob?
 - Phil's wedding, and his festival: will he make either?
 - Who finds the phone with the selfie on it, and when? Does the photo still show her face?
 - Why did the teddy bears turn their heads?
 - Does Mother Shipton want something besides being in the photo?
-- Rob's soapbox: did it travel with him?
 
 ## Closed threads
 
 - Where did Phil land? Whitby, August 1890 (Chapter 1).
 - Where did Jack land? Goodmanham, AD 627 (Chapter 2).
+- Where did Rob land? Hull, January 1906 (Chapter 3).
+- Rob's soapbox: did it travel with him? Yes, and it didn't survive the landing (Chapter 3).

@@ -40,6 +40,9 @@ Copy `games/sandbox/` to `games/<id>/` (lowercase, dash-separated), then update 
   - **A spoiler is anything that helps pass an obstacle:** a solution or any step of one, which item is used where, which brother does what, what a character, item or place looks like *after* an action, or any in-game line other than the intro and ending (refusals and descriptions are clues too).
   - **Describe work by kind and count, not content.** For example: "lined up 7 tappable areas", "fixed 3 lines flagged by playtesters", "puzzle 2 got a clearer clue".
   - **Screenshots:** only the title screen, or a chapter's untouched opening state with no dialogue showing. To check a later state, look at it yourself; don't send it.
+  - **Working notes count too.** Progress updates, tool output the user may expand, and explanations of why art or code needs changing are all messages. Say "one scene needs an extra version of its background", not what changes or why.
+  - **Don't print chapter content to the terminal.** When reading `chapters/` files, filter to ids, rects and other layout fields; never grep or cat in a way that prints lines, rules or descriptions.
+  - **Name files neutrally.** Art and sprite names are visible in the repo, so a name must not reveal a later state or that something moves (e.g. `cellar-overlay-1.webp`, not one named after what happens to it).
   - **Before sending any message, image, commit or PR, check:** could a brother who hasn't played learn anything about getting past an obstacle from this? If so, cut it.
   - Only reveal a solution when someone explicitly asks to be spoiled, and confirm which chapter or puzzle first.
   - `npm test` fails if a public doc quotes an in-game line.

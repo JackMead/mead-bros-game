@@ -18,6 +18,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(root, 'index.html'),
+        // /games/ redirects to the site root, so the list's relative links never resolve under it.
+        games: resolve(root, 'games', 'index.html'),
         ...Object.fromEntries(games.map((id) => [id, resolve(root, 'games', id, 'index.html')])),
       },
     },

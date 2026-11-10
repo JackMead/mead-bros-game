@@ -127,10 +127,11 @@ export const layout = {
   },
   menuButton: (): Rect => ({ x: width - 52, y: 10, w: 42, h: 42 }),
   showButton: (): Rect => ({ x: width - 122, y: 10, w: 62, h: 42 }),
-  shareButton: (): Rect => ({ x: 620, y: 190, w: 300, h: 56 }),
+  shareButton: (): Rect => ({ x: 620, y: 172, w: 300, h: 56 }),
   skipButton: (): Rect => ({ x: width - 150, y: 10, w: 88, h: 42 }),
-  chapterCard: (i: number): Rect => ({ x: 40, y: 190 + i * 96, w: 540, h: 84 }),
-  restartButton: (i: number): Rect => ({ x: 456, y: 190 + i * 96 + 24, w: 108, h: 36 }),
+  // Four chapters plus the note below them fit above the bottom of the screen.
+  chapterCard: (i: number): Rect => ({ x: 40, y: 172 + i * 84, w: 540, h: 78 }),
+  restartButton: (i: number): Rect => ({ x: 456, y: 172 + i * 84 + 21, w: 108, h: 36 }),
   dialogue: (): Rect => ({ x: 20, y: sceneHeight - 128, w: width - 40, h: 118 }),
   choice: (i: number, count: number): Rect => {
     const h = 36;

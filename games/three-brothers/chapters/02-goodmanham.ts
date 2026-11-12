@@ -1,4 +1,5 @@
 import type { Chapter, Rule } from '../types';
+import './02-goodmanham-art';
 
 /**
  * SPOILERS: this file is the puzzle solutions.
@@ -319,9 +320,9 @@ export const goodmanham: Chapter = {
         {
           id: 'halter',
           name: 'Old halter',
-          prop: 'halter',
+          prop: 'goodmanham-prop-1',
           rect: { x: 266, y: 190, w: 34, h: 70 },
-          sprite: 'halter.png',
+          sprite: 'goodmanham-prop-1.png',
           colour: '#c8b080',
           if: '!got_strap',
           look: "An old halter hanging on the stable post: a tangle of dried-out rawhide straps the groom never throws away.",
@@ -377,9 +378,9 @@ export const goodmanham: Chapter = {
         {
           id: 'spit',
           name: 'Boar on a spit',
-          prop: 'boar',
+          prop: 'goodmanham-prop-2',
           rect: { x: 655, y: 240, w: 165, h: 68 },
-          sprite: 'boar.png',
+          sprite: 'goodmanham-prop-2.png',
           colour: '#a0522d',
           look: 'A whole wild boar, turning slowly over glowing coals, dripping fat. It smells incredible. I am a vegetarian. Part-time. It smells incredible.',
         },
@@ -514,7 +515,7 @@ export const goodmanham: Chapter = {
           id: 'west_door_open',
           name: 'West door',
           rect: { x: 836, y: 118, w: 124, h: 262 },
-          sprite: 'hall-door-unbarred.png',
+          sprite: 'goodmanham-overlay-1.png',
           colour: '#4a3020',
           if: 'door_unbarred !door_clipped',
           look: "The west door, unbarred. The wind off the Wolds keeps slamming it shut. There's an iron ring on the door and another on the post, just out of reach of each other.",
@@ -523,7 +524,7 @@ export const goodmanham: Chapter = {
           id: 'west_door_clipped',
           name: 'West door (open)',
           rect: { x: 836, y: 118, w: 124, h: 262 },
-          sprite: 'hall-door-open.png',
+          sprite: 'goodmanham-overlay-2.png',
           colour: '#c8b890',
           if: 'door_clipped',
           look: "The west door, clipped open with my carabiner. Ring to ring. Daylight at both ends of the hall now. Somewhere, a man who sells outdoor gear has just felt a disturbance in the force.",
@@ -573,7 +574,7 @@ export const goodmanham: Chapter = {
           id: 'coifi_mounted',
           name: 'Coifi, on the stallion',
           rect: { x: 380, y: 220, w: 189, h: 170 },
-          sprite: 'coifi-mounted.png',
+          sprite: 'goodmanham-overlay-3.png',
           colour: '#b85a2a',
           if: 'coifi_rode',
           look: 'Coifi, sitting on the black stallion at the temple gate, sword-less, spear-less, and very much ready.',
@@ -1185,7 +1186,7 @@ export const goodmanham: Chapter = {
       say: [
         'Jack scatters barley in a line through the rushes, from the main door, past the fire, to the open west door.',
         'Outside, the sparrows notice. One drops off the thatch, hops in at the main door, pecks, and pecks, and flutters up.',
-        '[fly sparrow 22 70 250 900 220 2.4]',
+        '[fly goodmanham-sprite-1 22 70 250 900 220 2.4]',
         'It flies the length of the hall through the smoke and the firelight. Every head turns to watch it. Then it is out of the west door and gone into the grey.',
         'Osric is on his feet.',
         'Osric: My king. This life of ours is like that sparrow. It flies in from the winter dark, and for a moment it is warm, in the light, by the fire. Then it flies out into the dark again, and we never see where it goes.',

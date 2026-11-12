@@ -289,7 +289,7 @@ function drawFollowers(ui: Ui, ctx: CanvasRenderingContext2D): void {
   }
 }
 
-/** The `fly` cue: a sparrow (or any picture in art/) crossing the scene. */
+/** The `fly` cue: a bird (or any picture in art/) crossing the scene. */
 function drawFlights(ui: Ui, ctx: CanvasRenderingContext2D): void {
   for (const e of ui.cinema.effects) {
     if (e.name !== 'fly') continue;
@@ -297,12 +297,12 @@ function drawFlights(ui: Ui, ctx: CanvasRenderingContext2D): void {
     const p = (ui.time - e.start) / secs;
     if (p < 0 || p > 1) continue;
     const x = x1 + (x2 - x1) * p;
-    const bird = what === 'sparrow';
+    const bird = what === 'bird' || !!art(`${what}-a.png`);
     const y = y1 + (y2 - y1) * p + (bird ? Math.sin(p * Math.PI * 6) * 12 - Math.sin(p * Math.PI) * 40 : -Math.abs(Math.sin(p * Math.PI * 8)) * 4);
     const facing = x2 < x1 ? -1 : 1;
-    const frame = bird ? art(Math.floor(ui.time * 12) % 2 ? 'sparrow-up.png' : 'sparrow-down.png') : null;
+    const frame = art(`${what}-${Math.floor(ui.time * 12) % 2 ? 'a' : 'b'}.png`);
     if (bird && !frame) {
-      drawSparrow(ctx, x, y, size, facing, ui.time);
+      drawBird(ctx, x, y, size, facing, ui.time);
       continue;
     }
     const img = frame ?? art(what);
@@ -316,8 +316,8 @@ function drawFlights(ui: Ui, ctx: CanvasRenderingContext2D): void {
   }
 }
 
-/** A little brown sparrow, wings flapping, centred on (x, y). */
-function drawSparrow(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, facing: number, time: number): void {
+/** A little brown bird, wings flapping, centred on (x, y). */
+function drawBird(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, facing: number, time: number): void {
   const s = size / 20;
   const flap = Math.sin(time * 28);
   ctx.save();
